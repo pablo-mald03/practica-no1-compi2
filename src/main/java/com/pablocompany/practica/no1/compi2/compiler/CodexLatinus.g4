@@ -2,7 +2,7 @@ grammar CodexLatinus;
 
 program: declaration*; 
 declaration: expr
-           ;
+    ;
 
 
 expr: '-' expr                 # Negate  
@@ -14,5 +14,20 @@ expr: '-' expr                 # Negate
     ;
 
 INT: [0-9]+;
-WS: [ \t\r\n]+ -> skip;
+
+COMMENT
+
+    : '//' ~[\r\n]*
+
+      -> channel(HIDDEN);
+
+BLOCK_COMMENT
+
+    : '##' .*? '##'
+
+      -> channel(HIDDEN);
+
+WS: [ \t\r\n]+
+    -> channel(HIDDEN)
+    ;
 ID: [a-zA-Z];
