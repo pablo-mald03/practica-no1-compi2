@@ -4,19 +4,52 @@
  */
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
+import com.pablocompany.practica.no1.compi2.ui.components.BottomTabbedPanel;
+import com.pablocompany.practica.no1.compi2.ui.components.CodeEditorPanel;
+import com.pablocompany.practica.no1.compi2.ui.components.SidePanel;
+import com.pablocompany.practica.no1.compi2.ui.components.EditorStatusBar;
+import java.awt.BorderLayout;
+
 /**
  *
  * @author pablo03
  */
 public class MainFrame extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
 
-    /**
-     * Creates new form MainFrame
-     */
+    private CodeEditorPanel editor;
+
+    private SidePanel side;
+
+    private BottomTabbedPanel bottom;
+
     public MainFrame() {
         initComponents();
+
+        initializeCustomComponents();
+
+        attachComponents();
+
+    }
+
+    private void initializeCustomComponents() {
+
+        editor = new CodeEditorPanel();
+
+        side = new SidePanel();
+
+        bottom = new BottomTabbedPanel();
+
+    }
+
+    private void attachComponents() {
+
+        editorPanel.setLayout(new BorderLayout());
+        extraPanel.setLayout(new BorderLayout());
+        bottomPanel.setLayout(new BorderLayout());
+
+        editorPanel.add(editor, BorderLayout.CENTER);
+        extraPanel.add(side, BorderLayout.CENTER);
+        bottomPanel.add(bottom, BorderLayout.CENTER);
     }
 
     /**
@@ -61,6 +94,7 @@ public class MainFrame extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1400, 900));
 
         mainPanel.setBackground(new java.awt.Color(225, 221, 166));
+        mainPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(0, 0, 0)));
         mainPanel.setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(175, 123, 128));
@@ -89,6 +123,7 @@ public class MainFrame extends javax.swing.JFrame {
         headerPanel.add(separatorPanel1, gridBagConstraints);
 
         terminalButton.setBackground(new java.awt.Color(0, 102, 102));
+        terminalButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
         terminalButton.setForeground(new java.awt.Color(255, 255, 255));
         terminalButton.setText("Abrir Terminal");
         terminalButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -104,9 +139,11 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 2;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 2, 2);
         headerPanel.add(terminalButton, gridBagConstraints);
 
         runButton.setBackground(new java.awt.Color(0, 102, 51));
+        runButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
         runButton.setForeground(new java.awt.Color(255, 255, 255));
         runButton.setText("Compilar");
         runButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -125,6 +162,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
 
+        mainContainer.setBorder(new javax.swing.border.MatteBorder(null));
         mainContainer.setRequestFocusEnabled(false);
         mainContainer.setLayout(new java.awt.BorderLayout());
 
@@ -145,7 +183,6 @@ public class MainFrame extends javax.swing.JFrame {
         horizontalSplit.setDividerLocation(900);
         horizontalSplit.setDividerSize(4);
 
-        editorPanel.setBackground(new java.awt.Color(220, 229, 196));
         editorPanel.setPreferredSize(new java.awt.Dimension(800, 599));
 
         javax.swing.GroupLayout editorPanelLayout = new javax.swing.GroupLayout(editorPanel);
@@ -162,13 +199,14 @@ public class MainFrame extends javax.swing.JFrame {
         horizontalSplit.setLeftComponent(editorPanel);
 
         extraPanel.setBackground(new java.awt.Color(225, 221, 166));
+        extraPanel.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
         extraPanel.setPreferredSize(new java.awt.Dimension(600, 599));
 
         javax.swing.GroupLayout extraPanelLayout = new javax.swing.GroupLayout(extraPanel);
         extraPanel.setLayout(extraPanelLayout);
         extraPanelLayout.setHorizontalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGap(0, 398, Short.MAX_VALUE)
         );
         extraPanelLayout.setVerticalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -189,7 +227,7 @@ public class MainFrame extends javax.swing.JFrame {
         bottomPanel.setLayout(bottomPanelLayout);
         bottomPanelLayout.setHorizontalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1298, Short.MAX_VALUE)
+            .addGap(0, 1302, Short.MAX_VALUE)
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -266,7 +304,6 @@ public class MainFrame extends javax.swing.JFrame {
     private void terminalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminalButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_terminalButtonActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
