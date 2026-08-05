@@ -1,14 +1,13 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor;
 
-import com.pablocompany.practica.no1.compi2.ui.components.themes.Theme;
+import com.pablocompany.practica.no1.compi2.infrastructure.lexical.AntlrAnalyzer;
+import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
+import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -17,16 +16,12 @@ import javax.swing.event.DocumentListener;
 /*Class used to represents a editor panel*/
 public class CodeEditorPanel extends JPanel {
 
-    private final JTextPane editor;
+    private final CodeTextPane editor;
     private final LineNumberView lineNumbers;
 
     private final JScrollPane scroll;
 
     private final EditorStatusBar statusBar;
-
-    private Timer syntaxTimer;
-
-    private static final int SYNTAX_DELAY = 250;
 
     public CodeEditorPanel() {
 
@@ -34,7 +29,7 @@ public class CodeEditorPanel extends JPanel {
 
         setBackground(Theme.SIDEBAR_LIGHT.getColorSet());
 
-        editor = new JTextPane();
+        editor = new CodeTextPane();
 
         editor.setBackground(Theme.BACKGROUND_LIGHT.getColorSet());
         editor.setForeground(Theme.FOREGROUND_LIGHT.getColorSet());
@@ -53,42 +48,10 @@ public class CodeEditorPanel extends JPanel {
 
         setBorder(BorderFactory.createEmptyBorder());
 
-        syntaxTimer = new Timer(SYNTAX_DELAY, e -> {
-
-            syntaxTimer.stop();
-
-            performSyntaxHighlight();
-
-        });
-
-        syntaxTimer.setRepeats(false);
-
-        editor.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-
-                scheduleHighlight();
-
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-
-                scheduleHighlight();
-
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-
-                scheduleHighlight();
-
-            }
-
-        });
 
         editor.addCaretListener(e -> updateCaretPosition());
+        
+        editor.setSyntaxHighlightListener(new AntlrAnalyzer());
 
     }
 
@@ -118,27 +81,6 @@ public class CodeEditorPanel extends JPanel {
             System.out.println("exception with caret");
         }
 
-    }
-
-    //Reset the debounce for highlight the code
-    private void scheduleHighlight() {
-
-        syntaxTimer.restart();
-
-        lineNumbers.repaint();
-
-    }
-
-    //This method use the lexer to highlight the code
-    private void performSyntaxHighlight() {
-
-        String source = getCode();
-
-        // TODO:
-        // Lexer
-        // Tokens
-        // Styles
-        // Pintado
     }
 
     public JTextPane getEditor() {
