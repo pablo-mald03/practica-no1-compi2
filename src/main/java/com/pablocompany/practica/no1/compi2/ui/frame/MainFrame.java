@@ -5,9 +5,9 @@
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
 import com.pablocompany.practica.no1.compi2.ui.components.BottomTabbedPanel;
-import com.pablocompany.practica.no1.compi2.ui.components.CodeEditorPanel;
+import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.SidePanel;
-import com.pablocompany.practica.no1.compi2.ui.components.EditorStatusBar;
+import com.pablocompany.practica.no1.compi2.ui.components.editor.EditorStatusBar;
 import java.awt.BorderLayout;
 
 /**
@@ -98,13 +98,13 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel.setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(175, 123, 128));
-        headerPanel.setBorder(new javax.swing.border.MatteBorder(null));
+        headerPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 1, new java.awt.Color(0, 0, 0)));
         headerPanel.setPreferredSize(new java.awt.Dimension(1300, 40));
         headerPanel.setLayout(new java.awt.GridBagLayout());
 
         separatorPanel1.setBackground(new java.awt.Color(175, 123, 128));
-        separatorPanel1.setMinimumSize(new java.awt.Dimension(300, 0));
-        separatorPanel1.setPreferredSize(new java.awt.Dimension(300, 0));
+        separatorPanel1.setMinimumSize(new java.awt.Dimension(300, 10));
+        separatorPanel1.setPreferredSize(new java.awt.Dimension(300, 10));
 
         javax.swing.GroupLayout separatorPanel1Layout = new javax.swing.GroupLayout(separatorPanel1);
         separatorPanel1.setLayout(separatorPanel1Layout);
@@ -118,7 +118,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(0, 750, 0, 0);
         headerPanel.add(separatorPanel1, gridBagConstraints);
 
@@ -126,16 +126,15 @@ public class MainFrame extends javax.swing.JFrame {
         terminalButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
         terminalButton.setForeground(new java.awt.Color(255, 255, 255));
         terminalButton.setText("Abrir Terminal");
-        terminalButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        terminalButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
         terminalButton.setFocusPainted(false);
         terminalButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        terminalButton.setMaximumSize(new java.awt.Dimension(120, 40));
-        terminalButton.setMinimumSize(new java.awt.Dimension(120, 40));
-        terminalButton.setPreferredSize(new java.awt.Dimension(120, 40));
+        terminalButton.setMaximumSize(new java.awt.Dimension(120, 30));
+        terminalButton.setMinimumSize(new java.awt.Dimension(120, 30));
+        terminalButton.setPreferredSize(new java.awt.Dimension(120, 30));
         terminalButton.setRequestFocusEnabled(false);
         terminalButton.addActionListener(this::terminalButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.ipadx = 2;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -146,11 +145,11 @@ public class MainFrame extends javax.swing.JFrame {
         runButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
         runButton.setForeground(new java.awt.Color(255, 255, 255));
         runButton.setText("Compilar");
-        runButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        runButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
         runButton.setFocusPainted(false);
-        runButton.setMaximumSize(new java.awt.Dimension(100, 40));
-        runButton.setMinimumSize(new java.awt.Dimension(100, 40));
-        runButton.setPreferredSize(new java.awt.Dimension(100, 40));
+        runButton.setMaximumSize(new java.awt.Dimension(100, 30));
+        runButton.setMinimumSize(new java.awt.Dimension(100, 30));
+        runButton.setPreferredSize(new java.awt.Dimension(100, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
@@ -206,7 +205,7 @@ public class MainFrame extends javax.swing.JFrame {
         extraPanel.setLayout(extraPanelLayout);
         extraPanelLayout.setHorizontalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
+            .addGap(0, 410, Short.MAX_VALUE)
         );
         extraPanelLayout.setVerticalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,7 +226,7 @@ public class MainFrame extends javax.swing.JFrame {
         bottomPanel.setLayout(bottomPanelLayout);
         bottomPanelLayout.setHorizontalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1302, Short.MAX_VALUE)
+            .addGap(0, 1314, Short.MAX_VALUE)
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

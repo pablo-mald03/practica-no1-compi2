@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.ui.components;
+package com.pablocompany.practica.no1.compi2.ui.components.editor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -65,9 +65,9 @@ public class EditorStatusBar extends JPanel {
 
     public void updateCursor(int ln, int col) {
 
-        line.setText("Ln " + ln);
+        line.setText("Ln: " + ln);
 
-        column.setText("Col " + col);
+        column.setText("Col: " + col);
 
     }
 

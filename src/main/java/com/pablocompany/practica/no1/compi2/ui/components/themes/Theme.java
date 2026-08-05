@@ -9,12 +9,23 @@ import java.awt.Color;
 /*Class used to declarate the principal colors*/
 public enum Theme {
     
-    BACKGROUND( new Color(40,44,52)),
-    SURFACE( new Color(40,44,52)),
-    SIDEBAR(new Color(45,45,45)),
-    STATUS_BAR(new Color(52,58,64)),
-    FOREGROUND(Color.WHITE),
-    BORDER( new Color(70,70,70));
+   /*Light Theme related to the code editor */
+    BACKGROUND_LIGHT(new Color(245, 247, 240)), 
+    SURFACE_LIGHT(new Color(230, 210, 215)),  
+    SIDEBAR_LIGHT(new Color(238, 235, 205)),  
+    STATUS_BAR_LIGHT(new Color(205, 170, 160)), 
+    FOREGROUND_LIGHT(new Color(30, 30, 30)),   
+    BORDER_LIGHT(new Color(190, 160, 130)),    
+    
+    /*Dark Theme related to the code editor */
+    BACKGROUND_DARK(new Color(10, 22, 38)),    
+    SURFACE_DARK(new Color(18, 14, 60)),       
+    SIDEBAR_DARKT(new Color(8, 20, 22)),      
+    STATUS_BAR_DARK(new Color(50, 25, 65)),     
+    FOREGROUND_DARK(new Color(230, 235, 245)),  
+    BORDER_DARK(new Color(85, 30, 75));         
+    
+    
     
     private final Color colorSet;
     
