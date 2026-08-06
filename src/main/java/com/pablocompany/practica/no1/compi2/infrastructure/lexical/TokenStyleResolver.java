@@ -1,6 +1,6 @@
 package com.pablocompany.practica.no1.compi2.infrastructure.lexical;
 
-import com.pablocompany.practica.no1.compi2.compiler.generated.CodexLatinusLexer;
+import com.pablocompany.practica.no1.compi2.compiler.logic.CodexLatinusLexer;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyleProvider;
 import org.antlr.v4.runtime.Token;

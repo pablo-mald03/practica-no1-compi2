@@ -1,6 +1,6 @@
 package com.pablocompany.practica.no1.compi2.infrastructure.lexical;
 
-import com.pablocompany.practica.no1.compi2.compiler.generated.CodexLatinusLexer;
+import com.pablocompany.practica.no1.compi2.compiler.logic.CodexLatinusLexer;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import java.util.ArrayList;
