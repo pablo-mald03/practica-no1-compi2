@@ -44,8 +44,8 @@ public class CodeTextPane extends JTextPane {
 
         resolver = new TokenStyleResolver();
 
-        setBackground(Theme.BACKGROUND_LIGHT.getColorSet());
-        setForeground(Theme.FOREGROUND_LIGHT.getColorSet());
+        setBackground(Theme.BACKGROUND_DARK.getColorSet());
+        setForeground(Theme.FOREGROUND_DARK.getColorSet());
 
         syntaxTimer = new Timer(SYNTAX_DELAY, e -> {
 
@@ -63,7 +63,7 @@ public class CodeTextPane extends JTextPane {
 
         StyleConstants.setForeground(
                 style,
-                Theme.FOREGROUND_LIGHT.getColorSet());
+                Theme.FOREGROUND_DARK.getColorSet());
 
         getDocument().addDocumentListener(new DocumentListener() {
 

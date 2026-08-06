@@ -31,8 +31,8 @@ public class CodeEditorPanel extends JPanel {
 
         editor = new CodeTextPane();
 
-        editor.setBackground(Theme.BACKGROUND_LIGHT.getColorSet());
-        editor.setForeground(Theme.FOREGROUND_LIGHT.getColorSet());
+        editor.setBackground(Theme.BACKGROUND_DARK.getColorSet());
+        editor.setForeground(Theme.FOREGROUND_DARK.getColorSet());
 
         scroll = new JScrollPane(editor);
 
@@ -47,7 +47,8 @@ public class CodeEditorPanel extends JPanel {
         add(statusBar, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createEmptyBorder());
-
+        
+        editor.setCaretColor(Theme.FOREGROUND_DARK.getColorSet());
 
         editor.addCaretListener(e -> updateCaretPosition());
         

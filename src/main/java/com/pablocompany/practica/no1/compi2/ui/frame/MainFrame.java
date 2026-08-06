@@ -7,7 +7,6 @@ package com.pablocompany.practica.no1.compi2.ui.frame;
 import com.pablocompany.practica.no1.compi2.ui.components.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.SidePanel;
-import com.pablocompany.practica.no1.compi2.ui.components.editor.EditorStatusBar;
 import java.awt.BorderLayout;
 
 /**

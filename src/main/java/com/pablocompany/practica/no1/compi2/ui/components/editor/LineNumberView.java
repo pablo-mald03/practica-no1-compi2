@@ -1,5 +1,6 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor;
 
+import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -23,7 +24,7 @@ public class LineNumberView extends JPanel
     public final static float CENTER = 0.5f;
     public final static float RIGHT = 1.0f;
 
-    private final static Border OUTER = new MatteBorder(0, 0, 0, 2, Color.GRAY);
+    private final static Border OUTER = new MatteBorder(0, 0, 0, 2, Color.WHITE);
 
     private final static int HEIGHT = Integer.MAX_VALUE - 1000000;
 
@@ -64,7 +65,9 @@ public class LineNumberView extends JPanel
         setFont(component.getFont());
 
         setBorderGap(5);
-        setCurrentLineForeground(Color.RED);
+        setCurrentLineForeground(Color.magenta);
+        setForeground(Theme.FOREGROUND_DARK.getColorSet());
+        setBackground(Theme.SIDEBAR_DARKT.getColorSet());
         setDigitAlignment(RIGHT);
         setMinimumDisplayDigits(minimumDisplayDigits);
 
