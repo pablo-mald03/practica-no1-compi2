@@ -5,7 +5,7 @@
 package com.pablocompany.practica.no1.compi2.domain.context;
 
 import com.ibm.icu.text.SymbolTable;
-import com.pablocompany.practica.no1.compi2.infrastructure.errors.SyntaxError;
+import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,11 +24,9 @@ public class EditorContext {
 
     private List<Token> tokens;
 
-    private List<SyntaxError> lexicalErrors;
+    private List<CompilerError> compilerErrors;
 
     private List<Token> hiddenTokens;
-
-    private List<SyntaxError> syntaxErrors;
 
     private ParseTree parseTree;
 

@@ -6,7 +6,7 @@ GRAMMAR_PARSER="CodexLatinusParser.g4"
 
 GRAMMAR_LEXER="CodexLatinusLexer.g4"
 
-PACKAGE="com.pablocompany.practica.no1.compi2.compiler.generated"
+PACKAGE="com.pablocompany.practica.no1.compi2.compiler.logic"
 
 OUTPUT_DIR="logic"
 

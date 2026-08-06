@@ -356,7 +356,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
             alertToast("Compilación exitosa", false);
         } else {
             alertToast("Se encontraron errores en el código", true);
-            focusErrors(); // Auto-switch a la pestaña de errores
+            focusErrors();
         }
     }//GEN-LAST:event_runButtonActionPerformed
 

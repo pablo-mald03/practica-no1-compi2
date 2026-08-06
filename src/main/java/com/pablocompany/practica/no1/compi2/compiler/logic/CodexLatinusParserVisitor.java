@@ -1,5 +1,5 @@
 // Generated from CodexLatinusParser.g4 by ANTLR 4.13.2
-package com.pablocompany.practica.no1.compi2.compiler.generated;
+package com.pablocompany.practica.no1.compi2.compiler.logic;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
