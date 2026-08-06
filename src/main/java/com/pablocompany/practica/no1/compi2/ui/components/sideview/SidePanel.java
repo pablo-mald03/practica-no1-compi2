@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.ui.components;
+package com.pablocompany.practica.no1.compi2.ui.components.sideview;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

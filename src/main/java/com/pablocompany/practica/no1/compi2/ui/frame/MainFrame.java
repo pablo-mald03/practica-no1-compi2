@@ -4,16 +4,18 @@
  */
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
-import com.pablocompany.practica.no1.compi2.ui.components.BottomTabbedPanel;
+import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
+import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
-import com.pablocompany.practica.no1.compi2.ui.components.SidePanel;
+import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
+import com.pablocompany.practica.no1.compi2.ui.components.toast.ToastNotification;
 import java.awt.BorderLayout;
 
 /**
  *
  * @author pablo03
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
 
     private CodeEditorPanel editor;
 
@@ -23,9 +25,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     public MainFrame() {
         initComponents();
-
         initializeCustomComponents();
-
         attachComponents();
 
     }
@@ -49,6 +49,46 @@ public class MainFrame extends javax.swing.JFrame {
         editorPanel.add(editor, BorderLayout.CENTER);
         extraPanel.add(side, BorderLayout.CENTER);
         bottomPanel.add(bottom, BorderLayout.CENTER);
+    }
+    
+    // ==========================================
+    // WORKSPACENOTIFIER OBSERVER PATTERN IMPLEMENTATION
+    // ==========================================
+    
+    @Override
+    public void logInfo(String message) {
+        bottom.getConsole().appendInfo(message);
+    }
+
+    @Override
+    public void logSuccess(String message) {
+        bottom.getConsole().appendSuccess(message);
+    }
+
+    @Override
+    public void logError(String message) {
+        bottom.getConsole().appendError(message);
+    }
+
+    @Override
+    public void alertToast(String message, boolean isError) {
+        ToastNotification.show(this, message, isError);
+    }
+
+    @Override
+    public void focusConsole() {
+        bottom.showConsole();
+    }
+
+    @Override
+    public void focusErrors() {
+        bottom.showErrors();
+    }
+
+    @Override
+    public void clearLogs() {
+        bottom.getConsole().clear();
+        bottom.getErrors().clear();
     }
 
     /**
@@ -149,6 +189,7 @@ public class MainFrame extends javax.swing.JFrame {
         runButton.setMaximumSize(new java.awt.Dimension(100, 30));
         runButton.setMinimumSize(new java.awt.Dimension(100, 30));
         runButton.setPreferredSize(new java.awt.Dimension(100, 30));
+        runButton.addActionListener(this::runButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
@@ -303,6 +344,22 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_terminalButtonActionPerformed
 
+    //This method uses the toast to notify and compile the code
+    private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
+        clearLogs();
+        focusConsole();
+        logInfo("Iniciando proceso de compilación...");
+
+        boolean success = editor.compile(this); 
+
+        if (success) {
+            alertToast("Compilación exitosa", false);
+        } else {
+            alertToast("Se encontraron errores en el código", true);
+            focusErrors(); // Auto-switch a la pestaña de errores
+        }
+    }//GEN-LAST:event_runButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu FileMenu1;
@@ -330,4 +387,5 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel topPanel;
     private javax.swing.JSplitPane verticalSplit;
     // End of variables declaration//GEN-END:variables
+
 }

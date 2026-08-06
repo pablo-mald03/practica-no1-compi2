@@ -1,5 +1,6 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor;
 
+import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.AntlrAnalyzer;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
@@ -47,11 +48,11 @@ public class CodeEditorPanel extends JPanel {
         add(statusBar, BorderLayout.SOUTH);
 
         setBorder(BorderFactory.createEmptyBorder());
-        
+
         editor.setCaretColor(Theme.FOREGROUND_DARK.getColorSet());
 
         editor.addCaretListener(e -> updateCaretPosition());
-        
+
         editor.setSyntaxHighlightListener(new AntlrAnalyzer());
 
     }
@@ -106,6 +107,33 @@ public class CodeEditorPanel extends JPanel {
 
         return statusBar;
 
+    }
+
+    //This method is the principal to compile the code
+    public boolean compile(WorkspaceNotifier notifier) {
+        
+        //TODO: HARCODED
+        try {
+            String code = getCode();
+
+            notifier.logInfo("Lexer: Análisis iniciado...");
+
+            notifier.logInfo("Parser: Construyendo AST...");
+
+            boolean hasErrors = true; 
+
+            if (hasErrors) {
+                notifier.logError("Error de sintaxis en la línea 12.");
+                return false;
+            }
+
+            notifier.logSuccess("AST construido correctamente.");
+            return true;
+
+        } catch (Exception e) {
+            notifier.logError("Fallo crítico del compilador: " + e.getMessage());
+            return false;
+        }
     }
 
 }
