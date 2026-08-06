@@ -18,6 +18,8 @@ public class AntlrAnalyzer implements SyntaxHighlightListener {
 
     @Override
     public void highlight(EditorContext context) {
+        context.clearCompilerErrors(); 
+
         if (context.getSourceCode() == null || context.getSourceCode().isEmpty()) {
             context.setTokens(new ArrayList<>());
             return;
@@ -31,6 +33,14 @@ public class AntlrAnalyzer implements SyntaxHighlightListener {
 
         while (token.getType() != Token.EOF) {
             allTokens.add(token);
+
+            if (token.getType() == CodexLatinusLexer.ERROR_TOKEN) {
+                String lexeme = token.getText();
+                int line = token.getLine();
+                int column = token.getCharPositionInLine() + 1;
+
+                context.addLexicalError(lexeme, line, column);
+            }
             token = lexer.nextToken();
         }
 

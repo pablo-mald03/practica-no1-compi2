@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -53,9 +54,12 @@ public class ErrorsTable extends JTable {
         setSelectionForeground(Color.WHITE);
         setFont(new Font("Consolas", Font.PLAIN, 13));
         setRowHeight(30);
-        setIntercellSpacing(new Dimension(0, 0));
+
+        setIntercellSpacing(new Dimension(1, 0));
         setFocusable(false);
-        setShowVerticalLines(false);
+
+        setShowVerticalLines(true);
+        setShowHorizontalLines(true);
         setGridColor(Theme.BORDER_DARK.getColorSet());
     }
 
@@ -67,6 +71,20 @@ public class ErrorsTable extends JTable {
         header.setFont(new Font("Segoe UI", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_DARK.getColorSet()));
         header.setPreferredSize(new Dimension(header.getWidth(), 35));
+
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = headerRenderer.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
+                if (column == 1 || column == 2 || column == 3) {
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                } else {
+                    setHorizontalAlignment(SwingConstants.LEFT);
+                }
+                return c;
+            }
+        });
     }
 
     //Render the columns
@@ -75,7 +93,14 @@ public class ErrorsTable extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
-                setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
+
+                if (column == 1 || column == 2 || column == 3) {
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+                } else {
+                    setHorizontalAlignment(SwingConstants.LEFT);
+                    setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
+                }
 
                 if (!isSelected) {
                     switch (column) {
@@ -124,7 +149,13 @@ public class ErrorsTable extends JTable {
 
     //Method to fill the table with the errors
     public void loadErrors(List<CompilerError> errors) {
+
+        if ((errors == null || errors.isEmpty()) && tableModel.getRowCount() == 0) {
+            return;
+        }
+
         clear();
+
         if (errors == null || errors.isEmpty()) {
             return;
         }
@@ -134,7 +165,7 @@ public class ErrorsTable extends JTable {
                 error.getLexeme(),
                 error.getLine(),
                 error.getColumn(),
-                error.getErrorType(),
+                error.getErrorType().getContext(),
                 error.getDescription()
             });
         }

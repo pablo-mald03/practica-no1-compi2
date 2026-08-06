@@ -1,5 +1,6 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor.codetext;
 
+import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
@@ -39,7 +40,10 @@ public class CodeTextPane extends JTextPane {
     //Defult text style
     private final SimpleAttributeSet style;
 
-    public CodeTextPane() {
+    /*Reference to the parent*/
+    private WorkspaceNotifier notifierReference;
+
+    public CodeTextPane(WorkspaceNotifier notifierReference) {
         super(new DefaultStyledDocument());
 
         resolver = new TokenStyleResolver();
@@ -96,6 +100,8 @@ public class CodeTextPane extends JTextPane {
 
         });
 
+        this.notifierReference = notifierReference;
+
     }
 
     //This method reestart the debounce
@@ -111,12 +117,14 @@ public class CodeTextPane extends JTextPane {
         context.setSourceCode(getText());
 
         if (syntaxListener != null) {
-
             syntaxListener.highlight(context);
-
         }
 
         applyHighlight();
+
+        if (notifierReference != null) {
+            notifierReference.notifyErrorsUpdated(context.getCompilerErrors());
+        }
 
     }
 

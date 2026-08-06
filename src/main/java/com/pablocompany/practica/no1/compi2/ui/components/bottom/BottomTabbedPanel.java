@@ -1,7 +1,9 @@
 package com.pablocompany.practica.no1.compi2.ui.components.bottom;
 
+import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.BorderLayout;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -14,7 +16,7 @@ public class BottomTabbedPanel extends JPanel {
 
     private final JTabbedPane tabs;
     private final ConsolePanel console;
-    private final ErrorsPanel errors;
+    private final ErrorsPanel errorsTable;
 
     public BottomTabbedPanel() {
         setLayout(new BorderLayout());
@@ -27,13 +29,13 @@ public class BottomTabbedPanel extends JPanel {
         tabs = new JTabbedPane();
 
         console = new ConsolePanel();
-        errors = new ErrorsPanel();
+        errorsTable = new ErrorsPanel();
 
         tabs.setForeground(Theme.FOREGROUND_DARK.getColorSet());
         tabs.setBackground(Theme.SIDEBAR_DARKT.getColorSet());
 
         tabs.addTab("Console", console);
-        tabs.addTab("Errors", errors);
+        tabs.addTab("Errors", errorsTable);
 
         add(tabs, BorderLayout.CENTER);
     }
@@ -49,7 +51,7 @@ public class BottomTabbedPanel extends JPanel {
      * Focus to the Error panel
      */
     public void showErrors() {
-        tabs.setSelectedComponent(errors);
+        tabs.setSelectedComponent(errorsTable);
     }
 
     //This method notify the errors
@@ -66,6 +68,12 @@ public class BottomTabbedPanel extends JPanel {
     }
 
     public ErrorsPanel getErrors() {
-        return errors;
+        return errorsTable;
+    }
+    
+    
+    /*SECTION OF METHODS TO SET THE ERRORS TO THE ERRORPANEL*/
+    public void setCompilerErrors(List<CompilerError> compilerErrors) {
+        errorsTable.loadErrors(compilerErrors);
     }
 }

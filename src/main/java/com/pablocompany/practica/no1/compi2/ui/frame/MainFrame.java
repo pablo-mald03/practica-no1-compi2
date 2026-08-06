@@ -5,17 +5,19 @@
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
+import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
 import com.pablocompany.practica.no1.compi2.ui.components.toast.ToastNotification;
 import java.awt.BorderLayout;
+import java.util.List;
 
 /**
  *
  * @author pablo03
  */
-public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
+public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
     private CodeEditorPanel editor;
 
@@ -32,7 +34,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
 
     private void initializeCustomComponents() {
 
-        editor = new CodeEditorPanel();
+        editor = new CodeEditorPanel(this);
 
         side = new SidePanel();
 
@@ -50,11 +52,10 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
         extraPanel.add(side, BorderLayout.CENTER);
         bottomPanel.add(bottom, BorderLayout.CENTER);
     }
-    
+
     // ==========================================
     // WORKSPACENOTIFIER OBSERVER PATTERN IMPLEMENTATION
     // ==========================================
-    
     @Override
     public void logInfo(String message) {
         bottom.getConsole().appendInfo(message);
@@ -89,6 +90,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
     public void clearLogs() {
         bottom.getConsole().clear();
         bottom.getErrors().clear();
+    }
+
+    @Override
+    public void notifyErrorsUpdated(List<CompilerError> compilerErrors) {
+        bottom.setCompilerErrors(compilerErrors);
     }
 
     /**
@@ -350,7 +356,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier{
         focusConsole();
         logInfo("Iniciando proceso de compilación...");
 
-        boolean success = editor.compile(this); 
+        boolean success = editor.compile(this);
 
         if (success) {
             alertToast("Compilación exitosa", false);

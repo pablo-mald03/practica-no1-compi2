@@ -24,13 +24,18 @@ public class CodeEditorPanel extends JPanel {
 
     private final EditorStatusBar statusBar;
 
-    public CodeEditorPanel() {
+    /*Reference to the parent*/
+    private WorkspaceNotifier notifierReference;
+
+    public CodeEditorPanel(WorkspaceNotifier notifierReference) {
 
         setLayout(new BorderLayout());
 
         setBackground(Theme.SIDEBAR_LIGHT.getColorSet());
 
-        editor = new CodeTextPane();
+        this.notifierReference = notifierReference;
+
+        editor = new CodeTextPane(this.notifierReference);
 
         editor.setBackground(Theme.BACKGROUND_DARK.getColorSet());
         editor.setForeground(Theme.FOREGROUND_DARK.getColorSet());
@@ -91,6 +96,7 @@ public class CodeEditorPanel extends JPanel {
 
     }
 
+    /*This method returns the code from the editor*/
     public String getCode() {
 
         return editor.getText();
@@ -111,7 +117,7 @@ public class CodeEditorPanel extends JPanel {
 
     //This method is the principal to compile the code
     public boolean compile(WorkspaceNotifier notifier) {
-        
+
         //TODO: HARCODED
         try {
             String code = getCode();
@@ -120,7 +126,7 @@ public class CodeEditorPanel extends JPanel {
 
             notifier.logInfo("Parser: Construyendo AST...");
 
-            boolean hasErrors = true; 
+            boolean hasErrors = true;
 
             if (hasErrors) {
                 notifier.logError("Error de sintaxis en la línea 12.");
