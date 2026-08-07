@@ -4,17 +4,13 @@
  */
 package com.pablocompany.practica.no1.compi2.domain.context;
 
-import com.ibm.icu.text.SymbolTable;
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
+import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Environment;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -43,6 +39,8 @@ public class EditorContext {
 
     //Pointer to the current enviroment in runtime
     private Environment currentEnvironment;
+
+    private List<ParseStep> stackSteps = new ArrayList<>();
 
     //This method add an new error to the list
     public void addLexicalError(String lexeme, int line, int column) {

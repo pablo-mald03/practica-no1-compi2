@@ -55,5 +55,7 @@ public class StackBottomPanel extends JPanel {
     public ConsolePanel getStackLogConsole() {
         return stackLogConsole;
     }
+    
+    
 
 }

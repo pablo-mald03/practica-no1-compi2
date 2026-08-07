@@ -93,10 +93,9 @@ public class SidePanel extends JPanel {
     //Method to focus de stack view
     public void focusParseStack() {
         tabs.setSelectedComponent(parseStackPanel);
+        parseStackPanel.showGraphicStack();
     }
     
-    
-
     //Method to return the piglatin panel
     public PigLatinPanel getPigLatinPanel() {
         return pigLatinPanel;
