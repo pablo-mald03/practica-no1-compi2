@@ -37,7 +37,7 @@ public class ConsolePanel extends JPanel {
 
         console = new JTextPane();
         console.setEditable(false);
-        console.setFont(new Font("Consolas", Font.PLAIN, 13));
+        console.setFont(new Font("Liberation Mono", Font.PLAIN, 13));
         
         Color bgDark = Theme.BACKGROUND_DARK.getColorSet();
         console.setBackground(bgDark);

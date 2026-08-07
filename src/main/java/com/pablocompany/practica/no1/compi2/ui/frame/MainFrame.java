@@ -100,6 +100,15 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }
 
     @Override
+    public void focusPigLatin() {
+        side.focusPigLatin();
+    }
+    @Override
+    public void focusAstVisualizer(){
+        side.focusAst();
+    }
+
+    @Override
     public void clearLogs() {
         bottom.getConsole().clear();
         bottom.getErrors().clear();
@@ -187,7 +196,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         headerPanel.add(separatorPanel1, gridBagConstraints);
 
         terminalButton.setBackground(new java.awt.Color(0, 102, 102));
-        terminalButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        terminalButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
         terminalButton.setForeground(new java.awt.Color(255, 255, 255));
         terminalButton.setText("Abrir Terminal");
         terminalButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
@@ -206,7 +215,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         headerPanel.add(terminalButton, gridBagConstraints);
 
         runButton.setBackground(new java.awt.Color(0, 102, 51));
-        runButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        runButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
         runButton.setForeground(new java.awt.Color(255, 255, 255));
         runButton.setText("Compilar");
         runButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
@@ -225,7 +234,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         headerPanel.add(runButton, gridBagConstraints);
 
         runButton1.setBackground(new java.awt.Color(204, 102, 0));
-        runButton1.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        runButton1.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
         runButton1.setForeground(new java.awt.Color(255, 255, 255));
         runButton1.setText("Paso a Paso");
         runButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
@@ -334,15 +343,19 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
         fileMenuOption.setBackground(new java.awt.Color(175, 123, 128));
         fileMenuOption.setText("Archivo");
+        fileMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
+        fileMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         fileMenu1.setText("Abrir Archivo");
         fileMenu1.addActionListener(this::fileMenu1ActionPerformed);
         fileMenuOption.add(fileMenu1);
 
+        fileMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         fileMenu2.setText("Guardar Archivo");
         fileMenu2.addActionListener(this::fileMenu2ActionPerformed);
         fileMenuOption.add(fileMenu2);
 
+        fileMenu3.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         fileMenu3.setText("Descargar Codigo");
         fileMenu3.addActionListener(this::fileMenu3ActionPerformed);
         fileMenuOption.add(fileMenu3);
@@ -351,24 +364,34 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
         toolsMenuOption.setBackground(new java.awt.Color(175, 123, 128));
         toolsMenuOption.setText("Herramientas");
+        toolsMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
+        toolsMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         toolsMenu1.setText("Pila de procesos");
         toolsMenuOption.add(toolsMenu1);
 
+        toolsMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         toolsMenu2.setText("Traduccion a PigLatin");
+        toolsMenu2.addActionListener(this::toolsMenu2ActionPerformed);
         toolsMenuOption.add(toolsMenu2);
 
+        toolsMenu3.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         toolsMenu3.setText("Grafica del AST");
+        toolsMenu3.addActionListener(this::toolsMenu3ActionPerformed);
         toolsMenuOption.add(toolsMenu3);
 
         jMenuBar1.add(toolsMenuOption);
 
         reportMenuOption.setBackground(new java.awt.Color(175, 123, 128));
         reportMenuOption.setText("Reportes");
+        reportMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
+        reportMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         reportMenu1.setText("Tabla de Simbolos");
+        reportMenu1.addActionListener(this::reportMenu1ActionPerformed);
         reportMenuOption.add(reportMenu1);
 
+        reportMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         reportMenu2.setText("Reporte de errores");
         reportMenu2.addActionListener(this::reportMenu2ActionPerformed);
         reportMenuOption.add(reportMenu2);
@@ -426,6 +449,18 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     private void reportMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu2ActionPerformed
         focusErrors();
     }//GEN-LAST:event_reportMenu2ActionPerformed
+
+    private void reportMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu1ActionPerformed
+        focusSymbolsTable();
+    }//GEN-LAST:event_reportMenu1ActionPerformed
+
+    private void toolsMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu2ActionPerformed
+        focusPigLatin();
+    }//GEN-LAST:event_toolsMenu2ActionPerformed
+
+    private void toolsMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu3ActionPerformed
+        focusAstVisualizer();
+    }//GEN-LAST:event_toolsMenu3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

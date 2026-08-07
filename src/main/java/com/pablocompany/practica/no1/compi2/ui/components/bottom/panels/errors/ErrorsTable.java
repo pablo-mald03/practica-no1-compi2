@@ -52,7 +52,7 @@ public class ErrorsTable extends JTable {
         setForeground(Theme.FOREGROUND_DARK.getColorSet());
         setSelectionBackground(Theme.SURFACE_DARK.getColorSet());
         setSelectionForeground(Color.WHITE);
-        setFont(new Font("Consolas", Font.PLAIN, 13));
+        setFont(new Font("Liberation Mono", Font.PLAIN, 13));
         setRowHeight(30);
 
         setIntercellSpacing(new Dimension(1, 0));
@@ -68,7 +68,7 @@ public class ErrorsTable extends JTable {
         JTableHeader header = getTableHeader();
         header.setBackground(Theme.BACKGROUND_DARK.getColorSet());
         header.setForeground(Theme.FOREGROUND_DARK.getColorSet());
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        header.setFont(new Font("Liberation Mono", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_DARK.getColorSet()));
         header.setPreferredSize(new Dimension(header.getWidth(), 35));
 

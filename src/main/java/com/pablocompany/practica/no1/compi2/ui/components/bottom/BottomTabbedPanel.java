@@ -1,10 +1,10 @@
 package com.pablocompany.practica.no1.compi2.ui.components.bottom;
 
-import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console.ConsolePanel;
-import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors.ErrorsPanel;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
+import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console.ConsolePanel;
+import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors.ErrorsPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols.SymbolTablePanel;
 import java.awt.BorderLayout;
 import java.util.List;
@@ -47,21 +47,21 @@ public class BottomTabbedPanel extends JPanel {
         add(tabs, BorderLayout.CENTER);
     }
 
-    /**
+    /*
      * Focus to the Symbols Table panel
      */
     public void showSymbolsTable() {
         tabs.setSelectedComponent(symbolTablePanel);
     }
 
-    /**
+    /*
      * Focus to the Console panel
      */
     public void showConsole() {
         tabs.setSelectedComponent(console);
     }
 
-    /**
+    /*
      * Focus to the Error panel
      */
     public void showErrors() {
