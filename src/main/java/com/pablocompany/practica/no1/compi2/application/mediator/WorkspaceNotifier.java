@@ -41,6 +41,8 @@ public interface WorkspaceNotifier {
     
     void focusAstVisualizer();
     
+    void focusStackVisualizer();
+    
     /*SECTION OF CLEAR METHODS OR RESET DATA*/
 
     void clearLogs();

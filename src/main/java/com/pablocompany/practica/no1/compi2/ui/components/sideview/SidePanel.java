@@ -1,9 +1,9 @@
 package com.pablocompany.practica.no1.compi2.ui.components.sideview;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
-import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols.SymbolTablePanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.astviewer.AstVisualizerPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.piglatin.PigLatinPanel;
+import com.pablocompany.practica.no1.compi2.ui.components.sideview.stack.ParseStackPanel;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -18,7 +18,7 @@ public class SidePanel extends JPanel {
     private final JTabbedPane tabs;
     private final PigLatinPanel pigLatinPanel;
     private final AstVisualizerPanel astVisualizerPanel;
-    private final SymbolTablePanel symbolTablePanel;
+    private final ParseStackPanel parseStackPanel;
 
     public SidePanel() {
         setLayout(new BorderLayout());
@@ -32,14 +32,14 @@ public class SidePanel extends JPanel {
 
         pigLatinPanel = new PigLatinPanel();
         astVisualizerPanel = new AstVisualizerPanel();
-        symbolTablePanel = new SymbolTablePanel();
+        parseStackPanel = new ParseStackPanel();
 
         tabs.setForeground(Theme.FOREGROUND_DARK.getColorSet());
         tabs.setBackground(Theme.SIDEBAR_DARKT.getColorSet());
 
         tabs.addTab("PigLatin", pigLatinPanel);
         tabs.addTab("AST Generado", astVisualizerPanel);
-        tabs.addTab("Pila de Procesos", symbolTablePanel);
+        tabs.addTab("Pila de Procesos", parseStackPanel);
 
         add(tabs, BorderLayout.CENTER);
     }
@@ -56,7 +56,8 @@ public class SidePanel extends JPanel {
      */
     public void focusAst() {
         tabs.setSelectedComponent(astVisualizerPanel);
-        
+
+        //TODO: HARDCODED DATA
         String graphviz = """
                           digraph AST {
                               node [shape=box, fontname="DejaVu Sans Mono", fillcolor="#2d2d2d", fontcolor="#ffffff", style="filled", margin="0.2,0.1"];
@@ -85,9 +86,16 @@ public class SidePanel extends JPanel {
                               var3 [label="Variable: x"];
                           }
                           """;
-        
+
         renderAstTree(graphviz);
     }
+    
+    //Method to focus de stack view
+    public void focusParseStack() {
+        tabs.setSelectedComponent(parseStackPanel);
+    }
+    
+    
 
     //Method to return the piglatin panel
     public PigLatinPanel getPigLatinPanel() {

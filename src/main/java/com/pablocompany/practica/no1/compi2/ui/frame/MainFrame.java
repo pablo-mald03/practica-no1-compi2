@@ -103,9 +103,15 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     public void focusPigLatin() {
         side.focusPigLatin();
     }
+
     @Override
-    public void focusAstVisualizer(){
+    public void focusAstVisualizer() {
         side.focusAst();
+    }
+
+    @Override
+    public void focusStackVisualizer() {
+        side.focusParseStack();
     }
 
     @Override
@@ -139,7 +145,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         separatorPanel1 = new javax.swing.JPanel();
         terminalButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
-        runButton1 = new javax.swing.JButton();
+        stebByButton = new javax.swing.JButton();
         mainContainer = new javax.swing.JPanel();
         verticalSplit = new javax.swing.JSplitPane();
         topPanel = new javax.swing.JPanel();
@@ -233,16 +239,16 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         headerPanel.add(runButton, gridBagConstraints);
 
-        runButton1.setBackground(new java.awt.Color(204, 102, 0));
-        runButton1.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
-        runButton1.setForeground(new java.awt.Color(255, 255, 255));
-        runButton1.setText("Paso a Paso");
-        runButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
-        runButton1.setFocusPainted(false);
-        runButton1.setMaximumSize(new java.awt.Dimension(100, 30));
-        runButton1.setMinimumSize(new java.awt.Dimension(100, 30));
-        runButton1.setPreferredSize(new java.awt.Dimension(100, 30));
-        runButton1.addActionListener(this::runButton1ActionPerformed);
+        stebByButton.setBackground(new java.awt.Color(204, 102, 0));
+        stebByButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
+        stebByButton.setForeground(new java.awt.Color(255, 255, 255));
+        stebByButton.setText("Paso a Paso");
+        stebByButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
+        stebByButton.setFocusPainted(false);
+        stebByButton.setMaximumSize(new java.awt.Dimension(100, 30));
+        stebByButton.setMinimumSize(new java.awt.Dimension(100, 30));
+        stebByButton.setPreferredSize(new java.awt.Dimension(100, 30));
+        stebByButton.addActionListener(this::stebByButtonActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
@@ -250,7 +256,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         gridBagConstraints.ipady = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
-        headerPanel.add(runButton1, gridBagConstraints);
+        headerPanel.add(stebByButton, gridBagConstraints);
 
         mainPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
 
@@ -368,6 +374,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
         toolsMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
         toolsMenu1.setText("Pila de procesos");
+        toolsMenu1.addActionListener(this::toolsMenu1ActionPerformed);
         toolsMenuOption.add(toolsMenu1);
 
         toolsMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
@@ -404,7 +411,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }// </editor-fold>//GEN-END:initComponents
 
     private void terminalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminalButtonActionPerformed
-        // TODO add your handling code here:
+        focusConsole();
     }//GEN-LAST:event_terminalButtonActionPerformed
 
     //This method uses the toast to notify and compile the code
@@ -441,9 +448,9 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         fileController.handleExport(this, editor.getEditor().getEditorContext());
     }//GEN-LAST:event_fileMenu3ActionPerformed
 
-    private void runButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_runButton1ActionPerformed
+    private void stebByButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stebByButtonActionPerformed
+        // TODO Add the step by step logic
+    }//GEN-LAST:event_stebByButtonActionPerformed
 
     //This method redirect to the errors
     private void reportMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu2ActionPerformed
@@ -461,6 +468,10 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     private void toolsMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu3ActionPerformed
         focusAstVisualizer();
     }//GEN-LAST:event_toolsMenu3ActionPerformed
+
+    private void toolsMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu1ActionPerformed
+        focusStackVisualizer();
+    }//GEN-LAST:event_toolsMenu1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -480,8 +491,8 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     private javax.swing.JMenuItem reportMenu2;
     private javax.swing.JMenu reportMenuOption;
     private javax.swing.JButton runButton;
-    private javax.swing.JButton runButton1;
     private javax.swing.JPanel separatorPanel1;
+    private javax.swing.JButton stebByButton;
     private javax.swing.JButton terminalButton;
     private javax.swing.JMenuItem toolsMenu1;
     private javax.swing.JMenuItem toolsMenu2;
