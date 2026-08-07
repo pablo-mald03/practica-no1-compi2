@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 //This class is the bottom bar with de buttons tu manage the stack
 public class StackControlsPanel extends JPanel {
 
+    private final JButton btnReset;
     private final JButton btnBack;
     private final JButton btnNext;
     private final JButton btnFinish;
@@ -22,10 +23,12 @@ public class StackControlsPanel extends JPanel {
         setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
         setBackground(Theme.BACKGROUND_DARK.getColorSet());
 
+        btnReset = createStyledButton("Reiniciar", 2);
         btnBack = createStyledButton("Atrás", 1);
         btnNext = createStyledButton("Siguiente", 1);
         btnFinish = createStyledButton("Terminar", 2);
 
+        add(btnReset);
         add(btnBack);
         add(btnNext);
         add(btnFinish);
@@ -42,6 +45,10 @@ public class StackControlsPanel extends JPanel {
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         return btn;
+    }
+
+    public JButton getBtnReset() {
+        return btnReset;
     }
 
     public JButton getBtnBack() {

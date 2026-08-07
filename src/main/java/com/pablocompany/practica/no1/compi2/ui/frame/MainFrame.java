@@ -36,7 +36,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         initializeCustomComponents();
         attachComponents();
 
-        this.fileController = new ProjectFileController();
+        this.fileController = new ProjectFileController();   
 
     }
 

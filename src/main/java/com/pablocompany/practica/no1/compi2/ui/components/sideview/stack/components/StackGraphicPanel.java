@@ -72,6 +72,17 @@ public class StackGraphicPanel extends JPanel {
         });
     }
 
+    /**
+     * This method returns to the initial production
+     */
+    public void resetSteps() {
+        if (!allSteps.isEmpty()) {
+            currentVisibleIndex = 0;
+            revalidate();
+            repaint();
+        }
+    }
+
     /*
      * This method loads the parsing steps (setter)
      */
@@ -210,7 +221,7 @@ public class StackGraphicPanel extends JPanel {
         int x = startX + ((endX - startX) - width) / 2;
         g2d.drawString(text, x, y);
     }
-    
+
     /*Getters and setters for principal data*/
     public ParseStep getCurrentStep() {
         if (allSteps.isEmpty() || currentVisibleIndex < 0 || currentVisibleIndex >= allSteps.size()) {
@@ -225,5 +236,9 @@ public class StackGraphicPanel extends JPanel {
 
     public int getTotalSteps() {
         return allSteps.size();
+    }
+
+    public List<ParseStep> getAllSteps() {
+        return allSteps;
     }
 }
