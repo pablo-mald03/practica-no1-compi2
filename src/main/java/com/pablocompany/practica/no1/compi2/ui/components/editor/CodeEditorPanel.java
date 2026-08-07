@@ -8,8 +8,6 @@ import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
 /**
  *
  * @author pablo03
@@ -90,10 +88,8 @@ public class CodeEditorPanel extends JPanel {
 
     }
 
-    public JTextPane getEditor() {
-
+    public CodeTextPane getEditor() {
         return editor;
-
     }
 
     /*This method returns the code from the editor*/

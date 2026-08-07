@@ -37,6 +37,7 @@ public class EditorContext {
 
     private SymbolTable symbolTable;
     
+    private String compiledCode;
     
     //This method add an new error to the list
     public void addLexicalError(String lexeme, int line, int column){

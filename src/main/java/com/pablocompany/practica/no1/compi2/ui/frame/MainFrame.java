@@ -5,6 +5,7 @@
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
+import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
@@ -17,6 +18,7 @@ import java.util.List;
  *
  * @author pablo03
  */
+//This clas is the main frame from de UI
 public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
     private CodeEditorPanel editor;
@@ -25,10 +27,15 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
     private BottomTabbedPanel bottom;
 
+    //Controller for the file services
+    private final ProjectFileController fileController;
+
     public MainFrame() {
         initComponents();
         initializeCustomComponents();
         attachComponents();
+
+        this.fileController = new ProjectFileController();
 
     }
 
@@ -112,6 +119,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         separatorPanel1 = new javax.swing.JPanel();
         terminalButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
+        runButton1 = new javax.swing.JButton();
         mainContainer = new javax.swing.JPanel();
         verticalSplit = new javax.swing.JSplitPane();
         topPanel = new javax.swing.JPanel();
@@ -120,17 +128,17 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         extraPanel = new javax.swing.JPanel();
         bottomPanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        FileMenuOption = new javax.swing.JMenu();
-        FileMenu1 = new javax.swing.JMenu();
-        FileMenu2 = new javax.swing.JMenu();
-        FileMenu3 = new javax.swing.JMenu();
-        ToolsMenuOption = new javax.swing.JMenu();
-        ToolsMenu1 = new javax.swing.JMenu();
-        ToolsMenu2 = new javax.swing.JMenu();
-        ToolsMenu3 = new javax.swing.JMenu();
-        ReportMenuOption = new javax.swing.JMenu();
-        ReportMenu1 = new javax.swing.JMenu();
-        ReportMenu2 = new javax.swing.JMenu();
+        fileMenuOption = new javax.swing.JMenu();
+        fileMenu1 = new javax.swing.JMenuItem();
+        fileMenu2 = new javax.swing.JMenuItem();
+        fileMenu3 = new javax.swing.JMenuItem();
+        toolsMenuOption = new javax.swing.JMenu();
+        toolsMenu1 = new javax.swing.JMenuItem();
+        toolsMenu2 = new javax.swing.JMenuItem();
+        toolsMenu3 = new javax.swing.JMenuItem();
+        reportMenuOption = new javax.swing.JMenu();
+        reportMenu1 = new javax.swing.JMenuItem();
+        reportMenu2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Codex Compiler");
@@ -164,7 +172,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 750, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 700, 0, 0);
         headerPanel.add(separatorPanel1, gridBagConstraints);
 
         terminalButton.setBackground(new java.awt.Color(0, 102, 102));
@@ -204,6 +212,25 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         headerPanel.add(runButton, gridBagConstraints);
+
+        runButton1.setBackground(new java.awt.Color(204, 102, 0));
+        runButton1.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        runButton1.setForeground(new java.awt.Color(255, 255, 255));
+        runButton1.setText("Paso a Paso");
+        runButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
+        runButton1.setFocusPainted(false);
+        runButton1.setMaximumSize(new java.awt.Dimension(100, 30));
+        runButton1.setMinimumSize(new java.awt.Dimension(100, 30));
+        runButton1.setPreferredSize(new java.awt.Dimension(100, 30));
+        runButton1.addActionListener(this::runButton1ActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.ipadx = 2;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        headerPanel.add(runButton1, gridBagConstraints);
 
         mainPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
 
@@ -251,7 +278,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         extraPanel.setLayout(extraPanelLayout);
         extraPanelLayout.setHorizontalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 410, Short.MAX_VALUE)
+            .addGap(0, 502, Short.MAX_VALUE)
         );
         extraPanelLayout.setVerticalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,7 +299,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         bottomPanel.setLayout(bottomPanelLayout);
         bottomPanelLayout.setHorizontalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1314, Short.MAX_VALUE)
+            .addGap(0, 1406, Short.MAX_VALUE)
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,52 +321,47 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         jMenuBar1.setMinimumSize(new java.awt.Dimension(229, 35));
         jMenuBar1.setPreferredSize(new java.awt.Dimension(229, 35));
 
-        FileMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        FileMenuOption.setText("Archivo");
+        fileMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        fileMenuOption.setText("Archivo");
 
-        FileMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu1.setText("Abrir Archivo");
-        FileMenuOption.add(FileMenu1);
+        fileMenu1.setText("Abrir Archivo");
+        fileMenu1.addActionListener(this::fileMenu1ActionPerformed);
+        fileMenuOption.add(fileMenu1);
 
-        FileMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu2.setText("Guardar Archivo");
-        FileMenuOption.add(FileMenu2);
+        fileMenu2.setText("Guardar Archivo");
+        fileMenu2.addActionListener(this::fileMenu2ActionPerformed);
+        fileMenuOption.add(fileMenu2);
 
-        FileMenu3.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu3.setText("Descargar Archivo");
-        FileMenuOption.add(FileMenu3);
+        fileMenu3.setText("Descargar Codigo");
+        fileMenu3.addActionListener(this::fileMenu3ActionPerformed);
+        fileMenuOption.add(fileMenu3);
 
-        jMenuBar1.add(FileMenuOption);
+        jMenuBar1.add(fileMenuOption);
 
-        ToolsMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        ToolsMenuOption.setText("Herramientas");
+        toolsMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        toolsMenuOption.setText("Herramientas");
 
-        ToolsMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu1.setText("Pila de procesos");
-        ToolsMenuOption.add(ToolsMenu1);
+        toolsMenu1.setText("Pila de procesos");
+        toolsMenuOption.add(toolsMenu1);
 
-        ToolsMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu2.setText("Grafica del AST");
-        ToolsMenuOption.add(ToolsMenu2);
+        toolsMenu2.setText("Traduccion a PigLatin");
+        toolsMenuOption.add(toolsMenu2);
 
-        ToolsMenu3.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu3.setText("Traduccion a PigLatin");
-        ToolsMenuOption.add(ToolsMenu3);
+        toolsMenu3.setText("Grafica del AST");
+        toolsMenuOption.add(toolsMenu3);
 
-        jMenuBar1.add(ToolsMenuOption);
+        jMenuBar1.add(toolsMenuOption);
 
-        ReportMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        ReportMenuOption.setText("Reportes");
+        reportMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        reportMenuOption.setText("Reportes");
 
-        ReportMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        ReportMenu1.setText("Tabla de simbolos");
-        ReportMenuOption.add(ReportMenu1);
+        reportMenu1.setText("Tabla de Simbolos");
+        reportMenuOption.add(reportMenu1);
 
-        ReportMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        ReportMenu2.setText("Reporte de errores");
-        ReportMenuOption.add(ReportMenu2);
+        reportMenu2.setText("Reporte de errores");
+        reportMenuOption.add(reportMenu2);
 
-        jMenuBar1.add(ReportMenuOption);
+        jMenuBar1.add(reportMenuOption);
 
         setJMenuBar(jMenuBar1);
 
@@ -366,30 +388,53 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
+    //Method to open a file
+    private void fileMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu1ActionPerformed
+        fileController.handleOpen(this, editor.getEditor().getEditorContext(), () -> {
+            editor.getEditor().setText(editor.getEditor().getEditorContext().getSourceCode());
+        });
+    }//GEN-LAST:event_fileMenu1ActionPerformed
+
+    //Method to save a file
+    private void fileMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu2ActionPerformed
+        editor.getEditor().getEditorContext().setSourceCode(editor.getEditor().getText());
+        fileController.handleSave(this, editor.getEditor().getEditorContext());
+    }//GEN-LAST:event_fileMenu2ActionPerformed
+
+    //Method to save the compiled code
+    private void fileMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu3ActionPerformed
+        fileController.handleExport(this, editor.getEditor().getEditorContext());
+    }//GEN-LAST:event_fileMenu3ActionPerformed
+
+    private void runButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_runButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu FileMenu1;
-    private javax.swing.JMenu FileMenu2;
-    private javax.swing.JMenu FileMenu3;
-    private javax.swing.JMenu FileMenuOption;
-    private javax.swing.JMenu ReportMenu1;
-    private javax.swing.JMenu ReportMenu2;
-    private javax.swing.JMenu ReportMenuOption;
-    private javax.swing.JMenu ToolsMenu1;
-    private javax.swing.JMenu ToolsMenu2;
-    private javax.swing.JMenu ToolsMenu3;
-    private javax.swing.JMenu ToolsMenuOption;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JPanel editorPanel;
     private javax.swing.JPanel extraPanel;
+    private javax.swing.JMenuItem fileMenu1;
+    private javax.swing.JMenuItem fileMenu2;
+    private javax.swing.JMenuItem fileMenu3;
+    private javax.swing.JMenu fileMenuOption;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JSplitPane horizontalSplit;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel mainContainer;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem reportMenu1;
+    private javax.swing.JMenuItem reportMenu2;
+    private javax.swing.JMenu reportMenuOption;
     private javax.swing.JButton runButton;
+    private javax.swing.JButton runButton1;
     private javax.swing.JPanel separatorPanel1;
     private javax.swing.JButton terminalButton;
+    private javax.swing.JMenuItem toolsMenu1;
+    private javax.swing.JMenuItem toolsMenu2;
+    private javax.swing.JMenuItem toolsMenu3;
+    private javax.swing.JMenu toolsMenuOption;
     private javax.swing.JPanel topPanel;
     private javax.swing.JSplitPane verticalSplit;
     // End of variables declaration//GEN-END:variables

@@ -179,6 +179,11 @@ public class CodeTextPane extends JTextPane {
         this.syntaxListener = listener;
 
     }
+    
+    //This method returns the reference to codetext
+    public EditorContext getEditorContext(){
+        return this.context;
+    }
 
     // Auxiliar methog to convert the color to attributeSet
     private AttributeSet createColorAttribute(Color color) {
