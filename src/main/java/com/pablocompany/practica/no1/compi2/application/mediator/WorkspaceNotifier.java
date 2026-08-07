@@ -1,6 +1,7 @@
 package com.pablocompany.practica.no1.compi2.application.mediator;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ public interface WorkspaceNotifier {
     /*SECTION OF SIGNALS*/
 
     void notifyErrorsUpdated(List<CompilerError> compilerErrors);
+    void notifySymbolUpdated(List<Symbol> symbols);
     
     
     /*SECTION OF LOGS*/
@@ -32,6 +34,8 @@ public interface WorkspaceNotifier {
     void focusConsole();
 
     void focusErrors();
+    
+    void focusSymbolsTable();
     
     /*SECTION OF CLEAR METHODS OR RESET DATA*/
 

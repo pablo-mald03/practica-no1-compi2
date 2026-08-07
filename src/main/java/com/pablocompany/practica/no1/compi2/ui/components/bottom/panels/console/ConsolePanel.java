@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.ui.components.bottom;
+package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.BorderLayout;

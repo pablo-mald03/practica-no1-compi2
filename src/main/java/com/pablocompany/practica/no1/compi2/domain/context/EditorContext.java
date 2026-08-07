@@ -7,9 +7,12 @@ package com.pablocompany.practica.no1.compi2.domain.context;
 import com.ibm.icu.text.SymbolTable;
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Environment;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import lombok.Builder;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.Token;
@@ -20,7 +23,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
  * @author pablo03
  */
 @Data
-@NoArgsConstructor
 public class EditorContext {
 
     private String sourceCode;
@@ -35,17 +37,49 @@ public class EditorContext {
 
     private Object ast;
 
-    private SymbolTable symbolTable;
-    
     private String compiledCode;
-    
+
+    private Environment globalEnvironment;
+
+    //Pointer to the current enviroment in runtime
+    private Environment currentEnvironment;
+
     //This method add an new error to the list
-    public void addLexicalError(String lexeme, int line, int column){
+    public void addLexicalError(String lexeme, int line, int column) {
         this.compilerErrors.add(new CompilerError(lexeme, line, column, ErrorType.LEXIC, "Caracter no definido en el lenguaje"));
     }
-    
+
     /*The method clears the arraylist*/
-    public void clearCompilerErrors(){
+    public void clearCompilerErrors() {
         this.compilerErrors.clear();
+    }
+
+    public EditorContext() {
+        // Inicializamos el global
+
+        this.tokens = new ArrayList<>();
+
+        this.compilerErrors = new ArrayList<>();
+
+        this.hiddenTokens = new ArrayList<>();
+        this.globalEnvironment = new Environment("Global");
+        this.currentEnvironment = this.globalEnvironment;
+    }
+
+    //This method create a new scope into the global enviroment
+    public void enterScope(String scopeName) {
+        currentEnvironment = new Environment(currentEnvironment, scopeName);
+    }
+
+    //This method closes the pointer to the current enviroment and returns up to the principal scope
+    public void exitScope() {
+        if (currentEnvironment.getParent() != null) {
+            currentEnvironment = currentEnvironment.getParent();
+        }
+    }
+
+    //This method returns the globalEnviromnment
+    public Environment getGlobalEnvironment() {
+        return globalEnvironment;
     }
 }

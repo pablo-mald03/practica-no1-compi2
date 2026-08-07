@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.pablocompany.practica.no1.compi2.ui.components.bottom.errors;
+package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols;
 
-import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.themes.PrincipalColors;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.Color;
 import java.awt.Component;
@@ -23,13 +22,13 @@ import javax.swing.table.JTableHeader;
  *
  * @author pablo03
  */
-//This class is the principal Table to sho the errors 
-public class ErrorsTable extends JTable {
+//This table is a component that represents a Symboltable
+public class SemanticTable extends JTable {
 
     private final DefaultTableModel tableModel;
 
-    public ErrorsTable() {
-        String[] columnNames = {"Lexema", "Línea", "Columna", "Tipo", "Descripción"};
+    public SemanticTable() {
+        String[] columnNames = {"ID", "Tipo de Símbolo", "Tipo de Dato", "Ámbito", "Línea", "Columna"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -39,14 +38,12 @@ public class ErrorsTable extends JTable {
         setModel(tableModel);
 
         setupDesign();
-
         setupHeader();
-
         setupRenderer();
-
         setupColumnWidths();
     }
 
+    //This method setup the principal design
     private void setupDesign() {
         setBackground(Theme.SIDEBAR_DARKT.getColorSet());
         setForeground(Theme.FOREGROUND_DARK.getColorSet());
@@ -62,8 +59,8 @@ public class ErrorsTable extends JTable {
         setShowHorizontalLines(true);
         setGridColor(Theme.BORDER_DARK.getColorSet());
     }
+    //This method setup the principal header
 
-    //Method who setup the header table
     private void setupHeader() {
         JTableHeader header = getTableHeader();
         header.setBackground(Theme.BACKGROUND_DARK.getColorSet());
@@ -77,7 +74,7 @@ public class ErrorsTable extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = headerRenderer.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
-                if (column == 1 || column == 2 || column == 3) {
+                if (column > 0) {
                     setHorizontalAlignment(SwingConstants.CENTER);
                 } else {
                     setHorizontalAlignment(SwingConstants.LEFT);
@@ -87,14 +84,13 @@ public class ErrorsTable extends JTable {
         });
     }
 
-    //Render the columns
     private void setupRenderer() {
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
 
-                if (column == 1 || column == 2 || column == 3) {
+                if (column > 0) {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
                 } else {
@@ -105,17 +101,20 @@ public class ErrorsTable extends JTable {
                 if (!isSelected) {
                     switch (column) {
                         case 0:
-                            c.setForeground(PrincipalColors.COLOR_LEXEME_TABLE.getColorSet());
+                            c.setForeground(new Color(86, 182, 194));
                             break;
                         case 1:
+                            c.setForeground(new Color(229, 192, 123));
+                            break;
                         case 2:
-                            c.setForeground(PrincipalColors.COLOR_NUMBER_TABLE.getColorSet());
+                            c.setForeground(new Color(152, 195, 121));
                             break;
                         case 3:
-                            c.setForeground(PrincipalColors.COLOR_TYPE_TABLE.getColorSet());
+                            c.setForeground(new Color(198, 120, 221));
                             break;
                         case 4:
-                            c.setForeground(PrincipalColors.COLOR_ERROR_TABLE.getColorSet());
+                        case 5:
+                            c.setForeground(new Color(171, 178, 191));
                             break;
                         default:
                             c.setForeground(Theme.FOREGROUND_DARK.getColorSet());
@@ -130,48 +129,40 @@ public class ErrorsTable extends JTable {
         }
     }
 
-    //Setup the columns width
     private void setupColumnWidths() {
-        getColumnModel().getColumn(0).setPreferredWidth(200);
-        getColumnModel().getColumn(0).setMaxWidth(200);
-
-        getColumnModel().getColumn(1).setPreferredWidth(90);
-        getColumnModel().getColumn(1).setMaxWidth(120);
-
-        getColumnModel().getColumn(2).setPreferredWidth(90);
-        getColumnModel().getColumn(2).setMaxWidth(120);
-
+        getColumnModel().getColumn(0).setPreferredWidth(180);
+        getColumnModel().getColumn(1).setPreferredWidth(140);
+        getColumnModel().getColumn(2).setPreferredWidth(120);
         getColumnModel().getColumn(3).setPreferredWidth(150);
-        getColumnModel().getColumn(3).setMaxWidth(180);
 
-        getColumnModel().getColumn(4).setPreferredWidth(250);
+        getColumnModel().getColumn(4).setPreferredWidth(100);
+        getColumnModel().getColumn(4).setMaxWidth(130);
+
+        getColumnModel().getColumn(5).setPreferredWidth(100);
+        getColumnModel().getColumn(5).setMaxWidth(130);
     }
 
-    //Method to fill the table with the errors
-    public void loadErrors(List<CompilerError> errors) {
-
-        if ((errors == null || errors.isEmpty()) && tableModel.getRowCount() == 0) {
-            return;
-        }
+    //Method to load the symbols to the table
+    public void loadSymbols(List<Symbol> symbols) {
 
         clear();
 
-        if (errors == null || errors.isEmpty()) {
+        if (symbols == null || symbols.isEmpty()) {
             return;
         }
 
-        for (CompilerError error : errors) {
+        for (Symbol symbol : symbols) {
             tableModel.addRow(new Object[]{
-                error.getLexeme(),
-                error.getLine(),
-                error.getColumn(),
-                error.getErrorType().getContext(),
-                error.getDescription()
+                symbol.getId(),
+                symbol.getSymbolType(),
+                symbol.getDataType(),
+                symbol.getScope(),
+                symbol.getLine(),
+                symbol.getColumn()
             });
         }
     }
 
-    //Method to clear the table
     public void clear() {
         tableModel.setRowCount(0);
     }

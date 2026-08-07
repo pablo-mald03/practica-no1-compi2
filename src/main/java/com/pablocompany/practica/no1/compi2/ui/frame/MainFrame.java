@@ -7,6 +7,7 @@ package com.pablocompany.practica.no1.compi2.ui.frame;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
@@ -94,6 +95,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }
 
     @Override
+    public void focusSymbolsTable() {
+        bottom.showSymbolsTable();
+    }
+
+    @Override
     public void clearLogs() {
         bottom.getConsole().clear();
         bottom.getErrors().clear();
@@ -102,6 +108,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     @Override
     public void notifyErrorsUpdated(List<CompilerError> compilerErrors) {
         bottom.setCompilerErrors(compilerErrors);
+    }
+
+    @Override
+    public void notifySymbolUpdated(List<Symbol> symbols) {
+        bottom.setSymbols(symbols);
     }
 
     /**
@@ -359,6 +370,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         reportMenuOption.add(reportMenu1);
 
         reportMenu2.setText("Reporte de errores");
+        reportMenu2.addActionListener(this::reportMenu2ActionPerformed);
         reportMenuOption.add(reportMenu2);
 
         jMenuBar1.add(reportMenuOption);
@@ -409,6 +421,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     private void runButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_runButton1ActionPerformed
+
+    //This method redirect to the errors
+    private void reportMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu2ActionPerformed
+        focusErrors();
+    }//GEN-LAST:event_reportMenu2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
