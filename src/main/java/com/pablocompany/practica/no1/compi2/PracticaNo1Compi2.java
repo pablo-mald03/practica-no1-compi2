@@ -11,5 +11,12 @@ public class PracticaNo1Compi2 {
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);
+
+        int a = 1;
+        int b = 2;
+    b++;
+        a  = b;
+
+        System.out.println("value a: "  + a);
     }
 }
