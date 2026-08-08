@@ -1,6 +1,8 @@
 package com.pablocompany.practica.no1.compi2.application.mediator;
 
+import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import java.util.List;
 
 /**
@@ -14,6 +16,14 @@ public interface WorkspaceNotifier {
 
     void notifyErrorsUpdated(List<CompilerError> compilerErrors);
     
+    //Signal to change the symbols table
+    void notifySymbolUpdated(List<Symbol> symbols);
+    
+    void notifyCompiledCode(String compiledCode);
+    
+    void notifyStackView(List<ParseStep> steps);
+    
+    void notifyAstRepresentation(Object ast);
     
     /*SECTION OF LOGS*/
     void logInfo(String message);
@@ -32,6 +42,16 @@ public interface WorkspaceNotifier {
     void focusConsole();
 
     void focusErrors();
+    
+    void focusSymbolsTable();
+    
+    void focusPigLatin();
+    
+    void focusAstVisualizer();
+    
+    void focusStackVisualizer();
+    
+    void focusStackVisualizerByStep();
     
     /*SECTION OF CLEAR METHODS OR RESET DATA*/
 

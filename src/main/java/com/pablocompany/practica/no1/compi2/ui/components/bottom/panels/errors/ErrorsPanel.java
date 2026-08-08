@@ -1,8 +1,8 @@
-package com.pablocompany.practica.no1.compi2.ui.components.bottom;
+package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
-import com.pablocompany.practica.no1.compi2.ui.components.bottom.errors.ErrorsTable;
+import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors.ErrorsTable;
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.BorderFactory;

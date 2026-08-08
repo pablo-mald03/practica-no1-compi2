@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.ui.components.bottom;
+package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.BorderLayout;
@@ -22,10 +22,10 @@ public class ConsolePanel extends JPanel {
     // ==========================================
     // COLORS PALETTE
     // ==========================================
-    private static final Color COLOR_INFO    = new Color(125, 207, 255); 
-    private static final Color COLOR_SUCCESS = new Color(130, 226, 120); 
-    private static final Color COLOR_WARN    = new Color(255, 200, 85); 
-    private static final Color COLOR_ERROR   = new Color(255, 83, 112);  
+    private static final Color COLOR_INFO = new Color(125, 207, 255);
+    private static final Color COLOR_SUCCESS = new Color(130, 226, 120);
+    private static final Color COLOR_WARN = new Color(255, 200, 85);
+    private static final Color COLOR_ERROR = new Color(255, 83, 112);
     private static final Color COLOR_DEFAULT = new Color(230, 235, 245);
 
     private final JTextPane console;
@@ -34,11 +34,10 @@ public class ConsolePanel extends JPanel {
     public ConsolePanel() {
         setLayout(new BorderLayout());
 
-
         console = new JTextPane();
         console.setEditable(false);
-        console.setFont(new Font("Consolas", Font.PLAIN, 13));
-        
+        console.setFont(new Font("Liberation Mono", Font.PLAIN, 13));
+
         Color bgDark = Theme.BACKGROUND_DARK.getColorSet();
         console.setBackground(bgDark);
         console.setCaretColor(COLOR_DEFAULT);
@@ -54,7 +53,6 @@ public class ConsolePanel extends JPanel {
     // ==========================================
     // WRITE METHODS
     // ==========================================
-
     public void appendInfo(String text) {
         appendFormatted("[INFO] " + text + "\n", COLOR_INFO, false);
     }
@@ -68,7 +66,7 @@ public class ConsolePanel extends JPanel {
     }
 
     public void appendError(String text) {
-        appendFormatted("[ERROR] " + text + "\n", COLOR_ERROR, true); 
+        appendFormatted("[ERROR] " + text + "\n", COLOR_ERROR, true);
     }
 
     public void append(String text) {
@@ -85,7 +83,7 @@ public class ConsolePanel extends JPanel {
 
         try {
             doc.insertString(doc.getLength(), text, attrs);
-            console.setCaretPosition(doc.getLength()); 
+            console.setCaretPosition(doc.getLength());
         } catch (BadLocationException e) {
             System.out.println("Console error");
         }
@@ -98,4 +96,20 @@ public class ConsolePanel extends JPanel {
             System.out.println("clear error");
         }
     }
+
+    // ==========================================
+    // SPECIAL LOG METHODS TO THE STACKGRAPH
+    // ==========================================
+    public void appendReduce(String text) {
+        appendFormatted(text + "\n", COLOR_INFO, false);
+    }
+
+    public void appendShift(String text) {
+        appendFormatted(text + "\n", COLOR_SUCCESS, false);
+    }
+
+    public void appendNormal(String text) {
+        appendFormatted(text + "\n", COLOR_WARN, false);
+    }
+
 }

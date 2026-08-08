@@ -5,7 +5,10 @@
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
+import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
+import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
@@ -17,6 +20,7 @@ import java.util.List;
  *
  * @author pablo03
  */
+//This clas is the main frame from de UI
 public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
     private CodeEditorPanel editor;
@@ -25,10 +29,15 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
     private BottomTabbedPanel bottom;
 
+    //Controller for the file services
+    private final ProjectFileController fileController;
+
     public MainFrame() {
         initComponents();
         initializeCustomComponents();
         attachComponents();
+
+        this.fileController = new ProjectFileController();
 
     }
 
@@ -87,6 +96,31 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }
 
     @Override
+    public void focusSymbolsTable() {
+        bottom.showSymbolsTable();
+    }
+
+    @Override
+    public void focusPigLatin() {
+        side.focusPigLatin();
+    }
+
+    @Override
+    public void focusAstVisualizer() {
+        side.focusAst();
+    }
+
+    @Override
+    public void focusStackVisualizer() {
+        side.focusParseStack();
+    }
+
+    @Override
+    public void focusStackVisualizerByStep() {
+        side.focusParseStackByStep();
+    }
+
+    @Override
     public void clearLogs() {
         bottom.getConsole().clear();
         bottom.getErrors().clear();
@@ -95,6 +129,26 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     @Override
     public void notifyErrorsUpdated(List<CompilerError> compilerErrors) {
         bottom.setCompilerErrors(compilerErrors);
+    }
+
+    @Override
+    public void notifySymbolUpdated(List<Symbol> symbols) {
+        bottom.setSymbols(symbols);
+    }
+
+    @Override
+    public void notifyCompiledCode(String compiledCode) {
+        this.side.setPiglatinCode(compiledCode);
+    }
+
+    @Override
+    public void notifyStackView(List<ParseStep> steps) {
+        this.side.setStackView(steps);
+    }
+
+    @Override
+    public void notifyAstRepresentation(Object ast) {
+        this.side.renderAstTree(ast);
     }
 
     /**
@@ -112,6 +166,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         separatorPanel1 = new javax.swing.JPanel();
         terminalButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
+        stebByButton = new javax.swing.JButton();
         mainContainer = new javax.swing.JPanel();
         verticalSplit = new javax.swing.JSplitPane();
         topPanel = new javax.swing.JPanel();
@@ -120,17 +175,17 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         extraPanel = new javax.swing.JPanel();
         bottomPanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        FileMenuOption = new javax.swing.JMenu();
-        FileMenu1 = new javax.swing.JMenu();
-        FileMenu2 = new javax.swing.JMenu();
-        FileMenu3 = new javax.swing.JMenu();
-        ToolsMenuOption = new javax.swing.JMenu();
-        ToolsMenu1 = new javax.swing.JMenu();
-        ToolsMenu2 = new javax.swing.JMenu();
-        ToolsMenu3 = new javax.swing.JMenu();
-        ReportMenuOption = new javax.swing.JMenu();
-        ReportMenu1 = new javax.swing.JMenu();
-        ReportMenu2 = new javax.swing.JMenu();
+        fileMenuOption = new javax.swing.JMenu();
+        fileMenu1 = new javax.swing.JMenuItem();
+        fileMenu2 = new javax.swing.JMenuItem();
+        fileMenu3 = new javax.swing.JMenuItem();
+        toolsMenuOption = new javax.swing.JMenu();
+        toolsMenu1 = new javax.swing.JMenuItem();
+        toolsMenu2 = new javax.swing.JMenuItem();
+        toolsMenu3 = new javax.swing.JMenuItem();
+        reportMenuOption = new javax.swing.JMenu();
+        reportMenu1 = new javax.swing.JMenuItem();
+        reportMenu2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Codex Compiler");
@@ -164,11 +219,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 750, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 700, 0, 0);
         headerPanel.add(separatorPanel1, gridBagConstraints);
 
         terminalButton.setBackground(new java.awt.Color(0, 102, 102));
-        terminalButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        terminalButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
         terminalButton.setForeground(new java.awt.Color(255, 255, 255));
         terminalButton.setText("Abrir Terminal");
         terminalButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
@@ -187,7 +242,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         headerPanel.add(terminalButton, gridBagConstraints);
 
         runButton.setBackground(new java.awt.Color(0, 102, 51));
-        runButton.setFont(new java.awt.Font("Fira Sans", 1, 13)); // NOI18N
+        runButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
         runButton.setForeground(new java.awt.Color(255, 255, 255));
         runButton.setText("Compilar");
         runButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
@@ -204,6 +259,25 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         headerPanel.add(runButton, gridBagConstraints);
+
+        stebByButton.setBackground(new java.awt.Color(204, 102, 0));
+        stebByButton.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
+        stebByButton.setForeground(new java.awt.Color(255, 255, 255));
+        stebByButton.setText("Paso a Paso");
+        stebByButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true));
+        stebByButton.setFocusPainted(false);
+        stebByButton.setMaximumSize(new java.awt.Dimension(100, 30));
+        stebByButton.setMinimumSize(new java.awt.Dimension(100, 30));
+        stebByButton.setPreferredSize(new java.awt.Dimension(100, 30));
+        stebByButton.addActionListener(this::stebByButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.ipadx = 2;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        headerPanel.add(stebByButton, gridBagConstraints);
 
         mainPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
 
@@ -251,7 +325,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         extraPanel.setLayout(extraPanelLayout);
         extraPanelLayout.setHorizontalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 410, Short.MAX_VALUE)
+            .addGap(0, 502, Short.MAX_VALUE)
         );
         extraPanelLayout.setVerticalGroup(
             extraPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,7 +346,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         bottomPanel.setLayout(bottomPanelLayout);
         bottomPanelLayout.setHorizontalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1314, Short.MAX_VALUE)
+            .addGap(0, 1406, Short.MAX_VALUE)
         );
         bottomPanelLayout.setVerticalGroup(
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,52 +368,63 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         jMenuBar1.setMinimumSize(new java.awt.Dimension(229, 35));
         jMenuBar1.setPreferredSize(new java.awt.Dimension(229, 35));
 
-        FileMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        FileMenuOption.setText("Archivo");
+        fileMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        fileMenuOption.setText("Archivo");
+        fileMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
-        FileMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu1.setText("Abrir Archivo");
-        FileMenuOption.add(FileMenu1);
+        fileMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        fileMenu1.setText("Abrir Archivo");
+        fileMenu1.addActionListener(this::fileMenu1ActionPerformed);
+        fileMenuOption.add(fileMenu1);
 
-        FileMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu2.setText("Guardar Archivo");
-        FileMenuOption.add(FileMenu2);
+        fileMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        fileMenu2.setText("Guardar Archivo");
+        fileMenu2.addActionListener(this::fileMenu2ActionPerformed);
+        fileMenuOption.add(fileMenu2);
 
-        FileMenu3.setBackground(new java.awt.Color(218, 188, 158));
-        FileMenu3.setText("Descargar Archivo");
-        FileMenuOption.add(FileMenu3);
+        fileMenu3.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        fileMenu3.setText("Descargar Codigo");
+        fileMenu3.addActionListener(this::fileMenu3ActionPerformed);
+        fileMenuOption.add(fileMenu3);
 
-        jMenuBar1.add(FileMenuOption);
+        jMenuBar1.add(fileMenuOption);
 
-        ToolsMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        ToolsMenuOption.setText("Herramientas");
+        toolsMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        toolsMenuOption.setText("Herramientas");
+        toolsMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
-        ToolsMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu1.setText("Pila de procesos");
-        ToolsMenuOption.add(ToolsMenu1);
+        toolsMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        toolsMenu1.setText("Pila de procesos");
+        toolsMenu1.addActionListener(this::toolsMenu1ActionPerformed);
+        toolsMenuOption.add(toolsMenu1);
 
-        ToolsMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu2.setText("Grafica del AST");
-        ToolsMenuOption.add(ToolsMenu2);
+        toolsMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        toolsMenu2.setText("Traduccion a PigLatin");
+        toolsMenu2.addActionListener(this::toolsMenu2ActionPerformed);
+        toolsMenuOption.add(toolsMenu2);
 
-        ToolsMenu3.setBackground(new java.awt.Color(218, 188, 158));
-        ToolsMenu3.setText("Traduccion a PigLatin");
-        ToolsMenuOption.add(ToolsMenu3);
+        toolsMenu3.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        toolsMenu3.setText("Grafica del AST");
+        toolsMenu3.addActionListener(this::toolsMenu3ActionPerformed);
+        toolsMenuOption.add(toolsMenu3);
 
-        jMenuBar1.add(ToolsMenuOption);
+        jMenuBar1.add(toolsMenuOption);
 
-        ReportMenuOption.setBackground(new java.awt.Color(175, 123, 128));
-        ReportMenuOption.setText("Reportes");
+        reportMenuOption.setBackground(new java.awt.Color(175, 123, 128));
+        reportMenuOption.setText("Reportes");
+        reportMenuOption.setFont(new java.awt.Font("Liberation Mono", 1, 13)); // NOI18N
 
-        ReportMenu1.setBackground(new java.awt.Color(218, 188, 158));
-        ReportMenu1.setText("Tabla de simbolos");
-        ReportMenuOption.add(ReportMenu1);
+        reportMenu1.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        reportMenu1.setText("Tabla de Simbolos");
+        reportMenu1.addActionListener(this::reportMenu1ActionPerformed);
+        reportMenuOption.add(reportMenu1);
 
-        ReportMenu2.setBackground(new java.awt.Color(218, 188, 158));
-        ReportMenu2.setText("Reporte de errores");
-        ReportMenuOption.add(ReportMenu2);
+        reportMenu2.setFont(new java.awt.Font("Liberation Mono", 0, 13)); // NOI18N
+        reportMenu2.setText("Reporte de errores");
+        reportMenu2.addActionListener(this::reportMenu2ActionPerformed);
+        reportMenuOption.add(reportMenu2);
 
-        jMenuBar1.add(ReportMenuOption);
+        jMenuBar1.add(reportMenuOption);
 
         setJMenuBar(jMenuBar1);
 
@@ -347,7 +432,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }// </editor-fold>//GEN-END:initComponents
 
     private void terminalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminalButtonActionPerformed
-        // TODO add your handling code here:
+        focusConsole();
     }//GEN-LAST:event_terminalButtonActionPerformed
 
     //This method uses the toast to notify and compile the code
@@ -361,35 +446,85 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         if (success) {
             alertToast("Compilación exitosa", false);
         } else {
-            alertToast("Se encontraron errores en el código", true);
-            focusErrors();
+            alertToast("Compilacion fallida", true);
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
+    //Method to open a file
+    private void fileMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu1ActionPerformed
+        fileController.handleOpen(this, editor.getEditor().getEditorContext(), () -> {
+            editor.getEditor().setText(editor.getEditor().getEditorContext().getSourceCode());
+        });
+    }//GEN-LAST:event_fileMenu1ActionPerformed
+
+    //Method to save a file
+    private void fileMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu2ActionPerformed
+        editor.getEditor().getEditorContext().setSourceCode(editor.getEditor().getText());
+        fileController.handleSave(this, editor.getEditor().getEditorContext());
+    }//GEN-LAST:event_fileMenu2ActionPerformed
+
+    //Method to save the compiled code
+    private void fileMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenu3ActionPerformed
+        fileController.handleExport(this, editor.getEditor().getEditorContext());
+    }//GEN-LAST:event_fileMenu3ActionPerformed
+
+    private void stebByButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stebByButtonActionPerformed
+        focusStackVisualizerByStep();
+    }//GEN-LAST:event_stebByButtonActionPerformed
+
+    //This method redirect to the errors
+    private void reportMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu2ActionPerformed
+        focusErrors();
+    }//GEN-LAST:event_reportMenu2ActionPerformed
+
+    private void reportMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenu1ActionPerformed
+        focusSymbolsTable();
+    }//GEN-LAST:event_reportMenu1ActionPerformed
+
+    private void toolsMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu2ActionPerformed
+
+        String code = this.editor.getCompiledCode();
+
+        if (code.isBlank()) {
+            alertToast("No hay codigo compilado. \nPresiona el boton \"Compilar\"", true);
+        }
+
+        focusPigLatin();
+    }//GEN-LAST:event_toolsMenu2ActionPerformed
+
+    private void toolsMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu3ActionPerformed
+        focusAstVisualizer();
+    }//GEN-LAST:event_toolsMenu3ActionPerformed
+
+    private void toolsMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu1ActionPerformed
+        focusStackVisualizer();
+    }//GEN-LAST:event_toolsMenu1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu FileMenu1;
-    private javax.swing.JMenu FileMenu2;
-    private javax.swing.JMenu FileMenu3;
-    private javax.swing.JMenu FileMenuOption;
-    private javax.swing.JMenu ReportMenu1;
-    private javax.swing.JMenu ReportMenu2;
-    private javax.swing.JMenu ReportMenuOption;
-    private javax.swing.JMenu ToolsMenu1;
-    private javax.swing.JMenu ToolsMenu2;
-    private javax.swing.JMenu ToolsMenu3;
-    private javax.swing.JMenu ToolsMenuOption;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JPanel editorPanel;
     private javax.swing.JPanel extraPanel;
+    private javax.swing.JMenuItem fileMenu1;
+    private javax.swing.JMenuItem fileMenu2;
+    private javax.swing.JMenuItem fileMenu3;
+    private javax.swing.JMenu fileMenuOption;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JSplitPane horizontalSplit;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel mainContainer;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem reportMenu1;
+    private javax.swing.JMenuItem reportMenu2;
+    private javax.swing.JMenu reportMenuOption;
     private javax.swing.JButton runButton;
     private javax.swing.JPanel separatorPanel1;
+    private javax.swing.JButton stebByButton;
     private javax.swing.JButton terminalButton;
+    private javax.swing.JMenuItem toolsMenu1;
+    private javax.swing.JMenuItem toolsMenu2;
+    private javax.swing.JMenuItem toolsMenu3;
+    private javax.swing.JMenu toolsMenuOption;
     private javax.swing.JPanel topPanel;
     private javax.swing.JSplitPane verticalSplit;
     // End of variables declaration//GEN-END:variables

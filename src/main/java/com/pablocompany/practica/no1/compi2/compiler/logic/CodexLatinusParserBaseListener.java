@@ -29,61 +29,121 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclaration(CodexLatinusParser.DeclarationContext ctx) { }
+	@Override public void enterBody(CodexLatinusParser.BodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclaration(CodexLatinusParser.DeclarationContext ctx) { }
+	@Override public void exitBody(CodexLatinusParser.BodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdentifier(CodexLatinusParser.IdentifierContext ctx) { }
+	@Override public void enterVariable_section(CodexLatinusParser.Variable_sectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdentifier(CodexLatinusParser.IdentifierContext ctx) { }
+	@Override public void exitVariable_section(CodexLatinusParser.Variable_sectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumber(CodexLatinusParser.NumberContext ctx) { }
+	@Override public void enterVariabiles_body(CodexLatinusParser.Variabiles_bodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumber(CodexLatinusParser.NumberContext ctx) { }
+	@Override public void exitVariabiles_body(CodexLatinusParser.Variabiles_bodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddSub(CodexLatinusParser.AddSubContext ctx) { }
+	@Override public void enterDeclarations(CodexLatinusParser.DeclarationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddSub(CodexLatinusParser.AddSubContext ctx) { }
+	@Override public void exitDeclarations(CodexLatinusParser.DeclarationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParens(CodexLatinusParser.ParensContext ctx) { }
+	@Override public void enterMaior_section(CodexLatinusParser.Maior_sectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParens(CodexLatinusParser.ParensContext ctx) { }
+	@Override public void exitMaior_section(CodexLatinusParser.Maior_sectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMunera_section(CodexLatinusParser.Munera_sectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMunera_section(CodexLatinusParser.Munera_sectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDivide(CodexLatinusParser.DivideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDivide(CodexLatinusParser.DivideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMultiplication(CodexLatinusParser.MultiplicationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMultiplication(CodexLatinusParser.MultiplicationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReducedValue(CodexLatinusParser.ReducedValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReducedValue(CodexLatinusParser.ReducedValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParents(CodexLatinusParser.ParentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParents(CodexLatinusParser.ParentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -101,13 +161,37 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMultDiv(CodexLatinusParser.MultDivContext ctx) { }
+	@Override public void enterPlus(CodexLatinusParser.PlusContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMultDiv(CodexLatinusParser.MultDivContext ctx) { }
+	@Override public void exitPlus(CodexLatinusParser.PlusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMinus(CodexLatinusParser.MinusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMinus(CodexLatinusParser.MinusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValues(CodexLatinusParser.ValuesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValues(CodexLatinusParser.ValuesContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

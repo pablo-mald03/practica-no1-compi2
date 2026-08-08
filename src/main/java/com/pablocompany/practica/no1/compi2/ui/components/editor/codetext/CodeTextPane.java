@@ -1,12 +1,14 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor.codetext;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
-import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
+import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.TokenStyleResolver;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.Color;
+import java.util.List;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
@@ -179,6 +181,11 @@ public class CodeTextPane extends JTextPane {
         this.syntaxListener = listener;
 
     }
+    
+    //This method returns the reference to codetext
+    public EditorContext getEditorContext(){
+        return this.context;
+    }
 
     // Auxiliar methog to convert the color to attributeSet
     private AttributeSet createColorAttribute(Color color) {
@@ -186,5 +193,20 @@ public class CodeTextPane extends JTextPane {
         StyleConstants.setForeground(attr, color);
         return attr;
     }
-
+    
+    
+    //This method clean the editor context
+    public void clearCompiledCode(){
+        this.context.clearCompilatedCode();
+    }
+    
+    //This method clear stack view 
+    public void clearStackView() {
+        this.context.clearStacklists();
+    }
+    
+    //This method clear AST view 
+    public List<Symbol> getAstView() {
+        return this.context.getGlobalEnvironment().getAllSymbolsForUI();
+    }
 }
