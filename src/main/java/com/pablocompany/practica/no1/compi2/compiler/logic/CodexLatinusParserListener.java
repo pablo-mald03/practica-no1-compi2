@@ -40,17 +40,411 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code MuneraSection}
-	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
+	 * Enter a parse tree produced by the {@code FunctionsBlockList}
+	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
 	 * @param ctx the parse tree
 	 */
-	void enterMuneraSection(CodexLatinusParser.MuneraSectionContext ctx);
+	void enterFunctionsBlockList(CodexLatinusParser.FunctionsBlockListContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code MuneraSection}
+	 * Exit a parse tree produced by the {@code FunctionsBlockList}
+	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionsBlockList(CodexLatinusParser.FunctionsBlockListContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionsSingleBlock}
+	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionsSingleBlock(CodexLatinusParser.FunctionsSingleBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionsSingleBlock}
+	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionsSingleBlock(CodexLatinusParser.FunctionsSingleBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#functions_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctions_block(CodexLatinusParser.Functions_blockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#functions_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctions_block(CodexLatinusParser.Functions_blockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_declaration(CodexLatinusParser.Function_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_declaration(CodexLatinusParser.Function_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#function_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_body(CodexLatinusParser.Function_bodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#function_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_body(CodexLatinusParser.Function_bodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#procedure_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedure_declaration(CodexLatinusParser.Procedure_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#procedure_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedure_declaration(CodexLatinusParser.Procedure_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionSingleArgs}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionSingleArgs(CodexLatinusParser.FunctionSingleArgsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionSingleArgs}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionSingleArgs(CodexLatinusParser.FunctionSingleArgsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionArgsEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionArgsEmpty(CodexLatinusParser.FunctionArgsEmptyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionArgsEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionArgsEmpty(CodexLatinusParser.FunctionArgsEmptyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionArgsList}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionArgsList(CodexLatinusParser.FunctionArgsListContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionArgsList}
+	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionArgsList(CodexLatinusParser.FunctionArgsListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgument(CodexLatinusParser.ArgumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgument(CodexLatinusParser.ArgumentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MuneraCodeSection}
 	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
 	 * @param ctx the parse tree
 	 */
-	void exitMuneraSection(CodexLatinusParser.MuneraSectionContext ctx);
+	void enterMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MuneraCodeSection}
+	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
+	 * @param ctx the parse tree
+	 */
+	void exitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BlockControlList}
+	 * labeled alternative in {@link CodexLatinusParser#code_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockControlList(CodexLatinusParser.BlockControlListContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BlockControlList}
+	 * labeled alternative in {@link CodexLatinusParser#code_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockControlList(CodexLatinusParser.BlockControlListContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BlockSingleControl}
+	 * labeled alternative in {@link CodexLatinusParser#code_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockSingleControl(CodexLatinusParser.BlockSingleControlContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BlockSingleControl}
+	 * labeled alternative in {@link CodexLatinusParser#code_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockSingleControl(CodexLatinusParser.BlockSingleControlContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BlockCode}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockCode(CodexLatinusParser.BlockCodeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BlockCode}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockCode(CodexLatinusParser.BlockCodeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ConsoleActions}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterConsoleActions(CodexLatinusParser.ConsoleActionsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ConsoleActions}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitConsoleActions(CodexLatinusParser.ConsoleActionsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#console_actions}.
+	 * @param ctx the parse tree
+	 */
+	void enterConsole_actions(CodexLatinusParser.Console_actionsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#console_actions}.
+	 * @param ctx the parse tree
+	 */
+	void exitConsole_actions(CodexLatinusParser.Console_actionsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CodexLatinusParser#print_function}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrint_function(CodexLatinusParser.Print_functionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CodexLatinusParser#print_function}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrint_function(CodexLatinusParser.Print_functionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CodeBlockIf}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeBlockIf(CodexLatinusParser.CodeBlockIfContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CodeBlockIf}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeBlockIf(CodexLatinusParser.CodeBlockIfContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CodeBlockWhile}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeBlockWhile(CodexLatinusParser.CodeBlockWhileContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CodeBlockWhile}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeBlockWhile(CodexLatinusParser.CodeBlockWhileContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CodeBlockDoWhile}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeBlockDoWhile(CodexLatinusParser.CodeBlockDoWhileContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CodeBlockDoWhile}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeBlockDoWhile(CodexLatinusParser.CodeBlockDoWhileContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CodeBlockFor}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeBlockFor(CodexLatinusParser.CodeBlockForContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CodeBlockFor}
+	 * labeled alternative in {@link CodexLatinusParser#block_code}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeBlockFor(CodexLatinusParser.CodeBlockForContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IfStatement}
+	 * labeled alternative in {@link CodexLatinusParser#if_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(CodexLatinusParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IfStatement}
+	 * labeled alternative in {@link CodexLatinusParser#if_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(CodexLatinusParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ElseIfEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseIfEmpty(CodexLatinusParser.ElseIfEmptyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ElseIfEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseIfEmpty(CodexLatinusParser.ElseIfEmptyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ElseIfList}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseIfList(CodexLatinusParser.ElseIfListContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ElseIfList}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseIfList(CodexLatinusParser.ElseIfListContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ElseIfClause}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseIfClause(CodexLatinusParser.ElseIfClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ElseIfClause}
+	 * labeled alternative in {@link CodexLatinusParser#else_if_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseIfClause(CodexLatinusParser.ElseIfClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ElseBlock}
+	 * labeled alternative in {@link CodexLatinusParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseBlock(CodexLatinusParser.ElseBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ElseBlock}
+	 * labeled alternative in {@link CodexLatinusParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseBlock(CodexLatinusParser.ElseBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ElseEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseEmpty(CodexLatinusParser.ElseEmptyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ElseEmpty}
+	 * labeled alternative in {@link CodexLatinusParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseEmpty(CodexLatinusParser.ElseEmptyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code WhileStatement}
+	 * labeled alternative in {@link CodexLatinusParser#while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(CodexLatinusParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code WhileStatement}
+	 * labeled alternative in {@link CodexLatinusParser#while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(CodexLatinusParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DoWhileStatement}
+	 * labeled alternative in {@link CodexLatinusParser#do_while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoWhileStatement(CodexLatinusParser.DoWhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DoWhileStatement}
+	 * labeled alternative in {@link CodexLatinusParser#do_while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoWhileStatement(CodexLatinusParser.DoWhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForStatement}
+	 * labeled alternative in {@link CodexLatinusParser#for_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStatement(CodexLatinusParser.ForStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForStatement}
+	 * labeled alternative in {@link CodexLatinusParser#for_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStatement(CodexLatinusParser.ForStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitVarDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#for_init}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitVarDeclaration(CodexLatinusParser.ForInitVarDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitVarDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#for_init}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitVarDeclaration(CodexLatinusParser.ForInitVarDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitAssign}
+	 * labeled alternative in {@link CodexLatinusParser#for_init}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitAssign(CodexLatinusParser.ForInitAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitAssign}
+	 * labeled alternative in {@link CodexLatinusParser#for_init}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitAssign(CodexLatinusParser.ForInitAssignContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdateIncrement}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdateIncrement(CodexLatinusParser.ForUpdateIncrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdateIncrement}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdateIncrement(CodexLatinusParser.ForUpdateIncrementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdateDecrement}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdateDecrement(CodexLatinusParser.ForUpdateDecrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdateDecrement}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdateDecrement(CodexLatinusParser.ForUpdateDecrementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdateAssign}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdateAssign(CodexLatinusParser.ForUpdateAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdateAssign}
+	 * labeled alternative in {@link CodexLatinusParser#for_update}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdateAssign(CodexLatinusParser.ForUpdateAssignContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code VariablesSection}
 	 * labeled alternative in {@link CodexLatinusParser#variable_section}.
@@ -64,15 +458,29 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitVariablesSection(CodexLatinusParser.VariablesSectionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CodexLatinusParser#variabiles_body}.
+	 * Enter a parse tree produced by the {@code DeclarationsVariablesList}
+	 * labeled alternative in {@link CodexLatinusParser#variabiles_body}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariabiles_body(CodexLatinusParser.Variabiles_bodyContext ctx);
+	void enterDeclarationsVariablesList(CodexLatinusParser.DeclarationsVariablesListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CodexLatinusParser#variabiles_body}.
+	 * Exit a parse tree produced by the {@code DeclarationsVariablesList}
+	 * labeled alternative in {@link CodexLatinusParser#variabiles_body}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariabiles_body(CodexLatinusParser.Variabiles_bodyContext ctx);
+	void exitDeclarationsVariablesList(CodexLatinusParser.DeclarationsVariablesListContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeclarationsSingleVariable}
+	 * labeled alternative in {@link CodexLatinusParser#variabiles_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationsSingleVariable(CodexLatinusParser.DeclarationsSingleVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationsSingleVariable}
+	 * labeled alternative in {@link CodexLatinusParser#variabiles_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationsSingleVariable(CodexLatinusParser.DeclarationsSingleVariableContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code VariableInstance}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
@@ -554,89 +962,197 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitStructDeclarationValue(CodexLatinusParser.StructDeclarationValueContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Divide}
+	 * Enter a parse tree produced by the {@code ExpressionGreaterEqual}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterDivide(CodexLatinusParser.DivideContext ctx);
+	void enterExpressionGreaterEqual(CodexLatinusParser.ExpressionGreaterEqualContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Divide}
+	 * Exit a parse tree produced by the {@code ExpressionGreaterEqual}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitDivide(CodexLatinusParser.DivideContext ctx);
+	void exitExpressionGreaterEqual(CodexLatinusParser.ExpressionGreaterEqualContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Multiplication}
+	 * Enter a parse tree produced by the {@code ExpressionMult}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterMultiplication(CodexLatinusParser.MultiplicationContext ctx);
+	void enterExpressionMult(CodexLatinusParser.ExpressionMultContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Multiplication}
+	 * Exit a parse tree produced by the {@code ExpressionMult}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitMultiplication(CodexLatinusParser.MultiplicationContext ctx);
+	void exitExpressionMult(CodexLatinusParser.ExpressionMultContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ReducedValue}
+	 * Enter a parse tree produced by the {@code ExpressionLessThan}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterReducedValue(CodexLatinusParser.ReducedValueContext ctx);
+	void enterExpressionLessThan(CodexLatinusParser.ExpressionLessThanContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ReducedValue}
+	 * Exit a parse tree produced by the {@code ExpressionLessThan}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitReducedValue(CodexLatinusParser.ReducedValueContext ctx);
+	void exitExpressionLessThan(CodexLatinusParser.ExpressionLessThanContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Parents}
+	 * Enter a parse tree produced by the {@code ExpressionMinus}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterParents(CodexLatinusParser.ParentsContext ctx);
+	void enterExpressionMinus(CodexLatinusParser.ExpressionMinusContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Parents}
+	 * Exit a parse tree produced by the {@code ExpressionMinus}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitParents(CodexLatinusParser.ParentsContext ctx);
+	void exitExpressionMinus(CodexLatinusParser.ExpressionMinusContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Negate}
+	 * Enter a parse tree produced by the {@code ExpressionLessEqual}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterNegate(CodexLatinusParser.NegateContext ctx);
+	void enterExpressionLessEqual(CodexLatinusParser.ExpressionLessEqualContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Negate}
+	 * Exit a parse tree produced by the {@code ExpressionLessEqual}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitNegate(CodexLatinusParser.NegateContext ctx);
+	void exitExpressionLessEqual(CodexLatinusParser.ExpressionLessEqualContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Plus}
+	 * Enter a parse tree produced by the {@code ExpressionNegate}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterPlus(CodexLatinusParser.PlusContext ctx);
+	void enterExpressionNegate(CodexLatinusParser.ExpressionNegateContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Plus}
+	 * Exit a parse tree produced by the {@code ExpressionNegate}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitPlus(CodexLatinusParser.PlusContext ctx);
+	void exitExpressionNegate(CodexLatinusParser.ExpressionNegateContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Minus}
+	 * Enter a parse tree produced by the {@code ExpressionNotEquals}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterMinus(CodexLatinusParser.MinusContext ctx);
+	void enterExpressionNotEquals(CodexLatinusParser.ExpressionNotEqualsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Minus}
+	 * Exit a parse tree produced by the {@code ExpressionNotEquals}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitMinus(CodexLatinusParser.MinusContext ctx);
+	void exitExpressionNotEquals(CodexLatinusParser.ExpressionNotEqualsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionParents}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionParents(CodexLatinusParser.ExpressionParentsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionParents}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionParents(CodexLatinusParser.ExpressionParentsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionDiv}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionDiv(CodexLatinusParser.ExpressionDivContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionDiv}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionDiv(CodexLatinusParser.ExpressionDivContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionNot}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionNot(CodexLatinusParser.ExpressionNotContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionNot}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionNot(CodexLatinusParser.ExpressionNotContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionValue}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionValue(CodexLatinusParser.ExpressionValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionValue}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionValue(CodexLatinusParser.ExpressionValueContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionAnd}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionAnd(CodexLatinusParser.ExpressionAndContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionAnd}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionAnd(CodexLatinusParser.ExpressionAndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionOr}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionOr(CodexLatinusParser.ExpressionOrContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionOr}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionOr(CodexLatinusParser.ExpressionOrContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionGreaterThan}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionGreaterThan(CodexLatinusParser.ExpressionGreaterThanContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionGreaterThan}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionGreaterThan(CodexLatinusParser.ExpressionGreaterThanContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionEquals}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionEquals(CodexLatinusParser.ExpressionEqualsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionEquals}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionEquals(CodexLatinusParser.ExpressionEqualsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionPlus}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionPlus(CodexLatinusParser.ExpressionPlusContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionPlus}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionPlus(CodexLatinusParser.ExpressionPlusContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code TypeText}
 	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
@@ -721,6 +1237,42 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStructValueLiteral(CodexLatinusParser.StructValueLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionCalling}
+	 * labeled alternative in {@link CodexLatinusParser#function_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCalling(CodexLatinusParser.FunctionCallingContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionCalling}
+	 * labeled alternative in {@link CodexLatinusParser#function_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCalling(CodexLatinusParser.FunctionCallingContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArgumentSingleFunction}
+	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentSingleFunction(CodexLatinusParser.ArgumentSingleFunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArgumentSingleFunction}
+	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentSingleFunction(CodexLatinusParser.ArgumentSingleFunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArgumentFunctionList}
+	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentFunctionList(CodexLatinusParser.ArgumentFunctionListContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArgumentFunctionList}
+	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentFunctionList(CodexLatinusParser.ArgumentFunctionListContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ValString}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.

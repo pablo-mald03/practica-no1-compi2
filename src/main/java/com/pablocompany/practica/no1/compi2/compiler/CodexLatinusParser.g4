@@ -15,31 +15,156 @@ body:   variable_section
 
 /*===*****===== MAIOR SECTION =====*****===*/
 
-maior_section: MAIOR GREATER    # MaiorSection
-                ;
+maior_section
+    : MAIOR GREATER  maior_body  # MaiorSection
+    ;
+
+maior_body
+    : maior_body functions_block        # FunctionsBlockList
+    | functions_block                 # FunctionsSingleBlock
+    ;
+
+functions_block
+    : function_declaration
+    | procedure_declaration
+    ;
+
+function_declaration
+    : RATIO variable_type ID INIT_PARENT function_arguments FINAL_PARENT function_body INIT_BRACE FINAL_BRACE
+    ;
 
 
 
+function_body
+    : VARIABILES INIT_BRACKET FINAL_BRACKET
+    ;
 
+procedure_declaration
+    : ACTIO
+    ;
 
+function_arguments
+    : function_arguments COMMA argument         #FunctionArgsList
+    | argument                                  #FunctionSingleArgs
+    | /*Empty*/                                 #FunctionArgsEmpty
+    ;
 
+argument
+: ESTO ID TWO_POINTS variable_type
+;
 
 /*===*****===== MUNERA SECTION =====*****===*/
 
-munera_section: MUNERA GREATER  #MuneraSection
-                ;
+munera_section
+    : MUNERA GREATER code_body  #MuneraCodeSection
+    ;
 
+/*===*****===== CONTROL STRUCTURES SECTION =====*****===*/
+
+code_body
+    : code_body control_block       # BlockControlList
+    | control_block                 # BlockSingleControl
+    ;
+
+control_block
+    : block_code                    # BlockCode
+    | console_actions               # ConsoleActions
+//    | boolean_declaration           # BlockBoolDecl
+//    | normal_array                  # BlockArrayDecl
+//    | struct_declaration            # BlockStructDecl
+//    | assignment DOT_COMMA          # BlockAssignment
+    ;
+
+/*===*****=====*****===== CONSOLE FUNCTIONS =====*****====*****====*/
+
+console_actions
+    : ID READ
+    | READ
+    | PRINT print_function DOT_COMMA
+    ;
+
+print_function
+    : print_function PRINT expression
+    | expression
+    ;
+
+/*===*****=====*****===== COMMON CODE SECTION =====*****====*****====*/
+
+/*------ THIS IS THE MOST IMPORTANT BLOCK BECAUSE IT CONTAINS MORE STRUCTURE CONTROLS IN------*/
+
+
+block_code
+    : if_statement          # CodeBlockIf
+    | while_statement       # CodeBlockWhile
+    | do_while_statement    # CodeBlockDoWhile
+    | for_statement         # CodeBlockFor
+    ;
+
+/*------ IF STATEMENT PRODUCTION ------*/
+
+if_statement
+    : SI INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE else_if_list else_statement FINIS DOT_COMMA     # IfStatement
+    ;
+
+else_if_list
+    : else_if_list else_if_clause   # ElseIfList
+    | /* Lambda */                  # ElseIfEmpty
+    ;
+
+else_if_clause
+    : ALITER INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE     # ElseIfClause
+    ;
+
+/*------ ELSE STATEMENT PRODUCTION ------*/
+
+else_statement
+    : ALITER INIT_BRACE code_body FINAL_BRACE     # ElseBlock
+    | /* Lambda */                                  # ElseEmpty
+    ;
+
+/*------ WHILE STATEMENT PRODUCTION ------*/
+
+while_statement
+    : DUM INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE FINIS DOT_COMMA # WhileStatement
+    ;
+
+/*------ DO WHILE STATEMENT PRODUCTION ------*/
+
+do_while_statement
+    : FACERE INIT_BRACE code_body FINAL_BRACE DUM INIT_PARENT expression FINAL_PARENT DOT_COMMA # DoWhileStatement
+    ;
+
+/*------ FOR STATEMENT PRODUCTION ------*/
+
+for_statement
+    : PER INIT_PARENT for_init DOT_COMMA expression DOT_COMMA for_update FINAL_PARENT INIT_BRACE code_body FINAL_BRACE # ForStatement
+    ;
+
+for_init
+    : ESTO ID TWO_POINTS variable_type expression              # ForInitVarDeclaration
+    | ID EQUAL expression                                       # ForInitAssign
+    ;
+
+/*------ AUTO INCREMENT VALUES ------*/
+
+for_update
+    : ID ABREV_PLUS          # ForUpdateIncrement
+    | ID ABREV_MINUS          # ForUpdateDecrement
+    | ID EQUAL expression   # ForUpdateAssign
+    ;
 
 /*===*****===== VARIABILES SECTION =====*****===*/
 
-variable_section: VARIABILES GREATER variabiles_body #VariablesSection
-                ;
+variable_section
+    : VARIABILES GREATER variabiles_body #VariablesSection
+    ;
 
 
 /*------ DECLARATE VARIABILES SECTION ------*/
 
-variabiles_body: variabiles_body declarations
-                | declarations;
+variabiles_body: variabiles_body declarations   # DeclarationsVariablesList
+                | declarations                  # DeclarationsSingleVariable
+                ;
 
 
 /*------ DECLARATIONS PRODUCTIONS SECTION------*/
@@ -183,15 +308,30 @@ struct_data_value
 
 /*--******-------****--- OPERATION SECTION ---****-------******--*/
 
-expression  : MINUS expression                          # Negate
-            | expression MULTIPLICATION expression      # Multiplication
-            | expression DIVIDE expression              # Divide
-            | expression PLUS expression                # Plus
-            | expression MINUS expression               # Minus
-            | normal_values                             # ReducedValue
-            | INIT_PARENT expression FINAL_PARENT       # Parents
-            ;
+expression
+    : INIT_PARENT expression FINAL_PARENT               # ExpressionParents
+    | NOT expression                                    # ExpressionNot
+    | MINUS expression                                  # ExpressionNegate
 
+    | expression MULTIPLICATION expression              # ExpressionMult
+    | expression DIVIDE expression                      # ExpressionDiv
+
+    | expression PLUS expression                        # ExpressionPlus
+    | expression MINUS expression                       # ExpressionMinus
+
+    | expression LESS expression                   # ExpressionLessThan
+    | expression GREATER expression                     # ExpressionGreaterThan
+    | expression LESS_EQUALS expression                        # ExpressionLessEqual
+    | expression GREATER_EQUALS expression              # ExpressionGreaterEqual
+
+    | expression EQUALS expression                      # ExpressionEquals
+    | expression DIFERENCE expression                   # ExpressionNotEquals
+
+    | expression AND expression                         # ExpressionAnd
+    | expression OR expression                          # ExpressionOr
+
+    | normal_values                                     # ExpressionValue
+    ;
 
 
 
@@ -217,6 +357,16 @@ struct_values
     ;
 
 
+/*--------****--- FUNCTION CALLING ---****--------*/
+
+function_call
+    : ID INIT_PARENT arguments_list FINAL_PARENT DOT_COMMA      # FunctionCalling
+    ;
+
+arguments_list
+    : arguments_list COMMA normal_values        # ArgumentFunctionList
+    | normal_values                             # ArgumentSingleFunction
+    ;
 
 normal_values
     : STRING         # ValString
@@ -232,4 +382,5 @@ boolean_values
     : VERUM  # BoolTrue
     | FALSUS # BoolFalse
     ;
+
 
