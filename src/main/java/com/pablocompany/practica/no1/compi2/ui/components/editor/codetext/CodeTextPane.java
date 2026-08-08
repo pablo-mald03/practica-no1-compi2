@@ -5,8 +5,10 @@ import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.TokenStyleResolver;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.Color;
+import java.util.List;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
@@ -201,5 +203,10 @@ public class CodeTextPane extends JTextPane {
     //This method clear stack view 
     public void clearStackView() {
         this.context.clearStacklists();
+    }
+    
+    //This method clear AST view 
+    public List<Symbol> getAstView() {
+        return this.context.getGlobalEnvironment().getAllSymbolsForUI();
     }
 }

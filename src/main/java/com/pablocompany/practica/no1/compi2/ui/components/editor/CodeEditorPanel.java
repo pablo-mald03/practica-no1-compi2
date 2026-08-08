@@ -3,6 +3,7 @@ package com.pablocompany.practica.no1.compi2.ui.components.editor;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.AntlrAnalyzer;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
 import java.awt.BorderLayout;
@@ -119,7 +120,7 @@ public class CodeEditorPanel extends JPanel {
             notifier.logError("El codigo fuente esta vacio");
             return false;
         }
-        
+
         this.editor.clearCompiledCode();
         this.editor.clearStackView();
 
@@ -133,13 +134,17 @@ public class CodeEditorPanel extends JPanel {
 
             boolean hasErrors = false;
 
+            //TODO NOTIFY IF THE AN ERROR WAS FOUND
             if (hasErrors) {
                 notifier.logError("Error de sintaxis en la línea 12.");
                 return false;
             }
 
             this.notifierReference.notifyCompiledCode(getCompiledCode());
+            
+            //TODO: EVALUATE THE OBSERVABILITY WITH ERRORS
             this.notifierReference.notifyStackView(getStackList());
+            this.notifierReference.notifyAstRepresentation(getAst());
 
             notifier.logSuccess("AST construido correctamente.");
             return true;
@@ -154,9 +159,15 @@ public class CodeEditorPanel extends JPanel {
     public String getCompiledCode() {
         return this.editor.getEditorContext().getCompiledCode();
     }
-    
-    public List<ParseStep> getStackList(){
+
+    //This method return the stack list
+    public List<ParseStep> getStackList() {
         return this.editor.getEditorContext().getStackSteps();
+    }
+
+    //TODO: REPLACE THE REAL CLASS
+    public List<Symbol> getAst() {
+        return this.editor.getAstView();
     }
 
 }

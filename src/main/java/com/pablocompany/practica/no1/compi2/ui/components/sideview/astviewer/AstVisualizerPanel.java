@@ -68,4 +68,11 @@ public class AstVisualizerPanel extends JPanel {
 
         worker.execute();
     }
+    
+    /*
+     * Method to clear the renderizated AST
+     */
+    public void clear() {
+        viewerPanel.clear();
+    }
 }

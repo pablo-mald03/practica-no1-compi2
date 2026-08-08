@@ -46,7 +46,7 @@ public class AstGraphViewerPanel extends JPanel {
     public void setLoading(boolean loading) {
         this.isLoading = loading;
         if (loading) {
-            this.image = null; 
+            this.image = null;
         }
         revalidate();
         repaint();
@@ -77,6 +77,15 @@ public class AstGraphViewerPanel extends JPanel {
             revalidate();
             repaint();
         }
+    }
+
+    // This method clear the state
+    public void clear() {
+        this.image = null;
+        this.isLoading = false;
+        this.zoomFactor = 1.0;
+        revalidate();
+        repaint();
     }
 
     @Override

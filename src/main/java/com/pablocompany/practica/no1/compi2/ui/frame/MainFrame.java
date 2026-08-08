@@ -146,6 +146,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         this.side.setStackView(steps);
     }
 
+    @Override
+    public void notifyAstRepresentation(Object ast) {
+        this.side.renderAstTree(ast);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

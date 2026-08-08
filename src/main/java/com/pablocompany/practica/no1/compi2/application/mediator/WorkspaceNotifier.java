@@ -23,6 +23,8 @@ public interface WorkspaceNotifier {
     
     void notifyStackView(List<ParseStep> steps);
     
+    void notifyAstRepresentation(Object ast);
+    
     /*SECTION OF LOGS*/
     void logInfo(String message);
 
