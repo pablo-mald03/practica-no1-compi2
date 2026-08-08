@@ -1,8 +1,8 @@
 package com.pablocompany.practica.no1.compi2.ui.components.editor.codetext;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
-import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
+import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.TokenStyleResolver;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
@@ -191,5 +191,15 @@ public class CodeTextPane extends JTextPane {
         StyleConstants.setForeground(attr, color);
         return attr;
     }
-
+    
+    
+    //This method clean the editor context
+    public void clearCompiledCode(){
+        this.context.clearCompilatedCode();
+    }
+    
+    //This method clear stack view 
+    public void clearStackView() {
+        this.context.clearStacklists();
+    }
 }

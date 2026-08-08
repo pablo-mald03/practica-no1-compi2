@@ -33,7 +33,7 @@ public class EditorContext {
 
     private Object ast;
 
-    private String compiledCode;
+    private String compiledCode = "";
 
     private Environment globalEnvironment;
 
@@ -79,5 +79,15 @@ public class EditorContext {
     //This method returns the globalEnviromnment
     public Environment getGlobalEnvironment() {
         return globalEnvironment;
+    }
+    
+   //This method clears the compilated code
+    public void clearCompilatedCode(){
+        this.compiledCode = "";
+    }
+    
+    //This method clears the stacklist
+    public void clearStacklists(){
+        this.stackSteps.clear();
     }
 }

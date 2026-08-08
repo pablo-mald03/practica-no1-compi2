@@ -5,6 +5,7 @@
 package com.pablocompany.practica.no1.compi2.ui.frame;
 
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
+import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
@@ -36,7 +37,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         initializeCustomComponents();
         attachComponents();
 
-        this.fileController = new ProjectFileController();   
+        this.fileController = new ProjectFileController();
 
     }
 
@@ -115,6 +116,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }
 
     @Override
+    public void focusStackVisualizerByStep() {
+        side.focusParseStackByStep();
+    }
+
+    @Override
     public void clearLogs() {
         bottom.getConsole().clear();
         bottom.getErrors().clear();
@@ -128,6 +134,16 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     @Override
     public void notifySymbolUpdated(List<Symbol> symbols) {
         bottom.setSymbols(symbols);
+    }
+
+    @Override
+    public void notifyCompiledCode(String compiledCode) {
+        this.side.setPiglatinCode(compiledCode);
+    }
+
+    @Override
+    public void notifyStackView(List<ParseStep> steps) {
+        this.side.setStackView(steps);
     }
 
     /**
@@ -425,8 +441,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
         if (success) {
             alertToast("Compilación exitosa", false);
         } else {
-            alertToast("Se encontraron errores en el código", true);
-            focusErrors();
+            alertToast("Compilacion fallida", true);
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
@@ -449,7 +464,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }//GEN-LAST:event_fileMenu3ActionPerformed
 
     private void stebByButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stebByButtonActionPerformed
-        // TODO Add the step by step logic
+        focusStackVisualizerByStep();
     }//GEN-LAST:event_stebByButtonActionPerformed
 
     //This method redirect to the errors
@@ -462,6 +477,13 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }//GEN-LAST:event_reportMenu1ActionPerformed
 
     private void toolsMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolsMenu2ActionPerformed
+
+        String code = this.editor.getCompiledCode();
+
+        if (code.isBlank()) {
+            alertToast("No hay codigo compilado. \nPresiona el boton \"Compilar\"", true);
+        }
+
         focusPigLatin();
     }//GEN-LAST:event_toolsMenu2ActionPerformed
 

@@ -1,15 +1,12 @@
 package com.pablocompany.practica.no1.compi2.ui.components.sideview.stack;
 
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ActionType;
-import com.pablocompany.practica.no1.compi2.domain.parsingstep.ElementType;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
-import com.pablocompany.practica.no1.compi2.domain.parsingstep.StackElement;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.stack.components.StackBottomPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.stack.components.StackControlsPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.stack.components.StackGraphicPanel;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -141,77 +138,13 @@ public class ParseStackPanel extends JPanel {
     public void setStackList(List<ParseStep> steps) {
         this.visualPanel.loadSteps(steps);
         this.bottomStackPanel.getStackLogConsole().clear();
+
+    }
+
+    public void showGraphicStackByStep() {
+        this.bottomStackPanel.getStackLogConsole().clear();
+        visualPanel.resetSteps();
         logCurrentStepAction();
     }
 
-    public void showGraphicStack() {
-        List<ParseStep> steps = getMockedData();
-        setStackList(steps);
-    }
-
-    // HARDCODED DATA
-    private List<ParseStep> getMockedData() {
-        List<ParseStep> mockup = new ArrayList<>();
-
-        ParseStep s1 = new ParseStep(1, "Pila Vacia", ActionType.INITIAL);
-        mockup.add(s1);
-
-        ParseStep s2 = new ParseStep(2, "shift (", ActionType.SHIFT);
-        s2.addElement(new StackElement("(", ElementType.TERMINAL));
-        mockup.add(s2);
-
-        ParseStep s3 = new ParseStep(3, "shift 3", ActionType.SHIFT);
-        s3.addElement(new StackElement("(", ElementType.TERMINAL));
-        s3.addElement(new StackElement("3", ElementType.TERMINAL));
-        mockup.add(s3);
-
-        ParseStep s4 = new ParseStep(4, "reduce F->3", ActionType.REDUCE);
-        s4.addElement(new StackElement("(", ElementType.TERMINAL));
-        s4.addElement(new StackElement("F", ElementType.NON_TERMINAL));
-        mockup.add(s4);
-
-        ParseStep s5 = new ParseStep(5, "reduce T->F", ActionType.REDUCE);
-        s5.addElement(new StackElement("(", ElementType.TERMINAL));
-        s5.addElement(new StackElement("T", ElementType.NON_TERMINAL));
-        mockup.add(s5);
-
-        ParseStep s6 = new ParseStep(6, "reduce E->T", ActionType.REDUCE);
-        s6.addElement(new StackElement("(", ElementType.TERMINAL));
-        s6.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        mockup.add(s6);
-
-        ParseStep s7 = new ParseStep(7, "shift +", ActionType.SHIFT);
-        s7.addElement(new StackElement("(", ElementType.TERMINAL));
-        s7.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        s7.addElement(new StackElement("+", ElementType.TERMINAL));
-        mockup.add(s7);
-
-        ParseStep s8 = new ParseStep(8, "shift 4", ActionType.SHIFT);
-        s8.addElement(new StackElement("(", ElementType.TERMINAL));
-        s8.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        s8.addElement(new StackElement("+", ElementType.TERMINAL));
-        s8.addElement(new StackElement("4", ElementType.TERMINAL));
-        mockup.add(s8);
-
-        ParseStep s9 = new ParseStep(9, "reduce F->4", ActionType.REDUCE);
-        s9.addElement(new StackElement("(", ElementType.TERMINAL));
-        s9.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        s9.addElement(new StackElement("+", ElementType.TERMINAL));
-        s9.addElement(new StackElement("F", ElementType.NON_TERMINAL));
-        mockup.add(s9);
-
-        ParseStep s10 = new ParseStep(10, "reduce T->F", ActionType.REDUCE);
-        s10.addElement(new StackElement("(", ElementType.TERMINAL));
-        s10.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        s10.addElement(new StackElement("+", ElementType.TERMINAL));
-        s10.addElement(new StackElement("T", ElementType.NON_TERMINAL));
-        mockup.add(s10);
-
-        ParseStep s11 = new ParseStep(11, "reduce E->E+T", ActionType.REDUCE);
-        s11.addElement(new StackElement("(", ElementType.TERMINAL));
-        s11.addElement(new StackElement("E", ElementType.NON_TERMINAL));
-        mockup.add(s11);
-
-        return mockup;
-    }
 }
