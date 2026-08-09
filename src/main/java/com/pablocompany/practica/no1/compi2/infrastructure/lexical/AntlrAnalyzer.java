@@ -18,7 +18,7 @@ public class AntlrAnalyzer implements SyntaxHighlightListener {
 
     @Override
     public void highlight(EditorContext context) {
-        context.clearCompilerErrors(); 
+        context.clearLexicalErrors();
 
         if (context.getSourceCode() == null || context.getSourceCode().isEmpty()) {
             context.setTokens(new ArrayList<>());

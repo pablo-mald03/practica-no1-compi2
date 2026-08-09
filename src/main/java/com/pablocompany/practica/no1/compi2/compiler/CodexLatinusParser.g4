@@ -16,12 +16,12 @@ body:   variable_section
 /*===*****===== MAIOR SECTION =====*****===*/
 /*===*****========*****===== MAIOR SECTION (FUNCTIONS) ===*****==========*****===*/
 
-maior_section
-    : MAIOR GREATER maior_body # MaiorSection
+munera_section
+    : MUNERA GREATER munera_body # MuneraSection
     ;
 
-maior_body
-    : maior_body functions_block # FunctionsBlockList
+munera_body
+    : munera_body functions_block # FunctionsBlockList
     | functions_block            # FunctionsSingleBlock
     ;
 
@@ -33,19 +33,19 @@ functions_block
 /*------ FUNCTION & PROCEDURE DECLARATIONS ------*/
 
 function_declaration
-    : RATIO variable_type ID INIT_PARENT function_arguments FINAL_PARENT function_body FINIS DOT_COMMA # FunctionDecl
+    : RATIO variable_type ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDecl
     ;
 
 procedure_declaration
-    : ACTIO ID INIT_PARENT function_arguments FINAL_PARENT procedure_body FINIS DOT_COMMA # ProcedureDecl
+    : ACTIO ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE procedure_body FINAL_BRACE FINIS DOT_COMMA # ProcedureDecl
     ;
 
 function_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET INIT_BRACE code_body FINAL_BRACE # FunctionBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body         # FunctionBody
     ;
 
 procedure_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET INIT_BRACE code_body FINAL_BRACE # ProcedureBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body          # ProcedureBody
     ;
 
 /*------ ARGUMENTS & LOCAL VARIABLES ------*/
@@ -70,17 +70,23 @@ function_arguments
     ;
 
 argument
-    : ESTO ID TWO_POINTS variable_type start_value_call # ArgumentDecl
+    : ESTO ID TWO_POINTS argument_variable_type         # ArgumentVariableDeclaration
+    | SERIES ID TWO_POINTS argument_series_type         # ArgumentArrayDeclarationn
     ;
 
-start_value_call
-    : expression                            # ArgExprValue
-    | EQUAL function_call DOT_COMMA         # ArgFuncCallValue
+argument_variable_type
+    : variable_type         # ArgumentNormalDeclaration
+    | boolean_values?       # ArgumentBooleanDeclaration
+    ;
+
+argument_series_type
+    : variable_type         # ArgumentArrayNormalDeclaration
+    | boolean_values?       # ArgumentArrayBooleanDeclaration
     ;
 
 /*===*****========*****===== MUNERA SECTION ===*****==========*****===*/
-munera_section
-    : MUNERA GREATER code_body # MuneraCodeSection
+maior_section
+    : MAIOR GREATER code_body # MuneraCodeSection
     ;
 
 code_body

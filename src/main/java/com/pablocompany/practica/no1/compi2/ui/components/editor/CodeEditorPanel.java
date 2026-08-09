@@ -4,8 +4,10 @@ import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifi
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.AntlrAnalyzer;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.syntax.CodexSyntaxAnalizer;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
+
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -115,7 +117,6 @@ public class CodeEditorPanel extends JPanel {
 
     //This method is the principal to compile the code
     public boolean compile(WorkspaceNotifier notifier) {
-
         if (getCode().isBlank()) {
             notifier.logError("El codigo fuente esta vacio");
             return false;
@@ -124,38 +125,44 @@ public class CodeEditorPanel extends JPanel {
         this.editor.clearCompiledCode();
         this.editor.clearStackView();
 
-        //TODO: HARCODED
         try {
-            String code = getCode();
 
-            notifier.logInfo("Lexer: Análisis iniciado...");
+            this.editor.getEditorContext().clearParsingErrors();
+            //TODO: REFRESH DATA
+           // this.context.setSourceCode(getCode());
+           // this.context.getCompilerErrors().clear();
 
-            notifier.logInfo("Parser: Construyendo AST...");
+            //Parsing delegated
+            CodexSyntaxAnalizer analyzer = new CodexSyntaxAnalizer();
+            boolean isSyntaxValid = analyzer.executeParsingPhase(this.editor.getEditorContext(), notifier);
 
-            boolean hasErrors = false;
+           this.notifierReference.notifyAstRepresentation(this.editor.getEditorContext().getGraphvizCode());
 
-            //TODO NOTIFY IF THE AN ERROR WAS FOUND
-            if (hasErrors) {
-                notifier.logError("Error de sintaxis en la línea 12.");
+            if (!isSyntaxValid) {
+                notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
                 return false;
             }
 
-            this.notifierReference.notifyCompiledCode(getCompiledCode());
-            
-            //TODO: EVALUATE THE OBSERVABILITY WITH ERRORS
-            this.notifierReference.notifyStackView(getStackList());
-            this.notifierReference.notifyAstRepresentation(getAst());
+            // --- SEMANTIC PART ---
+            notifier.logInfo("Iniciando análisis semántico (AST)...");
 
-            notifier.logSuccess("AST construido correctamente.");
+            //TODO: SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+            // semanticAnalyzer.buildAST(this.context);
+
+            this.notifierReference.notifyCompiledCode(getCompiledCode());
+            this.notifierReference. notifyStackView(getStackList());
+
+            notifier.logSuccess("Compilación exitosa.");
             return true;
 
         } catch (Exception e) {
             notifier.logError("Fallo crítico del compilador: " + e.getMessage());
             return false;
         }
+
     }
 
-    //This method indicate if the code is compiled 
+    //This method indicate if the code is compiled
     public String getCompiledCode() {
         return this.editor.getEditorContext().getCompiledCode();
     }

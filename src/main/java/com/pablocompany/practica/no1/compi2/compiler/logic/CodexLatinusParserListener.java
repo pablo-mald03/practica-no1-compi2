@@ -28,38 +28,38 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitBody(CodexLatinusParser.BodyContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code MaiorSection}
-	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
+	 * Enter a parse tree produced by the {@code MuneraSection}
+	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
 	 * @param ctx the parse tree
 	 */
-	void enterMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
+	void enterMuneraSection(CodexLatinusParser.MuneraSectionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code MaiorSection}
-	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
+	 * Exit a parse tree produced by the {@code MuneraSection}
+	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
 	 * @param ctx the parse tree
 	 */
-	void exitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
+	void exitMuneraSection(CodexLatinusParser.MuneraSectionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FunctionsBlockList}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 */
 	void enterFunctionsBlockList(CodexLatinusParser.FunctionsBlockListContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code FunctionsBlockList}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionsBlockList(CodexLatinusParser.FunctionsBlockListContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FunctionsSingleBlock}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 */
 	void enterFunctionsSingleBlock(CodexLatinusParser.FunctionsSingleBlockContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code FunctionsSingleBlock}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionsSingleBlock(CodexLatinusParser.FunctionsSingleBlockContext ctx);
@@ -256,50 +256,86 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitFunctionArgsList(CodexLatinusParser.FunctionArgsListContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ArgumentDecl}
+	 * Enter a parse tree produced by the {@code ArgumentVariableDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 */
-	void enterArgumentDecl(CodexLatinusParser.ArgumentDeclContext ctx);
+	void enterArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ArgumentDecl}
+	 * Exit a parse tree produced by the {@code ArgumentVariableDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 */
-	void exitArgumentDecl(CodexLatinusParser.ArgumentDeclContext ctx);
+	void exitArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ArgExprValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Enter a parse tree produced by the {@code ArgumentArrayDeclarationn}
+	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 */
-	void enterArgExprValue(CodexLatinusParser.ArgExprValueContext ctx);
+	void enterArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ArgExprValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Exit a parse tree produced by the {@code ArgumentArrayDeclarationn}
+	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 */
-	void exitArgExprValue(CodexLatinusParser.ArgExprValueContext ctx);
+	void exitArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ArgFuncCallValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Enter a parse tree produced by the {@code ArgumentNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
 	 * @param ctx the parse tree
 	 */
-	void enterArgFuncCallValue(CodexLatinusParser.ArgFuncCallValueContext ctx);
+	void enterArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ArgFuncCallValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Exit a parse tree produced by the {@code ArgumentNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
 	 * @param ctx the parse tree
 	 */
-	void exitArgFuncCallValue(CodexLatinusParser.ArgFuncCallValueContext ctx);
+	void exitArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArgumentBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArgumentBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArgumentArrayNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArgumentArrayNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArgumentArrayBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArgumentArrayBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MuneraCodeSection}
-	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
+	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 */
 	void enterMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code MuneraCodeSection}
-	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
+	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 */
 	void exitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);

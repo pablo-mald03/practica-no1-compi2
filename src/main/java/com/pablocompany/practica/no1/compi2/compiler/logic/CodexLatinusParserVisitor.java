@@ -23,22 +23,22 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBody(CodexLatinusParser.BodyContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code MaiorSection}
-	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
+	 * Visit a parse tree produced by the {@code MuneraSection}
+	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
+	T visitMuneraSection(CodexLatinusParser.MuneraSectionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionsBlockList}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunctionsBlockList(CodexLatinusParser.FunctionsBlockListContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionsSingleBlock}
-	 * labeled alternative in {@link CodexLatinusParser#maior_body}.
+	 * labeled alternative in {@link CodexLatinusParser#munera_body}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -156,29 +156,50 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionArgsList(CodexLatinusParser.FunctionArgsListContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArgumentDecl}
+	 * Visit a parse tree produced by the {@code ArgumentVariableDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArgumentDecl(CodexLatinusParser.ArgumentDeclContext ctx);
+	T visitArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArgExprValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Visit a parse tree produced by the {@code ArgumentArrayDeclarationn}
+	 * labeled alternative in {@link CodexLatinusParser#argument}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArgExprValue(CodexLatinusParser.ArgExprValueContext ctx);
+	T visitArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArgFuncCallValue}
-	 * labeled alternative in {@link CodexLatinusParser#start_value_call}.
+	 * Visit a parse tree produced by the {@code ArgumentNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArgFuncCallValue(CodexLatinusParser.ArgFuncCallValueContext ctx);
+	T visitArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArgumentBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArgumentArrayNormalDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArgumentArrayBooleanDeclaration}
+	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code MuneraCodeSection}
-	 * labeled alternative in {@link CodexLatinusParser#munera_section}.
+	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

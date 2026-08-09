@@ -41,13 +41,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) { }
+	@Override public void enterMuneraSection(CodexLatinusParser.MuneraSectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) { }
+	@Override public void exitMuneraSection(CodexLatinusParser.MuneraSectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -269,37 +269,73 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgumentDecl(CodexLatinusParser.ArgumentDeclContext ctx) { }
+	@Override public void enterArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArgumentDecl(CodexLatinusParser.ArgumentDeclContext ctx) { }
+	@Override public void exitArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgExprValue(CodexLatinusParser.ArgExprValueContext ctx) { }
+	@Override public void enterArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArgExprValue(CodexLatinusParser.ArgExprValueContext ctx) { }
+	@Override public void exitArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgFuncCallValue(CodexLatinusParser.ArgFuncCallValueContext ctx) { }
+	@Override public void enterArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArgFuncCallValue(CodexLatinusParser.ArgFuncCallValueContext ctx) { }
+	@Override public void exitArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
