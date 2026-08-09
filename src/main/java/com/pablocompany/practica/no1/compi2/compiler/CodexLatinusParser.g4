@@ -51,12 +51,16 @@ procedure_body
 /*------ ARGUMENTS & LOCAL VARIABLES ------*/
 
 local_variable_list
-    : local_variable_list local_variable # LocalVariablesList
-    | local_variable                      # LocalSingleVariable
+    : local_variable_list local_variable    # LocalVariablesList
+    | local_variable                        # LocalSingleVariable
     ;
 
 local_variable
-    : ESTO ID TWO_POINTS variable_type expression DOT_COMMA # LocalVarDeclaration
+    : variable_declaration      # LocalVarDeclaration
+    | boolean_declaration       # LocalBoolVarDeclaration
+    | normal_array              # LocalArrayDeclaration
+    | boolean_array             # LocalBoolArrayDeclaration
+    | struct_instance           # LocalStructInstance
     ;
 
 function_arguments
@@ -74,10 +78,6 @@ start_value_call
     | EQUAL function_call DOT_COMMA         # ArgFuncCallValue
     ;
 
-redefine_local_variable
-    : ID EQUAL function_call DOT_COMMA      #RedefinitionFunctionVariable
-    ;
-
 /*===*****========*****===== MUNERA SECTION ===*****==========*****===*/
 munera_section
     : MUNERA GREATER code_body # MuneraCodeSection
@@ -89,12 +89,18 @@ code_body
     ;
 
 control_block
-    : block_code                    # BlockCode
-    | console_actions               # ConsoleActions
-    | function_call DOT_COMMA       # FunctionSingleCall
-    | loop_control                  # LoopControlAction
-    | return_control                # ReturnControlAction
-    | redefine_local_variable       # LocalVariableRedefinied
+    : block_code                            # BlockCode
+    | console_actions                       # ConsoleActions
+    | function_call DOT_COMMA               # FunctionSingleCall
+    | loop_control                          # LoopControlAction
+    | return_control                        # ReturnControlAction
+    | abbreviated_operation                 # LocalAbbreviatedOperation
+    | variable_ussage                       # LocalVariableRedefinition
+    | array_ussage                          # LocalArrayRedefinition
+    | struct_array_property                 # LocalStructArrayDefinition
+    | struct_ussage                         # LocalStructRedefinition
+    | struct_array_set                      # LocalStructArraySetter
+    | struct_variable_set                   # LocalStructPropertySetter
     ;
 
 /*------ RETURN STATEMENT ------*/
@@ -194,39 +200,58 @@ variabiles_body: variabiles_body declarations   # DeclarationsVariablesList
 /*------ DECLARATIONS PRODUCTIONS SECTION------*/
 declarations
     : variable_declaration      # VariableInstance
-    | variable_ussage           # VariableUssage
+    | variable_ussage           # VariableRedefinedUssage
     | boolean_declaration       # BooleanVariableInstance
     | normal_array              # NormalArrayInstance
     | boolean_array             # BooleanArrayInstance
-    | array_ussage              # ArrayUssage
+    | array_ussage              # ArrayRedefinedUssage
     | struct_declaration        # StructDefinition
     | struct_array_property     # StructSetProperty
     | struct_instance           # StructVariableInstance
+    | struct_ussage             # StructRedefinedUsage
+    | struct_variable_set       # StructVariableSetter
+    | struct_array_set          # StructArrayzSetter
+    | abbreviated_operation     # GlobalAbbreviatedOperation
     ;
 
 
 /*-----VARIABLE USAGE PRODUCTIONS-----*/
+
+struct_ussage
+    : ID EQUAL INIT_BRACE struct_data_list FINAL_BRACE #StructInstanceUssage
+    ;
 
 variable_ussage
     : ID EQUAL expression DOT_COMMA # NormalVariableUsage
     ;
 
 array_ussage
-    : ID INIT_BRACKET INT FINAL_BRACKET EQUAL expression DOT_COMMA # NormalArrayUsage
+    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA # NormalArrayUsage
     ;
+
+
+/*-----STRUCT SETTER INSTANCE PRODUCTIONS-----*/
+struct_variable_set
+: ID DOT ID EQUAL expression DOT_COMMA  #SetStructNormalVariable
+;
+
+
+struct_array_set
+: ID DOT ID EQUAL array_initialization DOT_COMMA                #SetStructNormalArray
+;
 
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
 
 struct_array_property
-    : ID DOT ID  INIT_BRACKET INT FINAL_BRACKET EQUAL struct_data_list INIT_BRACE FINAL_BRACE   #StructArrayProperty
+    : ID DOT ID  INIT_BRACKET expression FINAL_BRACKET EQUAL INIT_BRACE struct_data_list  FINAL_BRACE   #StructArrayProperty
     ;
 
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
 
 struct_instance
-    : ESTO ID TWO_POINTS ID INIT_BRACE struct_data_list FINAL_BRACE # StructInstance
+    : ESTO ID TWO_POINTS ID INIT_BRACE struct_data_list FINAL_BRACE         # StructInstance
     ;
 
 
@@ -234,7 +259,6 @@ struct_data_list
     : struct_data_list COMMA struct_data_value # StructValueList
     | struct_data_value # StructSingleValue
     ;
-
 
 
 /*-----VARIABLE PRODUCTIONS-----*/
@@ -273,6 +297,15 @@ array_value
     | expression  # ArrayNormalVal
     ;
 
+
+/*--------****--- VALUES SECTION ---****--------*/
+
+struct_values
+    : struct_values DOT ID                                      # StructPropertyChain
+    | struct_values INIT_BRACKET expression FINAL_BRACKET       # StructArrayAccessChain
+    | ID DOT ID                                                 # StructBaseProperty
+    | ID INIT_BRACKET expression FINAL_BRACKET DOT ID           # StructBaseArrayProperty
+    ;
 
 
 /*---****------****--- STRUCT DEFINITION SECTION ---****------****---*/
@@ -370,14 +403,7 @@ variable_type
 
 /*--------****--- ARRAY CALLING SECTION ---****--------*/
 array_call
-    : ID INIT_BRACKET INT FINAL_BRACKET     # ArrayCall
-    ;
-
-
-/*--------****--- VALUES SECTION ---****--------*/
-
-struct_values
-    : INIT_BRACE values_array_list FINAL_BRACE      # StructValueLiteral
+    : ID INIT_BRACKET expression FINAL_BRACKET     # ArrayCall
     ;
 
 
@@ -388,8 +414,9 @@ function_call
     ;
 
 arguments_list
-    : arguments_list COMMA normal_values        # ArgumentFunctionList
-    | normal_values                             # ArgumentSingleFunction
+    : arguments_list COMMA expression           # ArgumentFunctionList
+    | expression                                # ArgumentSingleFunction
+    | /*Empty*/                                 # NoArgumentsFunction
     ;
 
 normal_values
@@ -401,11 +428,17 @@ normal_values
     | boolean_values    # ValBool
     | array_call        # ValIdCall
     | function_call     # ValFunctionCall
+    | struct_values     # ValStructValue
     ;
 
 boolean_values
     : VERUM  # BoolTrue
     | FALSUS # BoolFalse
+    ;
+
+abbreviated_operation
+    : ID ABREV_PLUS DOT_COMMA  # IncOperation
+    | ID ABREV_MINUS DOT_COMMA # DecOperation
     ;
 
 
