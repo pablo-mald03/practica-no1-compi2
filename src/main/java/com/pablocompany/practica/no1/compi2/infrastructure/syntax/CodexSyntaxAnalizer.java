@@ -35,7 +35,7 @@ public class CodexSyntaxAnalizer {
         context.setParseTree(parseTree);
 
         GraphvizTreeGeneratorService graphGenerator = new GraphvizTreeGeneratorService();
-        String graphvizCode = graphGenerator.generateDotFormat(parseTree, parser);
+        String graphvizCode = graphGenerator.generateDotFormat(parseTree, parser, context.getParserErrors());
 
         context.setGraphvizCode(graphvizCode);
 
