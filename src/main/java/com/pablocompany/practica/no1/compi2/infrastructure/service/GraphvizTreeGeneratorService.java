@@ -5,14 +5,13 @@ import com.pablocompany.practica.no1.compi2.infrastructure.themes.AstColors;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.awt.*;
 import java.util.List;
 
-
+//This class can ilustrate the tree generated derivations
 public class GraphvizTreeGeneratorService {
     private StringBuilder dotCode;
     private int nodeCounter;

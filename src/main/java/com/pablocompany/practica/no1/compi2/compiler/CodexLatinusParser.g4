@@ -7,7 +7,7 @@ options {
 program: body*;
 
     
-body:   variable_section 
+body:   variable_section?
         munera_section?
         maior_section 
         FINIS_SEPARATOR DOT_COMMA

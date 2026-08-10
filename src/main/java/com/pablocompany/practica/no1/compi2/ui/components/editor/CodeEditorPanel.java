@@ -7,6 +7,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.syntax.CodexSyntaxAnalizer;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
+import lombok.Getter;
 
 import java.awt.BorderLayout;
 import java.util.List;
@@ -18,7 +19,8 @@ import javax.swing.JScrollPane;
  *
  * @author pablo03
  */
-/*Class used to represents a editor panel*/
+/*Class used to represents an editor panel*/
+@Getter
 public class CodeEditorPanel extends JPanel {
 
     private final CodeTextPane editor;
@@ -94,10 +96,6 @@ public class CodeEditorPanel extends JPanel {
 
     }
 
-    public CodeTextPane getEditor() {
-        return editor;
-    }
-
     /*This method returns the code from the editor*/
     public String getCode() {
 
@@ -107,11 +105,6 @@ public class CodeEditorPanel extends JPanel {
 
     public void setCode(String code) {
         editor.setText(code);
-
-    }
-
-    public EditorStatusBar getStatusBar() {
-        return statusBar;
 
     }
 
@@ -129,14 +122,14 @@ public class CodeEditorPanel extends JPanel {
 
             this.editor.getEditorContext().clearParsingErrors();
             //TODO: REFRESH DATA
-           // this.context.setSourceCode(getCode());
-           // this.context.getCompilerErrors().clear();
+            // this.context.setSourceCode(getCode());
 
             //Parsing delegated
             CodexSyntaxAnalizer analyzer = new CodexSyntaxAnalizer();
             boolean isSyntaxValid = analyzer.executeParsingPhase(this.editor.getEditorContext(), notifier);
 
-           this.notifierReference.notifyAstRepresentation(this.editor.getEditorContext().getGraphvizCode());
+            this.notifierReference.notifyAstRepresentation(getAst());
+            this.notifierReference.notifyStackView(getStackList());
 
             if (!isSyntaxValid) {
                 notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
@@ -144,13 +137,13 @@ public class CodeEditorPanel extends JPanel {
             }
 
             // --- SEMANTIC PART ---
-            notifier.logInfo("Iniciando análisis semántico (AST)...");
+            notifier.logInfo("Iniciando análisis semantico (AST)...");
 
             //TODO: SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
             // semanticAnalyzer.buildAST(this.context);
 
             this.notifierReference.notifyCompiledCode(getCompiledCode());
-            this.notifierReference. notifyStackView(getStackList());
+
 
             notifier.logSuccess("Compilación exitosa.");
             return true;
@@ -172,9 +165,9 @@ public class CodeEditorPanel extends JPanel {
         return this.editor.getEditorContext().getStackSteps();
     }
 
-    //TODO: REPLACE THE REAL CLASS
-    public List<Symbol> getAst() {
-        return this.editor.getAstView();
+    //This method return the ast string
+    public String getAst() {
+        return this.editor.getEditorContext().getGraphvizCode();
     }
 
 }

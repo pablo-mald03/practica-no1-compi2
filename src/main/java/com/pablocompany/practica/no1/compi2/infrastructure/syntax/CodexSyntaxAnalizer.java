@@ -6,6 +6,7 @@ import com.pablocompany.practica.no1.compi2.compiler.logic.CodexLatinusParser;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CodexSyntaxErrorListener;
 import com.pablocompany.practica.no1.compi2.infrastructure.service.GraphvizTreeGeneratorService;
+import com.pablocompany.practica.no1.compi2.infrastructure.service.StackSimulationService;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -36,8 +37,10 @@ public class CodexSyntaxAnalizer {
 
         GraphvizTreeGeneratorService graphGenerator = new GraphvizTreeGeneratorService();
         String graphvizCode = graphGenerator.generateDotFormat(parseTree, parser, context.getParserErrors());
-
         context.setGraphvizCode(graphvizCode);
+
+        StackSimulationService stackService = new StackSimulationService();
+        context.setStackSteps(stackService.generateSteps(parseTree));
 
         if (!context.getParserErrors().isEmpty()) {
             notifier.logError("Se encontraron errores de sintaxis.");
