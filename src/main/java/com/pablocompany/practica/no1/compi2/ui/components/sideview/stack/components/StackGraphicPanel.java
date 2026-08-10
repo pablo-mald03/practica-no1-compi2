@@ -6,6 +6,8 @@ import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.StackElement;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.StackColors;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
+import lombok.Getter;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -23,6 +25,7 @@ import javax.swing.JPanel;
  *
  * @author pablo03
  */
+@Getter
 //This class is the principal graphic panel to ilustrate the STACK
 public class StackGraphicPanel extends JPanel {
 
@@ -125,6 +128,36 @@ public class StackGraphicPanel extends JPanel {
         repaint();
     }
 
+    //This method modify the width acording the text width
+    private int calculateDynamicStepWidth(Font boldFont, Font plainFont, Font actionFont) {
+        int maxTextWidth = 100;
+
+        FontMetrics fmBold = getFontMetrics(boldFont);
+        FontMetrics fmPlain = getFontMetrics(plainFont);
+        FontMetrics fmAction = getFontMetrics(actionFont);
+
+        for (int i = 0; i <= currentVisibleIndex && i < allSteps.size(); i++) {
+            ParseStep step = allSteps.get(i);
+
+            int numWidth = fmBold.stringWidth(String.valueOf(step.getStepNumber()));
+            maxTextWidth = Math.max(maxTextWidth, numWidth);
+
+            for (StackElement element : step.getStackElements()) {
+                if (element.getSymbol() != null) {
+                    int symWidth = fmPlain.stringWidth(element.getSymbol());
+                    maxTextWidth = Math.max(maxTextWidth, symWidth);
+                }
+            }
+
+            if (step.getActionType() != ActionType.INITIAL && step.getActionLabel() != null) {
+                int actWidth = fmAction.stringWidth(step.getActionLabel());
+                maxTextWidth = Math.max(maxTextWidth, actWidth);
+            }
+        }
+
+        return maxTextWidth + 30;
+    }
+
     //THIS IS THE PRINCIPAL METHOD TO DRAW THE STACK LIST
     @Override
     protected void paintComponent(Graphics g) {
@@ -141,6 +174,9 @@ public class StackGraphicPanel extends JPanel {
 
         Font boldFont = new Font("Liberation Mono", Font.BOLD, 14);
         Font plainFont = new Font("Liberation Mono", Font.PLAIN, 12);
+        Font actionFont = new Font("Liberation Mono", Font.PLAIN, 10);
+
+        int stepWidth = calculateDynamicStepWidth(boldFont, plainFont, actionFont);
 
         int maxStackSize = 5;
         for (int i = 0; i <= currentVisibleIndex; i++) {
@@ -152,16 +188,16 @@ public class StackGraphicPanel extends JPanel {
 
         for (int i = 0; i <= currentVisibleIndex; i++) {
             ParseStep step = allSteps.get(i);
-            int startX = 20 + (i * (STEP_WIDTH + SPACING_X));
+            int startX = 20 + (i * (stepWidth + SPACING_X));
 
             // 1. Draw the step number
             g2d.setFont(boldFont);
             g2d.setColor(Theme.FOREGROUND_DARK.getColorSet());
-            drawCenteredString(g2d, String.valueOf(step.getStepNumber()), startX, startX + STEP_WIDTH, MARGIN_TOP);
+            drawCenteredString(g2d, String.valueOf(step.getStepNumber()), startX, startX + stepWidth, MARGIN_TOP);
 
             // 2. Draw the container
             g2d.setColor(StackColors.COLOR_CONTAINER.getColorSet());
-            g2d.fillRoundRect(startX, startYContainer, STEP_WIDTH, containerHeight, 15, 15);
+            g2d.fillRoundRect(startX, startYContainer, stepWidth, containerHeight, 15, 15);
 
             // 3. Draw the stack steps from the bottom to the top
             List<StackElement> elements = step.getStackElements();
@@ -170,11 +206,11 @@ public class StackGraphicPanel extends JPanel {
             g2d.setFont(plainFont);
             for (StackElement element : elements) {
                 g2d.setColor(element.getType() == ElementType.TERMINAL ? StackColors.COLOR_TERMINAL.getColorSet() : StackColors.COLOR_NON_TERM.getColorSet());
-                g2d.fillRoundRect(startX + 5, currentY, STEP_WIDTH - 10, ELEMENT_HEIGHT - 5, 8, 8);
+                g2d.fillRoundRect(startX + 5, currentY, stepWidth - 10, ELEMENT_HEIGHT - 5, 8, 8);
 
                 g2d.setColor(Theme.FOREGROUND_LIGHT.getColorSet());
-                g2d.drawRoundRect(startX + 5, currentY, STEP_WIDTH - 10, ELEMENT_HEIGHT - 5, 8, 8);
-                drawCenteredString(g2d, element.getSymbol(), startX + 5, startX + STEP_WIDTH - 5, currentY + 20);
+                g2d.drawRoundRect(startX + 5, currentY, stepWidth - 10, ELEMENT_HEIGHT - 5, 8, 8);
+                drawCenteredString(g2d, element.getSymbol(), startX + 5, startX + stepWidth - 5, currentY + 20);
 
                 currentY -= ELEMENT_HEIGHT;
             }
@@ -183,18 +219,18 @@ public class StackGraphicPanel extends JPanel {
             if (step.getActionType() != ActionType.INITIAL) {
                 int actionY = startYContainer + containerHeight + 15;
                 g2d.setColor(step.getActionType() == ActionType.SHIFT ? StackColors.COLOR_ACTION_SHIFT.getColorSet() : StackColors.COLOR_ACTION_REDUCE.getColorSet());
-                g2d.fillRect(startX, actionY, STEP_WIDTH, 25);
+                g2d.fillRect(startX, actionY, stepWidth, 25);
 
                 g2d.setColor(Theme.FOREGROUND_LIGHT.getColorSet());
-                g2d.drawRect(startX, actionY, STEP_WIDTH, 25);
+                g2d.drawRect(startX, actionY, stepWidth, 25);
 
-                g2d.setFont(new Font("Liberation Mono", Font.PLAIN, 10));
-                drawCenteredString(g2d, step.getActionLabel(), startX, startX + STEP_WIDTH, actionY + 16);
+                g2d.setFont(actionFont);
+                drawCenteredString(g2d, step.getActionLabel(), startX, startX + stepWidth, actionY + 16);
             }
         }
     }
 
-    /**
+    /*
      * This method calculate the space based at the list lenght and zoom
      */
     @Override
@@ -203,7 +239,13 @@ public class StackGraphicPanel extends JPanel {
             return new Dimension(400, 300);
         }
 
-        int totalWidth = 40 + ((currentVisibleIndex + 1) * (STEP_WIDTH + SPACING_X));
+        Font boldFont = new Font("Liberation Mono", Font.BOLD, 14);
+        Font plainFont = new Font("Liberation Mono", Font.PLAIN, 12);
+        Font actionFont = new Font("Liberation Mono", Font.PLAIN, 10);
+
+        int stepWidth = calculateDynamicStepWidth(boldFont, plainFont, actionFont);
+
+        int totalWidth = 40 + ((currentVisibleIndex + 1) * (stepWidth + SPACING_X));
 
         int maxStackSize = 5;
         for (int i = 0; i <= currentVisibleIndex; i++) {
@@ -230,15 +272,7 @@ public class StackGraphicPanel extends JPanel {
         return allSteps.get(currentVisibleIndex);
     }
 
-    public int getCurrentVisibleIndex() {
-        return currentVisibleIndex;
-    }
-
     public int getTotalSteps() {
         return allSteps.size();
-    }
-
-    public List<ParseStep> getAllSteps() {
-        return allSteps;
     }
 }
