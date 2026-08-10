@@ -78,42 +78,13 @@ public class SidePanel extends JPanel {
 
     //Method to render the ast panel
     //TODO: HARDCODED DATA PENDING THE REAL AST TYPE
-    public void renderAstTree(Object ast) {
+    public void renderAstTree(String ast) {
         if (ast == null) {
             this.astVisualizerPanel.clear();
             return;
         }
 
-        // TODO: HARDCODED DATA
-        String graphviz = """
-                            digraph AST {
-                                node [shape=box, fontname="DejaVu Sans Mono", fillcolor="#2d2d2d", fontcolor="#ffffff", style="filled", margin="0.2,0.1"];
-                                edge [color="#8ab4f8", penwidth=1.5];
-                            
-                                root [label="Programa Principal", fillcolor="#1e3a8a"];
-                                decl [label="Declaración Variable\nint x = 10"];
-                                asig [label="Asignación\nx = x + 5"];
-                                suma [label="Operación: +"];
-                                var1 [label="Variable: x"];
-                                lit1 [label="Literal: 5"];
-                                print [label="Imprimir(x)"];
-                            
-                                root -> decl;
-                                root -> asig;
-                                root -> print;
-                            
-                                asig -> var1;
-                                asig -> suma;
-                            
-                                suma -> var2 [label="izq"];
-                                suma -> lit1 [label="der"];
-                            
-                                var2 [label="Variable: x"];
-                                print -> var3;
-                                var3 [label="Variable: x"];
-                            }
-                            """;
-        this.astVisualizerPanel.renderAst(graphviz);
+        this.astVisualizerPanel.renderAst(ast);
     }
 
     //Method to set the compiled code

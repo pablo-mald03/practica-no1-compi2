@@ -147,7 +147,7 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     }
 
     @Override
-    public void notifyAstRepresentation(Object ast) {
+    public void notifyAstRepresentation(String ast) {
         this.side.renderAstTree(ast);
     }
 

@@ -58,6 +58,10 @@ ACTIO: 'actio';
 RATIO: 'ratio';
 REDDERE: 'reddere';
 
+//BREAK ACTIONS
+PERGE: 'perge';
+INTERRUMPE: 'interrumpe';
+
 //SECTION OF SPECIAL OPERATORS OR PUNCTUATION
 EQUAL: '=';
 COMMA: ',';
