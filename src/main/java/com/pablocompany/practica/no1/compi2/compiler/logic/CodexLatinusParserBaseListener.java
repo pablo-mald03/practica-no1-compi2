@@ -113,6 +113,30 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterProcedureDecl(CodexLatinusParser.ProcedureDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -521,6 +545,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReturnWithValue(CodexLatinusParser.ReturnWithValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -569,13 +605,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReadVarInput(CodexLatinusParser.ReadVarInputContext ctx) { }
+	@Override public void enterReadVariableInput(CodexLatinusParser.ReadVariableInputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReadVarInput(CodexLatinusParser.ReadVarInputContext ctx) { }
+	@Override public void exitReadVariableInput(CodexLatinusParser.ReadVariableInputContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1037,6 +1073,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1068,6 +1116,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNormalArrayUsage(CodexLatinusParser.NormalArrayUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1800,6 +1860,30 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArgumentFunctionList(CodexLatinusParser.ArgumentFunctionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSigleValueVariable(CodexLatinusParser.SigleValueVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSigleValueVariable(CodexLatinusParser.SigleValueVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

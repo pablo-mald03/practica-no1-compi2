@@ -33,8 +33,15 @@ functions_block
 /*------ FUNCTION & PROCEDURE DECLARATIONS ------*/
 
 function_declaration
-    : RATIO variable_type ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDecl
+    : RATIO variable_function_type ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDecl
     ;
+
+/*------Return values------*/
+variable_function_type
+    : variable_type     #FunctionReturNormalType
+    | boolean_values    #FunctionReturBooleanType
+    ;
+
 
 procedure_declaration
     : ACTIO ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE procedure_body FINAL_BRACE FINIS DOT_COMMA # ProcedureDecl
@@ -107,6 +114,7 @@ control_block
     | struct_ussage                         # LocalStructRedefinition
     | struct_array_set                      # LocalStructArraySetter
     | struct_variable_set                   # LocalStructPropertySetter
+    | nested_variables_usage                # LocalNestedVariableUsage
     ;
 
 /*------ RETURN STATEMENT ------*/
@@ -124,7 +132,7 @@ loop_control
     ;
 
 console_actions
-    : ID READ                        # ReadVarInput
+    : nest_variable READ             # ReadVariableInput
     | READ                           # ReadInput
     | PRINT print_function DOT_COMMA # PrintAction
     ;
@@ -174,7 +182,7 @@ do_while_statement
     ;
 
 for_statement
-    : PER INIT_PARENT for_init DOT_COMMA expression DOT_COMMA for_update FINAL_PARENT INIT_BRACE code_body FINAL_BRACE # ForStatement
+    : PER INIT_PARENT for_init DOT_COMMA expression DOT_COMMA for_update FINAL_PARENT INIT_BRACE code_body FINAL_BRACE  # ForStatement
     ;
 
 for_init
@@ -218,13 +226,14 @@ declarations
     | struct_variable_set       # StructVariableSetter
     | struct_array_set          # StructArrayzSetter
     | abbreviated_operation     # GlobalAbbreviatedOperation
+    | nested_variables_usage    # GlobalNestedVariableUsage
     ;
 
 
 /*-----VARIABLE USAGE PRODUCTIONS-----*/
 
 struct_ussage
-    : ID EQUAL INIT_BRACE struct_data_list FINAL_BRACE #StructInstanceUssage
+    : ID EQUAL INIT_BRACE struct_data_list FINAL_BRACE DOT_COMMA? #StructInstanceUssage
     ;
 
 variable_ussage
@@ -235,6 +244,10 @@ array_ussage
     : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA # NormalArrayUsage
     ;
 
+
+nested_variables_usage
+    : struct_values EQUAL expression DOT_COMMA  #NestedStructValue
+    ;
 
 /*-----STRUCT SETTER INSTANCE PRODUCTIONS-----*/
 struct_variable_set
@@ -277,12 +290,12 @@ boolean_declaration
     ;
 
 normal_array
-    : SERIES ID INIT_PARENT INT FINAL_PARENT TWO_POINTS variable_type array_initialization DOT_COMMA # NormalArrayDeclaration
+    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS variable_type array_initialization DOT_COMMA # NormalArrayDeclaration
     | boolean_array # BooleanArrayDeclaration
     ;
 
 boolean_array
-    : SERIES ID INIT_PARENT INT FINAL_PARENT TWO_POINTS array_initialization DOT_COMMA #BooleanArrayBase
+    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS array_initialization DOT_COMMA #BooleanArrayBase
     ;
 
 
@@ -304,7 +317,7 @@ array_value
     ;
 
 
-/*--------****--- VALUES SECTION ---****--------*/
+/*--------****--- VALUES SECTION NESTED PROPERTIES---****--------*/
 
 struct_values
     : struct_values DOT ID                                      # StructPropertyChain
@@ -425,6 +438,13 @@ arguments_list
     | /*Empty*/                                 # NoArgumentsFunction
     ;
 
+/*-----STRUCT VARIABLE INSTANCE PRODUCTIONS-----*/
+nest_variable
+    : struct_values         # NestedValueVariable
+    | ID                    # SigleValueVariable
+    ;
+
+/*--------****--- PRINCIPAL VALUES DATA ---****--------*/
 normal_values
     : STRING            # ValString
     | CHAR              # ValChar
@@ -443,8 +463,8 @@ boolean_values
     ;
 
 abbreviated_operation
-    : ID ABREV_PLUS DOT_COMMA  # IncOperation
-    | ID ABREV_MINUS DOT_COMMA # DecOperation
+    : nest_variable ABREV_PLUS DOT_COMMA  # IncOperation
+    | nest_variable ABREV_MINUS DOT_COMMA # DecOperation
     ;
 
 

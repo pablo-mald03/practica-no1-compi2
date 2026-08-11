@@ -100,6 +100,30 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitFunctionDecl(CodexLatinusParser.FunctionDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code FunctionReturNormalType}
+	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionReturNormalType}
+	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionReturBooleanType}
+	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionReturBooleanType}
+	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ProcedureDecl}
 	 * labeled alternative in {@link CodexLatinusParser#procedure_declaration}.
 	 * @param ctx the parse tree
@@ -508,6 +532,18 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitLocalStructPropertySetter(CodexLatinusParser.LocalStructPropertySetterContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code LocalNestedVariableUsage}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LocalNestedVariableUsage}
+	 * labeled alternative in {@link CodexLatinusParser#control_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ReturnWithValue}
 	 * labeled alternative in {@link CodexLatinusParser#return_control}.
 	 * @param ctx the parse tree
@@ -556,17 +592,17 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitLoopBreak(CodexLatinusParser.LoopBreakContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ReadVarInput}
+	 * Enter a parse tree produced by the {@code ReadVariableInput}
 	 * labeled alternative in {@link CodexLatinusParser#console_actions}.
 	 * @param ctx the parse tree
 	 */
-	void enterReadVarInput(CodexLatinusParser.ReadVarInputContext ctx);
+	void enterReadVariableInput(CodexLatinusParser.ReadVariableInputContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ReadVarInput}
+	 * Exit a parse tree produced by the {@code ReadVariableInput}
 	 * labeled alternative in {@link CodexLatinusParser#console_actions}.
 	 * @param ctx the parse tree
 	 */
-	void exitReadVarInput(CodexLatinusParser.ReadVarInputContext ctx);
+	void exitReadVariableInput(CodexLatinusParser.ReadVariableInputContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ReadInput}
 	 * labeled alternative in {@link CodexLatinusParser#console_actions}.
@@ -1024,6 +1060,18 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitGlobalAbbreviatedOperation(CodexLatinusParser.GlobalAbbreviatedOperationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code GlobalNestedVariableUsage}
+	 * labeled alternative in {@link CodexLatinusParser#declarations}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GlobalNestedVariableUsage}
+	 * labeled alternative in {@link CodexLatinusParser#declarations}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code StructInstanceUssage}
 	 * labeled alternative in {@link CodexLatinusParser#struct_ussage}.
 	 * @param ctx the parse tree
@@ -1059,6 +1107,18 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNormalArrayUsage(CodexLatinusParser.NormalArrayUsageContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NestedStructValue}
+	 * labeled alternative in {@link CodexLatinusParser#nested_variables_usage}.
+	 * @param ctx the parse tree
+	 */
+	void enterNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NestedStructValue}
+	 * labeled alternative in {@link CodexLatinusParser#nested_variables_usage}.
+	 * @param ctx the parse tree
+	 */
+	void exitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code SetStructNormalVariable}
 	 * labeled alternative in {@link CodexLatinusParser#struct_variable_set}.
@@ -1791,6 +1851,30 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArgumentFunctionList(CodexLatinusParser.ArgumentFunctionListContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NestedValueVariable}
+	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NestedValueVariable}
+	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SigleValueVariable}
+	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterSigleValueVariable(CodexLatinusParser.SigleValueVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SigleValueVariable}
+	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitSigleValueVariable(CodexLatinusParser.SigleValueVariableContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ValString}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
