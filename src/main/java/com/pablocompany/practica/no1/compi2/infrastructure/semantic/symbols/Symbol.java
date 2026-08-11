@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.infrastructure.semantic;
+package com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

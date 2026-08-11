@@ -1,7 +1,7 @@
 package com.pablocompany.practica.no1.compi2.ui.components.bottom;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console.ConsolePanel;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors.ErrorsPanel;

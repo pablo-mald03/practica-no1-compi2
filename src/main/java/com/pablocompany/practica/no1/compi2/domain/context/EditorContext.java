@@ -7,7 +7,7 @@ package com.pablocompany.practica.no1.compi2.domain.context;
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Environment;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,9 +119,7 @@ public class EditorContext {
 
     //This method clear all the memory in the instances
     public void clearAll() {
-        clearCompilatedCode();
-        clearStacklists();
-        //this.tokens.clear();
+        this.sourceCode = "";
         //this.hiddenTokens.clear();
 
     }

@@ -47,7 +47,7 @@ public class CodexSyntaxAnalizer {
             return false;
         }
 
-        notifier.logSuccess("ParseTree construido correctamente.");
+        notifier.logSuccess("AST construido correctamente.");
         return true;
     }
 }

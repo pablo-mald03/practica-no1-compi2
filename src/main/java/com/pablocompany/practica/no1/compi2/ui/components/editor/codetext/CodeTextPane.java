@@ -5,7 +5,7 @@ import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.highlight.SyntaxHighlightListener;
 import com.pablocompany.practica.no1.compi2.domain.highlight.TokenStyle;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.TokenStyleResolver;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.Color;
 import java.util.List;
@@ -203,6 +203,11 @@ public class CodeTextPane extends JTextPane {
     //This method clear stack view 
     public void clearStackView() {
         this.context.clearStacklists();
+    }
+
+    //This method clear all required clearable data
+    public void clearAll(){
+        this.context.clearAll();
     }
     
     //This method clear AST view 

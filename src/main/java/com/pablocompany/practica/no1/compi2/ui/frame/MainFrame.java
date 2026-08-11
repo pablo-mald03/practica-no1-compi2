@@ -8,7 +8,7 @@ import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifi
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
