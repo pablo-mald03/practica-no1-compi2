@@ -533,18 +533,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLocalStructPropertySetter(CodexLatinusParser.LocalStructPropertySetterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLocalStructPropertySetter(CodexLatinusParser.LocalStructPropertySetterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1037,18 +1025,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStructVariableSetter(CodexLatinusParser.StructVariableSetterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStructVariableSetter(CodexLatinusParser.StructVariableSetterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStructArrayzSetter(CodexLatinusParser.StructArrayzSetterContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1085,6 +1061,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1092,18 +1080,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1121,6 +1097,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1128,18 +1116,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSetStructNormalVariable(CodexLatinusParser.SetStructNormalVariableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSetStructNormalVariable(CodexLatinusParser.SetStructNormalVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1157,18 +1133,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStructInstance(CodexLatinusParser.StructInstanceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1181,37 +1145,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStructValueList(CodexLatinusParser.StructValueListContext ctx) { }
+	@Override public void enterVariableDeclaration(CodexLatinusParser.VariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStructValueList(CodexLatinusParser.StructValueListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVarDeclaration(CodexLatinusParser.VarDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVarDeclaration(CodexLatinusParser.VarDeclarationContext ctx) { }
+	@Override public void exitVariableDeclaration(CodexLatinusParser.VariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1541,13 +1481,49 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStructDeclarationValue(CodexLatinusParser.StructDeclarationValueContext ctx) { }
+	@Override public void enterStructLiteralValue(CodexLatinusParser.StructLiteralValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStructDeclarationValue(CodexLatinusParser.StructDeclarationValueContext ctx) { }
+	@Override public void exitStructLiteralValue(CodexLatinusParser.StructLiteralValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStructValueList(CodexLatinusParser.StructValueListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructValueList(CodexLatinusParser.StructValueListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStructDataNormal(CodexLatinusParser.StructDataNormalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructDataNormal(CodexLatinusParser.StructDataNormalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1985,13 +1961,25 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValStructValue(CodexLatinusParser.ValStructValueContext ctx) { }
+	@Override public void enterValStructNestValue(CodexLatinusParser.ValStructNestValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValStructValue(CodexLatinusParser.ValStructValueContext ctx) { }
+	@Override public void exitValStructNestValue(CodexLatinusParser.ValStructNestValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValStructPropertyLiteral(CodexLatinusParser.ValStructPropertyLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValStructPropertyLiteral(CodexLatinusParser.ValStructPropertyLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

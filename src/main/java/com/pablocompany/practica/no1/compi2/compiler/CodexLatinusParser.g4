@@ -4,7 +4,7 @@ options {
     tokenVocab=CodexLatinusLexer;
 }
 
-program: body*;
+program: body* EOF;
 
     
 body:   variable_section?
@@ -113,7 +113,6 @@ control_block
     | struct_array_property                 # LocalStructArrayDefinition
     | struct_ussage                         # LocalStructRedefinition
     | struct_array_set                      # LocalStructArraySetter
-    | struct_variable_set                   # LocalStructPropertySetter
     | nested_variables_usage                # LocalNestedVariableUsage
     ;
 
@@ -223,7 +222,6 @@ declarations
     | struct_array_property     # StructSetProperty
     | struct_instance           # StructVariableInstance
     | struct_ussage             # StructRedefinedUsage
-    | struct_variable_set       # StructVariableSetter
     | struct_array_set          # StructArrayzSetter
     | abbreviated_operation     # GlobalAbbreviatedOperation
     | nested_variables_usage    # GlobalNestedVariableUsage
@@ -232,16 +230,25 @@ declarations
 
 /*-----VARIABLE USAGE PRODUCTIONS-----*/
 
+/*-----STRUCT INSTANCE PRODUCTIONS-----*/
+
+//TODO: PENDING ARRAYPROPERTY
+struct_array_property
+    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL struct_literal DOT_COMMA   # StructArrayProperty
+    ;
+
 struct_ussage
     : ID EQUAL INIT_BRACE struct_data_list FINAL_BRACE DOT_COMMA? #StructInstanceUssage
     ;
 
-variable_ussage
-    : ID EQUAL expression DOT_COMMA # NormalVariableUsage
-    ;
-
+//TODO: PENDING ARRAYPROPERTY WITH USSAGE
 array_ussage
     : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA # NormalArrayUsage
+    ;
+
+
+variable_ussage
+    : ID EQUAL expression DOT_COMMA # NormalVariableUsage
     ;
 
 
@@ -249,40 +256,25 @@ nested_variables_usage
     : struct_values EQUAL expression DOT_COMMA  #NestedStructValue
     ;
 
-/*-----STRUCT SETTER INSTANCE PRODUCTIONS-----*/
-struct_variable_set
-: ID DOT ID EQUAL expression DOT_COMMA  #SetStructNormalVariable
-;
 
+/*-----STRUCT SETTER INSTANCE PRODUCTIONS-----*/
 
 struct_array_set
-: ID DOT ID EQUAL array_initialization DOT_COMMA                #SetStructNormalArray
-;
-
-
-/*-----STRUCT INSTANCE PRODUCTIONS-----*/
-
-struct_array_property
-    : ID DOT ID  INIT_BRACKET expression FINAL_BRACKET EQUAL INIT_BRACE struct_data_list  FINAL_BRACE   #StructArrayProperty
+    : nest_variable EQUAL array_initialization DOT_COMMA                #SetStructNormalArray
     ;
 
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
 
 struct_instance
-    : ESTO ID TWO_POINTS ID INIT_BRACE struct_data_list FINAL_BRACE         # StructInstance
+    : ESTO ID TWO_POINTS ID struct_literal         # StructInstance
     ;
 
-
-struct_data_list
-    : struct_data_list COMMA struct_data_value # StructValueList
-    | struct_data_value # StructSingleValue
-    ;
 
 
 /*-----VARIABLE PRODUCTIONS-----*/
 variable_declaration
-    : ESTO ID TWO_POINTS variable_type expression DOT_COMMA # VarDeclaration
+    : ESTO ID TWO_POINTS variable_type expression DOT_COMMA # VariableDeclaration
     ;
 
 boolean_declaration
@@ -376,10 +368,18 @@ array_variable_struct
 
 /*-----STRUCT INSTANCE VALUES PRODUCTIONS-----*/
 
-struct_data_value
-    : ID TWO_POINTS expression      #StructDeclarationValue
+struct_literal
+    : INIT_BRACE struct_data_list FINAL_BRACE  # StructLiteralValue
     ;
 
+struct_data_list
+    : struct_data_list COMMA struct_data_value # StructValueList
+    | struct_data_value                        # StructSingleValue
+    ;
+
+struct_data_value
+    : ID TWO_POINTS expression                 # StructDataNormal
+    ;
 
 
 /*--******-------****--- OPERATION SECTION ---****-------******--*/
@@ -454,7 +454,8 @@ normal_values
     | boolean_values    # ValBool
     | array_call        # ValIdCall
     | function_call     # ValFunctionCall
-    | struct_values     # ValStructValue
+    | struct_values     # ValStructNestValue
+    | struct_literal    # ValStructPropertyLiteral
     ;
 
 boolean_values

@@ -319,13 +319,6 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLocalStructPropertySetter(CodexLatinusParser.LocalStructPropertySetterContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitLocalNestedVariableUsage(CodexLatinusParser.LocalNestedVariableUsageContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -613,13 +606,6 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStructVariableSetter(CodexLatinusParser.StructVariableSetterContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitStructArrayzSetter(CodexLatinusParser.StructArrayzSetterContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -641,14 +627,14 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -662,14 +648,14 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSetStructNormalVariable(CodexLatinusParser.SetStructNormalVariableContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -683,13 +669,6 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitStructInstance(CodexLatinusParser.StructInstanceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -697,21 +676,7 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStructValueList(CodexLatinusParser.StructValueListContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitVarDeclaration(CodexLatinusParser.VarDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariableDeclaration(CodexLatinusParser.VariableDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -907,7 +872,28 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStructDeclarationValue(CodexLatinusParser.StructDeclarationValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStructLiteralValue(CodexLatinusParser.StructLiteralValueContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStructValueList(CodexLatinusParser.StructValueListContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStructDataNormal(CodexLatinusParser.StructDataNormalContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1166,7 +1152,14 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValStructValue(CodexLatinusParser.ValStructValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitValStructNestValue(CodexLatinusParser.ValStructNestValueContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitValStructPropertyLiteral(CodexLatinusParser.ValStructPropertyLiteralContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
