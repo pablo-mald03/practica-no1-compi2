@@ -1,5 +1,6 @@
-package com.pablocompany.practica.no1.compi2.domain.semantic.childs;
+package com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation;
 
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.BinaryOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
 import lombok.Getter;
@@ -10,9 +11,9 @@ public class BinaryExpressionNode extends  ExpressionNode{
 
     private final ExpressionNode left;
     private final ExpressionNode right;
-    private final String operator; //TODO: PENDING DATA
+    private final BinaryOperator operator;
 
-    public BinaryExpressionNode(int line, int column, ExpressionNode left, ExpressionNode right, String operator) {
+    public BinaryExpressionNode(int line, int column, ExpressionNode left, ExpressionNode right, BinaryOperator operator) {
         super(line, column);
         this.left = left;
         this.right = right;

@@ -373,6 +373,7 @@ variable_type
     | NUMERUS   # TypeInt
     | DECIMALIS # TypeDecimal
     | LITTERA   # TypeChar
+    | BOOLEAN   # TypeBoolean
     | ID        # TypeCustomId
     ;
 

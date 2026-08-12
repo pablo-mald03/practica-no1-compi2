@@ -1516,6 +1516,18 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitTypeChar(CodexLatinusParser.TypeCharContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code TypeBoolean}
+	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeBoolean(CodexLatinusParser.TypeBooleanContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeBoolean}
+	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeBoolean(CodexLatinusParser.TypeBooleanContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code TypeCustomId}
 	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
 	 * @param ctx the parse tree

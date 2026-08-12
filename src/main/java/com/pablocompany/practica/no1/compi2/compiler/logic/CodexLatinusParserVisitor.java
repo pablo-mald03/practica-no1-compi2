@@ -891,6 +891,13 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeChar(CodexLatinusParser.TypeCharContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code TypeBoolean}
+	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeBoolean(CodexLatinusParser.TypeBooleanContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code TypeCustomId}
 	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
 	 * @param ctx the parse tree

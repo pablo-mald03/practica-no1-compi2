@@ -37,6 +37,7 @@ NUMERUS: 'numerus';
 TEXTUM: 'textum';
 DECIMALIS: 'decimalis';
 LITTERA: 'littera';
+BOOLEAN: 'bool';
 
 //BOOLEAN VALUES
 VERUM: 'verum';

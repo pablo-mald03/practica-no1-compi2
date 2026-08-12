@@ -1,9 +1,8 @@
-package com.pablocompany.practica.no1.compi2.domain.semantic.childs;
+package com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements;
 
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.StatementNode;
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 //This class represents a variable declaration

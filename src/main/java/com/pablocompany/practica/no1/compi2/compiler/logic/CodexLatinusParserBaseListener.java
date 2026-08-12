@@ -1529,6 +1529,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTypeBoolean(CodexLatinusParser.TypeBooleanContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTypeBoolean(CodexLatinusParser.TypeBooleanContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTypeCustomId(CodexLatinusParser.TypeCustomIdContext ctx) { }
 	/**
 	 * {@inheritDoc}
