@@ -977,7 +977,7 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValId(CodexLatinusParser.ValIdContext ctx) { return visitChildren(ctx); }
+	@Override public T visitValIdCall(CodexLatinusParser.ValIdCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1005,7 +1005,7 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValIdCall(CodexLatinusParser.ValIdCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitValArrayCall(CodexLatinusParser.ValArrayCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

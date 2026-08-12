@@ -405,11 +405,11 @@ nest_variable
 normal_values
     : STRING                    # ValString
     | CHAR                      # ValChar
-    | ID                        # ValId
+    | ID                        # ValIdCall
     | DECIMAL                   # ValDecimal
     | INT                       # ValInt
     | boolean_values            # ValBool
-    | array_call                # ValIdCall
+    | array_call                # ValArrayCall
     | function_call             # ValFunctionCall
     | struct_values             # ValStructNestValue
     | struct_literal            # ValStructPropertyLiteral

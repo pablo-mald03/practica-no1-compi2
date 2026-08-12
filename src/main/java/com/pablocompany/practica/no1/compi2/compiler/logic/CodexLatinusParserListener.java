@@ -1648,17 +1648,17 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitValChar(CodexLatinusParser.ValCharContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ValId}
+	 * Enter a parse tree produced by the {@code ValIdCall}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
 	 * @param ctx the parse tree
 	 */
-	void enterValId(CodexLatinusParser.ValIdContext ctx);
+	void enterValIdCall(CodexLatinusParser.ValIdCallContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ValId}
+	 * Exit a parse tree produced by the {@code ValIdCall}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
 	 * @param ctx the parse tree
 	 */
-	void exitValId(CodexLatinusParser.ValIdContext ctx);
+	void exitValIdCall(CodexLatinusParser.ValIdCallContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ValDecimal}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
@@ -1696,17 +1696,17 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitValBool(CodexLatinusParser.ValBoolContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ValIdCall}
+	 * Enter a parse tree produced by the {@code ValArrayCall}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
 	 * @param ctx the parse tree
 	 */
-	void enterValIdCall(CodexLatinusParser.ValIdCallContext ctx);
+	void enterValArrayCall(CodexLatinusParser.ValArrayCallContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ValIdCall}
+	 * Exit a parse tree produced by the {@code ValArrayCall}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
 	 * @param ctx the parse tree
 	 */
-	void exitValIdCall(CodexLatinusParser.ValIdCallContext ctx);
+	void exitValArrayCall(CodexLatinusParser.ValArrayCallContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ValFunctionCall}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.

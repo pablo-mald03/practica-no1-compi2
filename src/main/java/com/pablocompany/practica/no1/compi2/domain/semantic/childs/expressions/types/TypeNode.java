@@ -1,23 +1,25 @@
 package com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types;
 
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types.enums.TypeValue;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types.enums.DataType;
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
 import lombok.Getter;
 
 //This class represents all operator types
 @Getter
 public class TypeNode extends AstNode {
+    private final DataType dataType;
+    private final String customTypeName;
 
-    private final TypeValue type;
-    private final String context;
-
-    public TypeNode(int line, int column, TypeValue type, String context) {
+    public TypeNode(int line, int column, DataType dataType, String customTypeName) {
         super(line, column);
-        this.type = type;
-        this.context = context;
+        this.dataType = dataType;
+        this.customTypeName = customTypeName;
     }
 
+    public TypeNode(int line, int column, DataType dataType) {
+        this(line, column, dataType, null);
+    }
 
     @Override
     public <T> T accept(AstVisitor<T> visitor) {

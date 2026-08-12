@@ -7226,24 +7226,6 @@ public class CodexLatinusParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class ValIdContext extends Normal_valuesContext {
-		public TerminalNode ID() { return getToken(CodexLatinusParser.ID, 0); }
-		public ValIdContext(Normal_valuesContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterValId(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitValId(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitValId(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class ValFunctionCallContext extends Normal_valuesContext {
 		public Function_callContext function_call() {
 			return getRuleContext(Function_callContext.class,0);
@@ -7379,9 +7361,7 @@ public class CodexLatinusParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValIdCallContext extends Normal_valuesContext {
-		public Array_callContext array_call() {
-			return getRuleContext(Array_callContext.class,0);
-		}
+		public TerminalNode ID() { return getToken(CodexLatinusParser.ID, 0); }
 		public ValIdCallContext(Normal_valuesContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -7394,6 +7374,26 @@ public class CodexLatinusParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitValIdCall(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ValArrayCallContext extends Normal_valuesContext {
+		public Array_callContext array_call() {
+			return getRuleContext(Array_callContext.class,0);
+		}
+		public ValArrayCallContext(Normal_valuesContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterValArrayCall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitValArrayCall(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitValArrayCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -7440,7 +7440,7 @@ public class CodexLatinusParser extends Parser {
 				}
 				break;
 			case 3:
-				_localctx = new ValIdContext(_localctx);
+				_localctx = new ValIdCallContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(717);
@@ -7472,7 +7472,7 @@ public class CodexLatinusParser extends Parser {
 				}
 				break;
 			case 7:
-				_localctx = new ValIdCallContext(_localctx);
+				_localctx = new ValArrayCallContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(721);
