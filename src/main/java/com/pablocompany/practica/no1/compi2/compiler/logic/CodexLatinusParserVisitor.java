@@ -58,12 +58,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProcDeclBlock(CodexLatinusParser.ProcDeclBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FunctionDecl}
+	 * Visit a parse tree produced by the {@code FunctionDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#function_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunctionDecl(CodexLatinusParser.FunctionDeclContext ctx);
+	T visitFunctionDeclaration(CodexLatinusParser.FunctionDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionReturNormalType}
 	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
@@ -79,12 +79,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ProcedureDecl}
+	 * Visit a parse tree produced by the {@code ProcedureDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#procedure_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProcedureDecl(CodexLatinusParser.ProcedureDeclContext ctx);
+	T visitProcedureDeclaration(CodexLatinusParser.ProcedureDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionBody}
 	 * labeled alternative in {@link CodexLatinusParser#function_body}.
@@ -148,13 +148,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLocalStructInstance(CodexLatinusParser.LocalStructInstanceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code FunctionArgsEmpty}
-	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunctionArgsEmpty(CodexLatinusParser.FunctionArgsEmptyContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionSingleArg}
 	 * labeled alternative in {@link CodexLatinusParser#function_arguments}.
@@ -282,33 +275,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLocalVariableRedefinition(CodexLatinusParser.LocalVariableRedefinitionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LocalArrayRedefinition}
+	 * Visit a parse tree produced by the {@code LocalArrayRedefinedUssage}
 	 * labeled alternative in {@link CodexLatinusParser#control_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLocalArrayRedefinition(CodexLatinusParser.LocalArrayRedefinitionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code LocalStructArrayDefinition}
-	 * labeled alternative in {@link CodexLatinusParser#control_block}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLocalStructArrayDefinition(CodexLatinusParser.LocalStructArrayDefinitionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code LocalStructRedefinition}
-	 * labeled alternative in {@link CodexLatinusParser#control_block}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLocalStructRedefinition(CodexLatinusParser.LocalStructRedefinitionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code LocalStructArraySetter}
-	 * labeled alternative in {@link CodexLatinusParser#control_block}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLocalStructArraySetter(CodexLatinusParser.LocalStructArraySetterContext ctx);
+	T visitLocalArrayRedefinedUssage(CodexLatinusParser.LocalArrayRedefinedUssageContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code LocalNestedVariableUsage}
 	 * labeled alternative in {@link CodexLatinusParser#control_block}.
@@ -415,12 +387,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStatement(CodexLatinusParser.IfStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ElseIfEmpty}
+	 * Visit a parse tree produced by the {@code ElseIfSingle}
 	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitElseIfEmpty(CodexLatinusParser.ElseIfEmptyContext ctx);
+	T visitElseIfSingle(CodexLatinusParser.ElseIfSingleContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ElseIfList}
 	 * labeled alternative in {@link CodexLatinusParser#else_if_list}.
@@ -562,13 +534,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBooleanArrayInstance(CodexLatinusParser.BooleanArrayInstanceContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArrayRedefinedUssage}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayRedefinedUssage(CodexLatinusParser.ArrayRedefinedUssageContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code StructDefinition}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
 	 * @param ctx the parse tree
@@ -576,12 +541,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStructDefinition(CodexLatinusParser.StructDefinitionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code StructSetProperty}
+	 * Visit a parse tree produced by the {@code ArrayRedefinedUssage}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStructSetProperty(CodexLatinusParser.StructSetPropertyContext ctx);
+	T visitArrayRedefinedUssage(CodexLatinusParser.ArrayRedefinedUssageContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code StructVariableInstance}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
@@ -589,20 +554,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStructVariableInstance(CodexLatinusParser.StructVariableInstanceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code StructRedefinedUsage}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStructRedefinedUsage(CodexLatinusParser.StructRedefinedUsageContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code StructArrayzSetter}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStructArrayzSetter(CodexLatinusParser.StructArrayzSetterContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code GlobalAbbreviatedOperation}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
@@ -618,47 +569,26 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code StructArrayProperty}
-	 * labeled alternative in {@link CodexLatinusParser#struct_array_property}.
+	 * Visit a parse tree produced by the {@code RedefiniedVariableUssage}
+	 * labeled alternative in {@link CodexLatinusParser#array_redefined_ussage}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStructArrayProperty(CodexLatinusParser.StructArrayPropertyContext ctx);
+	T visitRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code StructInstanceUssage}
-	 * labeled alternative in {@link CodexLatinusParser#struct_ussage}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStructInstanceUssage(CodexLatinusParser.StructInstanceUssageContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code NormalArrayUsage}
-	 * labeled alternative in {@link CodexLatinusParser#array_ussage}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNormalArrayUsage(CodexLatinusParser.NormalArrayUsageContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code NormalVariableUsage}
+	 * Visit a parse tree produced by the {@code NormalVariableRedefiniedUsage}
 	 * labeled alternative in {@link CodexLatinusParser#variable_ussage}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNormalVariableUsage(CodexLatinusParser.NormalVariableUsageContext ctx);
+	T visitNormalVariableRedefiniedUsage(CodexLatinusParser.NormalVariableRedefiniedUsageContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code NestedStructValue}
+	 * Visit a parse tree produced by the {@code NestedStructRedefiniedValue}
 	 * labeled alternative in {@link CodexLatinusParser#nested_variables_usage}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNestedStructValue(CodexLatinusParser.NestedStructValueContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code SetStructNormalArray}
-	 * labeled alternative in {@link CodexLatinusParser#struct_array_set}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSetStructNormalArray(CodexLatinusParser.SetStructNormalArrayContext ctx);
+	T visitNestedStructRedefiniedValue(CodexLatinusParser.NestedStructRedefiniedValueContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code StructInstance}
 	 * labeled alternative in {@link CodexLatinusParser#struct_instance}.
@@ -682,21 +612,14 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	T visitBoolDeclaration(CodexLatinusParser.BoolDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code NormalArrayDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#normal_array}.
+	 * labeled alternative in {@link CodexLatinusParser#normal_array_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNormalArrayDeclaration(CodexLatinusParser.NormalArrayDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code BooleanArrayDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#normal_array}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanArrayDeclaration(CodexLatinusParser.BooleanArrayDeclarationContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code BooleanArrayBase}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_array}.
+	 * labeled alternative in {@link CodexLatinusParser#boolean_array_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -708,13 +631,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArrayInitWithValues(CodexLatinusParser.ArrayInitWithValuesContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ArrayInitEmpty}
-	 * labeled alternative in {@link CodexLatinusParser#array_initialization}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayInitEmpty(CodexLatinusParser.ArrayInitEmptyContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ArraySingleValue}
 	 * labeled alternative in {@link CodexLatinusParser#values_array_list}.
@@ -730,19 +646,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayValueList(CodexLatinusParser.ArrayValueListContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArrayStructVal}
+	 * Visit a parse tree produced by the {@code ArrayNormalValue}
 	 * labeled alternative in {@link CodexLatinusParser#array_value}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArrayStructVal(CodexLatinusParser.ArrayStructValContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ArrayNormalVal}
-	 * labeled alternative in {@link CodexLatinusParser#array_value}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayNormalVal(CodexLatinusParser.ArrayNormalValContext ctx);
+	T visitArrayNormalValue(CodexLatinusParser.ArrayNormalValueContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code StructBaseProperty}
 	 * labeled alternative in {@link CodexLatinusParser#struct_values}.
@@ -891,55 +800,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStructDataNormal(CodexLatinusParser.StructDataNormalContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExpressionGreaterEqual}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionGreaterEqual(CodexLatinusParser.ExpressionGreaterEqualContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionMult}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionMult(CodexLatinusParser.ExpressionMultContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionLessThan}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionLessThan(CodexLatinusParser.ExpressionLessThanContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionMinus}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionMinus(CodexLatinusParser.ExpressionMinusContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionLessEqual}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionLessEqual(CodexLatinusParser.ExpressionLessEqualContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionNegate}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionNegate(CodexLatinusParser.ExpressionNegateContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionNotEquals}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionNotEquals(CodexLatinusParser.ExpressionNotEqualsContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ExpressionParents}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
@@ -947,19 +807,26 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionParents(CodexLatinusParser.ExpressionParentsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExpressionDiv}
+	 * Visit a parse tree produced by the {@code ExpressionUnary}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpressionDiv(CodexLatinusParser.ExpressionDivContext ctx);
+	T visitExpressionUnary(CodexLatinusParser.ExpressionUnaryContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExpressionNot}
+	 * Visit a parse tree produced by the {@code ExpressionEquality}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpressionNot(CodexLatinusParser.ExpressionNotContext ctx);
+	T visitExpressionEquality(CodexLatinusParser.ExpressionEqualityContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExpressionRelational}
+	 * labeled alternative in {@link CodexLatinusParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpressionRelational(CodexLatinusParser.ExpressionRelationalContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExpressionValue}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
@@ -982,26 +849,19 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionOr(CodexLatinusParser.ExpressionOrContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExpressionGreaterThan}
+	 * Visit a parse tree produced by the {@code ExpressionMultDiv}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpressionGreaterThan(CodexLatinusParser.ExpressionGreaterThanContext ctx);
+	T visitExpressionMultDiv(CodexLatinusParser.ExpressionMultDivContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExpressionEquals}
+	 * Visit a parse tree produced by the {@code ExpressionAddSub}
 	 * labeled alternative in {@link CodexLatinusParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpressionEquals(CodexLatinusParser.ExpressionEqualsContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExpressionPlus}
-	 * labeled alternative in {@link CodexLatinusParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionPlus(CodexLatinusParser.ExpressionPlusContext ctx);
+	T visitExpressionAddSub(CodexLatinusParser.ExpressionAddSubContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code TypeText}
 	 * labeled alternative in {@link CodexLatinusParser#variable_type}.
@@ -1059,13 +919,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArgumentSingleFunction(CodexLatinusParser.ArgumentSingleFunctionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code NoArgumentsFunction}
-	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNoArgumentsFunction(CodexLatinusParser.NoArgumentsFunctionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ArgumentFunctionList}
 	 * labeled alternative in {@link CodexLatinusParser#arguments_list}.
 	 * @param ctx the parse tree
@@ -1079,6 +932,13 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArrayCallVariable}
+	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayCallVariable(CodexLatinusParser.ArrayCallVariableContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code SigleValueVariable}
 	 * labeled alternative in {@link CodexLatinusParser#nest_variable}.
@@ -1156,6 +1016,13 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitValStructPropertyLiteral(CodexLatinusParser.ValStructPropertyLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ValArrayLiteral}
+	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValArrayLiteral(CodexLatinusParser.ValArrayLiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code BoolTrue}
 	 * labeled alternative in {@link CodexLatinusParser#boolean_values}.

@@ -33,7 +33,7 @@ functions_block
 /*------ FUNCTION & PROCEDURE DECLARATIONS ------*/
 
 function_declaration
-    : RATIO variable_function_type ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDecl
+    : RATIO variable_function_type ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDeclaration
     ;
 
 /*------Return values------*/
@@ -44,15 +44,15 @@ variable_function_type
 
 
 procedure_declaration
-    : ACTIO ID INIT_PARENT function_arguments FINAL_PARENT INIT_BRACE procedure_body FINAL_BRACE FINIS DOT_COMMA # ProcedureDecl
+    : ACTIO ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE procedure_body FINAL_BRACE FINIS DOT_COMMA    # ProcedureDeclaration
     ;
 
 function_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body         # FunctionBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body?         # FunctionBody
     ;
 
 procedure_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body          # ProcedureBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body?          # ProcedureBody
     ;
 
 /*------ ARGUMENTS & LOCAL VARIABLES ------*/
@@ -63,17 +63,16 @@ local_variable_list
     ;
 
 local_variable
-    : variable_declaration      # LocalVarDeclaration
-    | boolean_declaration       # LocalBoolVarDeclaration
-    | normal_array              # LocalArrayDeclaration
-    | boolean_array             # LocalBoolArrayDeclaration
-    | struct_instance           # LocalStructInstance
+    : variable_declaration                  # LocalVarDeclaration
+    | boolean_declaration                   # LocalBoolVarDeclaration
+    | normal_array_declaration              # LocalArrayDeclaration
+    | boolean_array_declaration             # LocalBoolArrayDeclaration
+    | struct_instance                       # LocalStructInstance
     ;
 
 function_arguments
     : function_arguments COMMA argument # FunctionArgsList
     | argument                         # FunctionSingleArg
-    | /* Lambda */                      # FunctionArgsEmpty
     ;
 
 argument
@@ -109,10 +108,7 @@ control_block
     | return_control                        # ReturnControlAction
     | abbreviated_operation                 # LocalAbbreviatedOperation
     | variable_ussage                       # LocalVariableRedefinition
-    | array_ussage                          # LocalArrayRedefinition
-    | struct_array_property                 # LocalStructArrayDefinition
-    | struct_ussage                         # LocalStructRedefinition
-    | struct_array_set                      # LocalStructArraySetter
+    | array_redefined_ussage                # LocalArrayRedefinedUssage
     | nested_variables_usage                # LocalNestedVariableUsage
     ;
 
@@ -153,35 +149,35 @@ block_code
 /*------ IF STATEMENT PRODUCTION ------*/
 
 if_statement
-    : SI INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE else_if_list else_statement FINIS DOT_COMMA # IfStatement
+    : SI INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body? FINAL_BRACE else_if_list? else_statement FINIS DOT_COMMA # IfStatement
     ;
 
 else_if_list
     : else_if_list else_if_clause # ElseIfList
-    | /* Lambda */                # ElseIfEmpty
+    | else_if_clause              # ElseIfSingle
     ;
 
 else_if_clause
-    : ALITER INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE # ElseIfClause
+    : ALITER INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body? FINAL_BRACE # ElseIfClause
     ;
 
 else_statement
-    : ALITER INIT_BRACE code_body FINAL_BRACE   # ElseBlock
-    | /* Lambda */                              # ElseEmpty
+    : ALITER INIT_BRACE code_body? FINAL_BRACE   # ElseBlock
+    | /* Lambda */                               # ElseEmpty
     ;
 
 /*------ CYCLES ------*/
 
 while_statement
-    : DUM INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body FINAL_BRACE FINIS DOT_COMMA # WhileStatement
+    : DUM INIT_PARENT expression FINAL_PARENT INIT_BRACE code_body? FINAL_BRACE FINIS DOT_COMMA # WhileStatement
     ;
 
 do_while_statement
-    : FACERE INIT_BRACE code_body FINAL_BRACE DUM INIT_PARENT expression FINAL_PARENT DOT_COMMA # DoWhileStatement
+    : FACERE INIT_BRACE code_body? FINAL_BRACE DUM INIT_PARENT expression FINAL_PARENT DOT_COMMA # DoWhileStatement
     ;
 
 for_statement
-    : PER INIT_PARENT for_init DOT_COMMA expression DOT_COMMA for_update FINAL_PARENT INIT_BRACE code_body FINAL_BRACE  # ForStatement
+    : PER INIT_PARENT for_init DOT_COMMA expression DOT_COMMA for_update FINAL_PARENT INIT_BRACE code_body? FINAL_BRACE  # ForStatement
     ;
 
 for_init
@@ -212,57 +208,33 @@ variabiles_body: variabiles_body declarations   # DeclarationsVariablesList
 
 /*------ DECLARATIONS PRODUCTIONS SECTION------*/
 declarations
-    : variable_declaration      # VariableInstance
-    | variable_ussage           # VariableRedefinedUssage
-    | boolean_declaration       # BooleanVariableInstance
-    | normal_array              # NormalArrayInstance
-    | boolean_array             # BooleanArrayInstance
-    | array_ussage              # ArrayRedefinedUssage
-    | struct_declaration        # StructDefinition
-    | struct_array_property     # StructSetProperty
-    | struct_instance           # StructVariableInstance
-    | struct_ussage             # StructRedefinedUsage
-    | struct_array_set          # StructArrayzSetter
-    | abbreviated_operation     # GlobalAbbreviatedOperation
-    | nested_variables_usage    # GlobalNestedVariableUsage
+    : variable_declaration          # VariableInstance
+    | variable_ussage               # VariableRedefinedUssage
+    | boolean_declaration           # BooleanVariableInstance
+    | normal_array_declaration      # NormalArrayInstance
+    | boolean_array_declaration     # BooleanArrayInstance
+    | struct_declaration            # StructDefinition
+    | array_redefined_ussage        # ArrayRedefinedUssage
+    | struct_instance               # StructVariableInstance
+    | abbreviated_operation         # GlobalAbbreviatedOperation
+    | nested_variables_usage        # GlobalNestedVariableUsage
     ;
 
 
 /*-----VARIABLE USAGE PRODUCTIONS-----*/
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
-
-//TODO: PENDING ARRAYPROPERTY
-struct_array_property
-    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL struct_literal DOT_COMMA   # StructArrayProperty
+array_redefined_ussage
+    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA   #RedefiniedVariableUssage
     ;
-
-struct_ussage
-    : ID EQUAL INIT_BRACE struct_data_list FINAL_BRACE DOT_COMMA? #StructInstanceUssage
-    ;
-
-//TODO: PENDING ARRAYPROPERTY WITH USSAGE
-array_ussage
-    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA # NormalArrayUsage
-    ;
-
 
 variable_ussage
-    : ID EQUAL expression DOT_COMMA # NormalVariableUsage
+    : ID EQUAL expression DOT_COMMA                 # NormalVariableRedefiniedUsage
     ;
-
 
 nested_variables_usage
-    : struct_values EQUAL expression DOT_COMMA  #NestedStructValue
+    : struct_values EQUAL expression DOT_COMMA      #NestedStructRedefiniedValue
     ;
-
-
-/*-----STRUCT SETTER INSTANCE PRODUCTIONS-----*/
-
-struct_array_set
-    : nest_variable EQUAL array_initialization DOT_COMMA                #SetStructNormalArray
-    ;
-
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
 
@@ -281,21 +253,19 @@ boolean_declaration
     : ESTO ID TWO_POINTS boolean_values DOT_COMMA # BoolDeclaration
     ;
 
-normal_array
-    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS variable_type array_initialization DOT_COMMA # NormalArrayDeclaration
-    | boolean_array # BooleanArrayDeclaration
+normal_array_declaration
+    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS variable_type array_initialization? DOT_COMMA   # NormalArrayDeclaration
     ;
 
-boolean_array
-    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS array_initialization DOT_COMMA #BooleanArrayBase
+boolean_array_declaration
+    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS array_initialization? DOT_COMMA #BooleanArrayBase
     ;
 
 
 /*---****------****--- ARRAY PROPERTIES SECTION ---****------****---*/
 
 array_initialization
-    : INIT_BRACE values_array_list FINAL_BRACE # ArrayInitWithValues
-    | /* Lambda */                            # ArrayInitEmpty
+    : INIT_BRACE values_array_list FINAL_BRACE      # ArrayInitWithValues
     ;
 
 values_array_list
@@ -304,8 +274,7 @@ values_array_list
     ;
 
 array_value
-    : struct_values  # ArrayStructVal
-    | expression  # ArrayNormalVal
+    : expression  # ArrayNormalValue
     ;
 
 
@@ -385,28 +354,15 @@ struct_data_value
 /*--******-------****--- OPERATION SECTION ---****-------******--*/
 
 expression
-    : INIT_PARENT expression FINAL_PARENT               # ExpressionParents
-    | NOT expression                                    # ExpressionNot
-    | MINUS expression                                  # ExpressionNegate
-
-    | expression MULTIPLICATION expression              # ExpressionMult
-    | expression DIVIDE expression                      # ExpressionDiv
-
-    | expression PLUS expression                        # ExpressionPlus
-    | expression MINUS expression                       # ExpressionMinus
-
-    | expression LESS expression                   # ExpressionLessThan
-    | expression GREATER expression                     # ExpressionGreaterThan
-    | expression LESS_EQUALS expression                        # ExpressionLessEqual
-    | expression GREATER_EQUALS expression              # ExpressionGreaterEqual
-
-    | expression EQUALS expression                      # ExpressionEquals
-    | expression DIFERENCE expression                   # ExpressionNotEquals
-
-    | expression AND expression                         # ExpressionAnd
-    | expression OR expression                          # ExpressionOr
-
-    | normal_values                                     # ExpressionValue
+    : INIT_PARENT expression FINAL_PARENT                                           # ExpressionParents
+    | op=(NOT | MINUS) expression                                                   # ExpressionUnary
+    | expression op=(MULTIPLICATION | DIVIDE) expression                            # ExpressionMultDiv
+    | expression op=(PLUS | MINUS) expression                                       # ExpressionAddSub
+    | expression op=(LESS | GREATER | LESS_EQUALS | GREATER_EQUALS) expression      # ExpressionRelational
+    | expression op=(EQUALS | DIFERENCE) expression                                 # ExpressionEquality
+    | expression AND expression                                                     # ExpressionAnd
+    | expression OR expression                                                      # ExpressionOr
+    | normal_values                                                                 # ExpressionValue
     ;
 
 
@@ -429,38 +385,39 @@ array_call
 /*--------****--- FUNCTION CALLING ---****--------*/
 
 function_call
-    : ID INIT_PARENT arguments_list FINAL_PARENT      # FunctionCalling
+    : ID INIT_PARENT arguments_list? FINAL_PARENT      # FunctionCalling
     ;
 
 arguments_list
     : arguments_list COMMA expression           # ArgumentFunctionList
     | expression                                # ArgumentSingleFunction
-    | /*Empty*/                                 # NoArgumentsFunction
     ;
 
 /*-----STRUCT VARIABLE INSTANCE PRODUCTIONS-----*/
 nest_variable
     : struct_values         # NestedValueVariable
+    | array_call            # ArrayCallVariable
     | ID                    # SigleValueVariable
     ;
 
 /*--------****--- PRINCIPAL VALUES DATA ---****--------*/
 normal_values
-    : STRING            # ValString
-    | CHAR              # ValChar
-    | ID                # ValId
-    | DECIMAL           # ValDecimal
-    | INT               # ValInt
-    | boolean_values    # ValBool
-    | array_call        # ValIdCall
-    | function_call     # ValFunctionCall
-    | struct_values     # ValStructNestValue
-    | struct_literal    # ValStructPropertyLiteral
+    : STRING                    # ValString
+    | CHAR                      # ValChar
+    | ID                        # ValId
+    | DECIMAL                   # ValDecimal
+    | INT                       # ValInt
+    | boolean_values            # ValBool
+    | array_call                # ValIdCall
+    | function_call             # ValFunctionCall
+    | struct_values             # ValStructNestValue
+    | struct_literal            # ValStructPropertyLiteral
+    | array_initialization      # ValArrayLiteral
     ;
 
 boolean_values
-    : VERUM  # BoolTrue
-    | FALSUS # BoolFalse
+    : VERUM     # BoolTrue
+    | FALSUS    # BoolFalse
     ;
 
 abbreviated_operation
