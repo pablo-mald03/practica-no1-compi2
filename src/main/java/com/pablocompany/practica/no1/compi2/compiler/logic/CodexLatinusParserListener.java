@@ -112,18 +112,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code FunctionReturBooleanType}
-	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code FunctionReturBooleanType}
-	 * labeled alternative in {@link CodexLatinusParser#variable_function_type}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionReturBooleanType(CodexLatinusParser.FunctionReturBooleanTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ProcedureDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#procedure_declaration}.
 	 * @param ctx the parse tree
@@ -196,18 +184,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitLocalVarDeclaration(CodexLatinusParser.LocalVarDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LocalBoolVarDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
-	 * @param ctx the parse tree
-	 */
-	void enterLocalBoolVarDeclaration(CodexLatinusParser.LocalBoolVarDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code LocalBoolVarDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
-	 * @param ctx the parse tree
-	 */
-	void exitLocalBoolVarDeclaration(CodexLatinusParser.LocalBoolVarDeclarationContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code LocalArrayDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
 	 * @param ctx the parse tree
@@ -219,18 +195,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLocalArrayDeclaration(CodexLatinusParser.LocalArrayDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code LocalBoolArrayDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
-	 * @param ctx the parse tree
-	 */
-	void enterLocalBoolArrayDeclaration(CodexLatinusParser.LocalBoolArrayDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code LocalBoolArrayDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
-	 * @param ctx the parse tree
-	 */
-	void exitLocalBoolArrayDeclaration(CodexLatinusParser.LocalBoolArrayDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code LocalStructInstance}
 	 * labeled alternative in {@link CodexLatinusParser#local_variable}.
@@ -304,18 +268,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitArgumentNormalDeclaration(CodexLatinusParser.ArgumentNormalDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ArgumentBooleanDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
-	 * @param ctx the parse tree
-	 */
-	void enterArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArgumentBooleanDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#argument_variable_type}.
-	 * @param ctx the parse tree
-	 */
-	void exitArgumentBooleanDeclaration(CodexLatinusParser.ArgumentBooleanDeclarationContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ArgumentArrayNormalDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
 	 * @param ctx the parse tree
@@ -327,18 +279,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ArgumentArrayBooleanDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
-	 * @param ctx the parse tree
-	 */
-	void enterArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArgumentArrayBooleanDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#argument_series_type}.
-	 * @param ctx the parse tree
-	 */
-	void exitArgumentArrayBooleanDeclaration(CodexLatinusParser.ArgumentArrayBooleanDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MuneraCodeSection}
 	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
@@ -868,18 +808,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitVariableRedefinedUssage(CodexLatinusParser.VariableRedefinedUssageContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BooleanVariableInstance}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanVariableInstance(CodexLatinusParser.BooleanVariableInstanceContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BooleanVariableInstance}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanVariableInstance(CodexLatinusParser.BooleanVariableInstanceContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code NormalArrayInstance}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
 	 * @param ctx the parse tree
@@ -891,18 +819,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNormalArrayInstance(CodexLatinusParser.NormalArrayInstanceContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code BooleanArrayInstance}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanArrayInstance(CodexLatinusParser.BooleanArrayInstanceContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BooleanArrayInstance}
-	 * labeled alternative in {@link CodexLatinusParser#declarations}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanArrayInstance(CodexLatinusParser.BooleanArrayInstanceContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code StructDefinition}
 	 * labeled alternative in {@link CodexLatinusParser#declarations}.
@@ -1024,18 +940,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitVariableDeclaration(CodexLatinusParser.VariableDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BoolDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolDeclaration(CodexLatinusParser.BoolDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BoolDeclaration}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolDeclaration(CodexLatinusParser.BoolDeclarationContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code NormalArrayDeclaration}
 	 * labeled alternative in {@link CodexLatinusParser#normal_array_declaration}.
 	 * @param ctx the parse tree
@@ -1047,18 +951,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNormalArrayDeclaration(CodexLatinusParser.NormalArrayDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code BooleanArrayBase}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_array_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanArrayBase(CodexLatinusParser.BooleanArrayBaseContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BooleanArrayBase}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_array_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanArrayBase(CodexLatinusParser.BooleanArrayBaseContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ArrayInitWithValues}
 	 * labeled alternative in {@link CodexLatinusParser#array_initialization}.
@@ -1252,18 +1144,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitNormalVariableStruct(CodexLatinusParser.NormalVariableStructContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BooleanVariableStruct}
-	 * labeled alternative in {@link CodexLatinusParser#struct_attribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanVariableStruct(CodexLatinusParser.BooleanVariableStructContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BooleanVariableStruct}
-	 * labeled alternative in {@link CodexLatinusParser#struct_attribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanVariableStruct(CodexLatinusParser.BooleanVariableStructContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ArrayVariableStruct}
 	 * labeled alternative in {@link CodexLatinusParser#struct_attribute}.
 	 * @param ctx the parse tree
@@ -1287,18 +1167,6 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInternalStructNormalVariable(CodexLatinusParser.InternalStructNormalVariableContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code InternalStructBoolVariable}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_variable_without_value}.
-	 * @param ctx the parse tree
-	 */
-	void enterInternalStructBoolVariable(CodexLatinusParser.InternalStructBoolVariableContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code InternalStructBoolVariable}
-	 * labeled alternative in {@link CodexLatinusParser#boolean_variable_without_value}.
-	 * @param ctx the parse tree
-	 */
-	void exitInternalStructBoolVariable(CodexLatinusParser.InternalStructBoolVariableContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code InternalStructArray}
 	 * labeled alternative in {@link CodexLatinusParser#array_variable_struct}.

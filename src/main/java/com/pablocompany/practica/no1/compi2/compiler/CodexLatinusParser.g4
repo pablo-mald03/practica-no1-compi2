@@ -39,7 +39,6 @@ function_declaration
 /*------Return values------*/
 variable_function_type
     : variable_type     #FunctionReturNormalType
-    | boolean_values    #FunctionReturBooleanType
     ;
 
 
@@ -64,9 +63,7 @@ local_variable_list
 
 local_variable
     : variable_declaration                  # LocalVarDeclaration
-    | boolean_declaration                   # LocalBoolVarDeclaration
     | normal_array_declaration              # LocalArrayDeclaration
-    | boolean_array_declaration             # LocalBoolArrayDeclaration
     | struct_instance                       # LocalStructInstance
     ;
 
@@ -82,12 +79,10 @@ argument
 
 argument_variable_type
     : variable_type         # ArgumentNormalDeclaration
-    | boolean_values?       # ArgumentBooleanDeclaration
     ;
 
 argument_series_type
     : variable_type         # ArgumentArrayNormalDeclaration
-    | boolean_values?       # ArgumentArrayBooleanDeclaration
     ;
 
 /*===*****========*****===== MUNERA SECTION ===*****==========*****===*/
@@ -210,9 +205,7 @@ variabiles_body: variabiles_body declarations   # DeclarationsVariablesList
 declarations
     : variable_declaration          # VariableInstance
     | variable_ussage               # VariableRedefinedUssage
-    | boolean_declaration           # BooleanVariableInstance
     | normal_array_declaration      # NormalArrayInstance
-    | boolean_array_declaration     # BooleanArrayInstance
     | struct_declaration            # StructDefinition
     | array_redefined_ussage        # ArrayRedefinedUssage
     | struct_instance               # StructVariableInstance
@@ -249,16 +242,9 @@ variable_declaration
     : ESTO ID TWO_POINTS variable_type expression DOT_COMMA # VariableDeclaration
     ;
 
-boolean_declaration
-    : ESTO ID TWO_POINTS boolean_values DOT_COMMA # BoolDeclaration
-    ;
 
 normal_array_declaration
     : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS variable_type array_initialization? DOT_COMMA   # NormalArrayDeclaration
-    ;
-
-boolean_array_declaration
-    : SERIES ID INIT_BRACKET expression FINAL_BRACKET TWO_POINTS array_initialization? DOT_COMMA #BooleanArrayBase
     ;
 
 
@@ -315,7 +301,6 @@ struct_comma_body
 
 struct_attribute
     : variable_without_value            # NormalVariableStruct
-    | boolean_variable_without_value    # BooleanVariableStruct
     | array_variable_struct             # ArrayVariableStruct
     ;
 
@@ -326,9 +311,6 @@ variable_without_value
     : ESTO ID TWO_POINTS variable_type # InternalStructNormalVariable
     ;
 
-boolean_variable_without_value
-    : ESTO ID TWO_POINTS boolean_values # InternalStructBoolVariable
-    ;
 
 array_variable_struct
     : SERIES ID TWO_POINTS ID           # InternalStructArray
