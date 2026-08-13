@@ -521,12 +521,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code RedefiniedVariableUssage}
+	 * Visit a parse tree produced by the {@code RedefiniedArrayUssage}
 	 * labeled alternative in {@link CodexLatinusParser#array_redefined_ussage}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx);
+	T visitRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code NormalVariableRedefiniedUsage}
 	 * labeled alternative in {@link CodexLatinusParser#variable_ussage}.

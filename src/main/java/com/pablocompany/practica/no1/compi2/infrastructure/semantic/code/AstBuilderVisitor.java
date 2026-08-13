@@ -9,6 +9,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.UnaryExpressionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.VariableAssignmentNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.UnaryOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructAttributeNode;
@@ -24,6 +25,9 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.v
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.VariableDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.services.ExpressionHelperService;
 
 import java.util.ArrayList;
@@ -70,20 +74,76 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
 
     @Override
     public AstNode visitVariablesSection(CodexLatinusParser.VariablesSectionContext ctx) {
-        return visit(ctx.variabiles_body());
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        List<AstNode> declarations = new ArrayList<>();
+        CodexLatinusParser.Variabiles_bodyContext current = ctx.variabiles_body();
+
+        while (current instanceof CodexLatinusParser.DeclarationsVariablesListContext) {
+            CodexLatinusParser.DeclarationsVariablesListContext listCtx = (CodexLatinusParser.DeclarationsVariablesListContext) current;
+
+            declarations.add(0, visit(listCtx.declarations()));
+
+            current = listCtx.variabiles_body();
+        }
+
+        if (current instanceof CodexLatinusParser.DeclarationsSingleVariableContext) {
+            CodexLatinusParser.DeclarationsSingleVariableContext singleCtx = (CodexLatinusParser.DeclarationsSingleVariableContext) current;
+            declarations.add(0, visit(singleCtx.declarations()));
+        }
+
+        return new VariablesSectionNode(line, column, declarations);
     }
 
     @Override
     public AstNode visitMuneraSection(CodexLatinusParser.MuneraSectionContext ctx) {
-        return visit(ctx.munera_body());
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        List<AstNode> functions = new ArrayList<>();
+        CodexLatinusParser.Munera_bodyContext current = ctx.munera_body();
+
+        while (current instanceof CodexLatinusParser.FunctionsBlockListContext) {
+            CodexLatinusParser.FunctionsBlockListContext listCtx = (CodexLatinusParser.FunctionsBlockListContext) current;
+            functions.add(0, visit(listCtx.functions_block()));
+            current = listCtx.munera_body();
+        }
+
+        if (current instanceof CodexLatinusParser.FunctionsSingleBlockContext) {
+            CodexLatinusParser.FunctionsSingleBlockContext singleCtx = (CodexLatinusParser.FunctionsSingleBlockContext) current;
+            functions.add(0, visit(singleCtx.functions_block()));
+        }
+
+        return new MuneraSectionNode(line, column, functions);
     }
 
     @Override
     public AstNode visitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) {
-        return visit(ctx.code_body());
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        List<AstNode> statements = parseCodeBody(ctx.code_body());
+
+        return new MaiorSectionNode(line, column, statements);
     }
 
     //TODO: define all the overraideable methods
+
+    //----******----- NESTED VALUES ----******-----
+
+    @Override
+    public AstNode visitNormalVariableRedefiniedUsage(CodexLatinusParser.NormalVariableRedefiniedUsageContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+
+        return new VariableAssignmentNode(line, column, value, id);
+    }
+
+    //----******----- ABREVIATED VALUES ----******-----
 
 
     //----******----- STRUCTS PROPERTIES ----******-----
@@ -171,20 +231,6 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitStructValueList(CodexLatinusParser.StructValueListContext ctx) {
-        List<StructPropertyNode> list = (List<StructPropertyNode>) visit(ctx.struct_data_list());
-        list.add((StructPropertyNode) visit(ctx.struct_data_value()));
-        return (AstNode) list;
-    }
-
-    @Override
-    public AstNode visitStructSingleValue(CodexLatinusParser.StructSingleValueContext ctx) {
-        List<StructPropertyNode> list = new ArrayList<>();
-        list.add((StructPropertyNode) visit(ctx.struct_data_value()));
-        return (AstNode) list;
-    }
-
-    @Override
     public AstNode visitStructDataNormal(CodexLatinusParser.StructDataNormalContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
@@ -235,46 +281,6 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         }
 
         return new StructDeclarationNode(line, column, structName, attributes);
-    }
-
-    @Override
-    public AstNode visitStructSeparatedBody(CodexLatinusParser.StructSeparatedBodyContext ctx) {
-        return visit(ctx.struct_normal_body());
-    }
-
-    @Override
-    public AstNode visitStructCommaBody(CodexLatinusParser.StructCommaBodyContext ctx) {
-        return visit(ctx.struct_comma_body());
-    }
-
-
-
-    @Override
-    public AstNode visitStructNormalBodyList(CodexLatinusParser.StructNormalBodyListContext ctx) {
-        List<StructAttributeNode> list = (List<StructAttributeNode>) visit(ctx.struct_normal_body());
-        list.add((StructAttributeNode) visit(ctx.struct_attribute()));
-        return (AstNode) list;
-    }
-
-    @Override
-    public AstNode visitStructNormalBodySingle(CodexLatinusParser.StructNormalBodySingleContext ctx) {
-        List<StructAttributeNode> list = new ArrayList<>();
-        list.add((StructAttributeNode) visit(ctx.struct_attribute()));
-        return (AstNode) list;
-    }
-
-    @Override
-    public AstNode visitStructCommaBodyList(CodexLatinusParser.StructCommaBodyListContext ctx) {
-        List<StructAttributeNode> list = (List<StructAttributeNode>) visit(ctx.struct_comma_body());
-        list.add((StructAttributeNode) visit(ctx.struct_attribute()));
-        return (AstNode) list;
-    }
-
-    @Override
-    public AstNode visitStructCommaBodySingle(CodexLatinusParser.StructCommaBodySingleContext ctx) {
-        List<StructAttributeNode> list = new ArrayList<>();
-        list.add((StructAttributeNode) visit(ctx.struct_attribute()));
-        return (AstNode) list;
     }
 
     //----******----- STRUCT VALUES DECLARATION ----******-----
@@ -350,21 +356,8 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
     /*---****------****--- ARRAY PROPERTIES INITIALIZATION VALUES---****------****---*/
 
     @Override
-    public AstNode visitArraySingleValue(CodexLatinusParser.ArraySingleValueContext ctx) {
-        return visit(ctx.array_value());
-    }
-
-    @Override
     public AstNode visitArrayNormalValue(CodexLatinusParser.ArrayNormalValueContext ctx) {
         return visit(ctx.expression());
-    }
-
-    @Override
-    public AstNode visitArrayValueList(CodexLatinusParser.ArrayValueListContext ctx) {
-        List<ExpressionNode> list = (List<ExpressionNode>) visit(ctx.values_array_list());
-        ExpressionNode element = (ExpressionNode) visit(ctx.array_value());
-        list.add(element);
-        return (AstNode) list;
     }
 
     @Override
@@ -455,22 +448,6 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         }
 
         return new FunctionCallExpressionNode(line, column, functionName, arguments);
-    }
-
-    @Override
-    public AstNode visitArgumentFunctionList(CodexLatinusParser.ArgumentFunctionListContext ctx) {
-        List<ExpressionNode> list = (List<ExpressionNode>) visit(ctx.arguments_list());
-        ExpressionNode arg = (ExpressionNode) visit(ctx.expression());
-        list.add(arg);
-        return (AstNode) (Object) list;
-    }
-
-    @Override
-    public AstNode visitArgumentSingleFunction(CodexLatinusParser.ArgumentSingleFunctionContext ctx) {
-        List<ExpressionNode> list = new ArrayList<>();
-        ExpressionNode arg = (ExpressionNode) visit(ctx.expression());
-        list.add(arg);
-        return (AstNode) list;
     }
 
     //----******----- PRINCIPAL ARRAY CALL PRODUCTIONS ----******-----
@@ -639,5 +616,29 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
         return new LiteralExpressionNode(line, column, "verum", DataType.BOOLEAN);
+    }
+
+
+    //AUXILIAR METHODS
+    private List<AstNode> parseCodeBody(CodexLatinusParser.Code_bodyContext codeBodyCtx) {
+        List<AstNode> statements = new ArrayList<>();
+        if (codeBodyCtx == null) {
+            return statements;
+        }
+
+        CodexLatinusParser.Code_bodyContext current = codeBodyCtx;
+
+        while (current instanceof CodexLatinusParser.BlockControlListContext) {
+            CodexLatinusParser.BlockControlListContext listCtx = (CodexLatinusParser.BlockControlListContext) current;
+            statements.add(0, visit(listCtx.control_block()));
+            current = listCtx.code_body();
+        }
+
+        if (current instanceof CodexLatinusParser.BlockSingleControlContext) {
+            CodexLatinusParser.BlockSingleControlContext singleCtx = (CodexLatinusParser.BlockSingleControlContext) current;
+            statements.add(0, visit(singleCtx.control_block()));
+        }
+
+        return statements;
     }
 }

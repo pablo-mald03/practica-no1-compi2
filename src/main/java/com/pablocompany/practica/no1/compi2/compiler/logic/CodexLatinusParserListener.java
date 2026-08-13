@@ -882,17 +882,17 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitGlobalNestedVariableUsage(CodexLatinusParser.GlobalNestedVariableUsageContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code RedefiniedVariableUssage}
+	 * Enter a parse tree produced by the {@code RedefiniedArrayUssage}
 	 * labeled alternative in {@link CodexLatinusParser#array_redefined_ussage}.
 	 * @param ctx the parse tree
 	 */
-	void enterRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx);
+	void enterRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code RedefiniedVariableUssage}
+	 * Exit a parse tree produced by the {@code RedefiniedArrayUssage}
 	 * labeled alternative in {@link CodexLatinusParser#array_redefined_ussage}.
 	 * @param ctx the parse tree
 	 */
-	void exitRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx);
+	void exitRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code NormalVariableRedefiniedUsage}
 	 * labeled alternative in {@link CodexLatinusParser#variable_ussage}.

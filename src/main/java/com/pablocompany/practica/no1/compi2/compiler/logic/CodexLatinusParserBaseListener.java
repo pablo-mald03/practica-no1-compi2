@@ -893,13 +893,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx) { }
+	@Override public void enterRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRedefiniedVariableUssage(CodexLatinusParser.RedefiniedVariableUssageContext ctx) { }
+	@Override public void exitRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

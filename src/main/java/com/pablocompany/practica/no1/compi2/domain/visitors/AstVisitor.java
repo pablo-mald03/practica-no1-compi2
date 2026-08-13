@@ -5,8 +5,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.access.PropertyAccessExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.BinaryExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.UnaryExpressionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.*;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructAttributeNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructDeclarationNode;
@@ -19,6 +18,9 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.v
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.LiteralExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.VariableDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
 
 //This interface is the principal to generate the diferent compiler phases
 public interface AstVisitor<T> {
@@ -59,6 +61,19 @@ public interface AstVisitor<T> {
     T visit(MemberArrayAccessExpressionNode node);
 
     T visit(ProgramNode node);
+
     T visit(BodyNode node);
+
+    T visit(VariablesSectionNode node);
+
+    T visit(MuneraSectionNode node);
+
+    T visit(MaiorSectionNode node);
+
+    T visit(VariableAssignmentNode node);
+
+    T visit(ArrayAssignmentNode node);
+
+    T visit(AbreviatedExpressionNode node);
 
 }

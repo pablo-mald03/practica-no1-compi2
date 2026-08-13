@@ -220,7 +220,7 @@ declarations
 
 /*-----STRUCT INSTANCE PRODUCTIONS-----*/
 array_redefined_ussage
-    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA   #RedefiniedVariableUssage
+    : ID INIT_BRACKET expression FINAL_BRACKET EQUAL expression DOT_COMMA   #RedefiniedArrayUssage
     ;
 
 variable_ussage

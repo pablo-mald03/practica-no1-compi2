@@ -3975,7 +3975,7 @@ public class CodexLatinusParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class RedefiniedVariableUssageContext extends Array_redefined_ussageContext {
+	public static class RedefiniedArrayUssageContext extends Array_redefined_ussageContext {
 		public TerminalNode ID() { return getToken(CodexLatinusParser.ID, 0); }
 		public TerminalNode INIT_BRACKET() { return getToken(CodexLatinusParser.INIT_BRACKET, 0); }
 		public List<ExpressionContext> expression() {
@@ -3987,18 +3987,18 @@ public class CodexLatinusParser extends Parser {
 		public TerminalNode FINAL_BRACKET() { return getToken(CodexLatinusParser.FINAL_BRACKET, 0); }
 		public TerminalNode EQUAL() { return getToken(CodexLatinusParser.EQUAL, 0); }
 		public TerminalNode DOT_COMMA() { return getToken(CodexLatinusParser.DOT_COMMA, 0); }
-		public RedefiniedVariableUssageContext(Array_redefined_ussageContext ctx) { copyFrom(ctx); }
+		public RedefiniedArrayUssageContext(Array_redefined_ussageContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterRedefiniedVariableUssage(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterRedefiniedArrayUssage(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitRedefiniedVariableUssage(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitRedefiniedArrayUssage(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitRedefiniedVariableUssage(this);
+			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitRedefiniedArrayUssage(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -4007,7 +4007,7 @@ public class CodexLatinusParser extends Parser {
 		Array_redefined_ussageContext _localctx = new Array_redefined_ussageContext(_ctx, getState());
 		enterRule(_localctx, 72, RULE_array_redefined_ussage);
 		try {
-			_localctx = new RedefiniedVariableUssageContext(_localctx);
+			_localctx = new RedefiniedArrayUssageContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(448);
