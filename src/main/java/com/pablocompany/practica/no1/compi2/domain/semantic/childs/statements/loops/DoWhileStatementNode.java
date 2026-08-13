@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation;
+package com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops;
 
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
@@ -6,17 +6,18 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.parents.StatementNod
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
 import lombok.Getter;
 
+import java.util.List;
+
+//This is the principal do while respresentation class
 @Getter
-public class VariableAssignmentNode extends AstNode {
+public class DoWhileStatementNode extends StatementNode {
+    private final ExpressionNode condion;
+    private final List<AstNode> body;
 
-    //TODO
-    private String identifier;
-    private ExpressionNode expressionNode;
-
-    public VariableAssignmentNode(int line, int column, ExpressionNode expressionNode, String identifier) {
+    public DoWhileStatementNode(int line, int column, List<AstNode> body, ExpressionNode condion) {
         super(line, column);
-        this.expressionNode = expressionNode;
-        this.identifier = identifier;
+        this.body = body;
+        this.condion = condion;
     }
 
 

@@ -17,6 +17,20 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.v
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.IdentifierExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.LiteralExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.VariableDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.BreakStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ContinueStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ReturnStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseBlockNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseIfNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.IfStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.FunctionDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ParameterNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ProcedureDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.PrintStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.ReadStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.DoWhileStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.ForStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.WhileStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
@@ -74,6 +88,36 @@ public interface AstVisitor<T> {
 
     T visit(ArrayAssignmentNode node);
 
-    T visit(AbreviatedExpressionNode node);
+    T visit(IncrementStatementNode node);
+
+    T visit(DecrementStatementNode node);
+
+    //Conditionals
+    T visit(IfStatementNode node);
+
+    T visit(ElseIfNode node);
+
+    T visit(ElseBlockNode node);
+
+
+    //Loops
+    T visit(WhileStatementNode node);
+    T visit(DoWhileStatementNode node);
+    T visit(ForStatementNode node);
+
+    //IO stetements
+    T visit(PrintStatementNode node);
+    T visit(ReadStatementNode node);
+
+
+    //Break points control flux
+    T visit(ReturnStatementNode node);
+    T visit(BreakStatementNode node);
+    T visit(ContinueStatementNode node);
+
+    //Functions
+    T visit(FunctionDeclarationNode node);
+    T visit(ProcedureDeclarationNode node);
+    T visit(ParameterNode node);
 
 }

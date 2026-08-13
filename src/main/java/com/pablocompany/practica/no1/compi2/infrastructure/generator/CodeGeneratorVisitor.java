@@ -5,8 +5,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.access.PropertyAccessExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.BinaryExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.UnaryExpressionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.*;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructAttributeNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructDeclarationNode;
@@ -18,7 +17,24 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.v
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.IdentifierExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.LiteralExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.VariableDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.BreakStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ContinueStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ReturnStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseBlockNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseIfNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.IfStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.FunctionDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ParameterNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ProcedureDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.PrintStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.ReadStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.DoWhileStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.ForStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.WhileStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
 
 //This is the delegated class to build the final code
@@ -118,6 +134,111 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
 
     @Override
     public String visit(BodyNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(VariablesSectionNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(MuneraSectionNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(MaiorSectionNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(VariableAssignmentNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ArrayAssignmentNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(IncrementStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(DecrementStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(IfStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ElseIfNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ElseBlockNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(WhileStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(DoWhileStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ForStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(PrintStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ReadStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ReturnStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(BreakStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ContinueStatementNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(FunctionDeclarationNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ProcedureDeclarationNode node) {
+        return "";
+    }
+
+    @Override
+    public String visit(ParameterNode node) {
         return "";
     }
 }
