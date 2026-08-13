@@ -4,7 +4,9 @@ options {
     tokenVocab=CodexLatinusLexer;
 }
 
-program: body* EOF;
+program
+    : body* EOF # ProgramRoot
+    ;
 
     
 body:   variable_section?
@@ -87,7 +89,7 @@ argument_series_type
 
 /*===*****========*****===== MUNERA SECTION ===*****==========*****===*/
 maior_section
-    : MAIOR GREATER code_body # MuneraCodeSection
+    : MAIOR GREATER code_body # MaiorSection
     ;
 
 code_body
@@ -190,7 +192,7 @@ for_update
 /*===*****===== VARIABILES SECTION =====*****===*/
 
 variable_section
-    : VARIABILES GREATER variabiles_body #VariablesSection
+    : VARIABILES GREATER variabiles_body    #VariablesSection
     ;
 
 

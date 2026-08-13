@@ -6,6 +6,7 @@ package com.pablocompany.practica.no1.compi2.domain.context;
 
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
+import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 
@@ -39,7 +40,7 @@ public class EditorContext {
 
     private ParseTree parseTree;
 
-    private Object ast;
+    private AstNode ast;
 
     private String compiledCode = "";
 

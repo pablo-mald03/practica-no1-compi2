@@ -17,13 +17,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProgram(CodexLatinusParser.ProgramContext ctx) { }
+	@Override public void enterProgramRoot(CodexLatinusParser.ProgramRootContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitProgram(CodexLatinusParser.ProgramContext ctx) { }
+	@Override public void exitProgramRoot(CodexLatinusParser.ProgramRootContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -293,13 +293,13 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx) { }
+	@Override public void enterMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx) { }
+	@Override public void exitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

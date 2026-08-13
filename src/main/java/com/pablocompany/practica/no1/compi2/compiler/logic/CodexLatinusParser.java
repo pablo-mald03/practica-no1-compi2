@@ -152,6 +152,18 @@ public class CodexLatinusParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ProgramContext extends ParserRuleContext {
+		public ProgramContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_program; }
+	 
+		public ProgramContext() { }
+		public void copyFrom(ProgramContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ProgramRootContext extends ProgramContext {
 		public TerminalNode EOF() { return getToken(CodexLatinusParser.EOF, 0); }
 		public List<BodyContext> body() {
 			return getRuleContexts(BodyContext.class);
@@ -159,21 +171,18 @@ public class CodexLatinusParser extends Parser {
 		public BodyContext body(int i) {
 			return getRuleContext(BodyContext.class,i);
 		}
-		public ProgramContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_program; }
+		public ProgramRootContext(ProgramContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterProgram(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterProgramRoot(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitProgram(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitProgramRoot(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitProgram(this);
+			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitProgramRoot(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -183,6 +192,7 @@ public class CodexLatinusParser extends Parser {
 		enterRule(_localctx, 0, RULE_program);
 		int _la;
 		try {
+			_localctx = new ProgramRootContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(133);
@@ -1559,24 +1569,24 @@ public class CodexLatinusParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class MuneraCodeSectionContext extends Maior_sectionContext {
+	public static class MaiorSectionContext extends Maior_sectionContext {
 		public TerminalNode MAIOR() { return getToken(CodexLatinusParser.MAIOR, 0); }
 		public TerminalNode GREATER() { return getToken(CodexLatinusParser.GREATER, 0); }
 		public Code_bodyContext code_body() {
 			return getRuleContext(Code_bodyContext.class,0);
 		}
-		public MuneraCodeSectionContext(Maior_sectionContext ctx) { copyFrom(ctx); }
+		public MaiorSectionContext(Maior_sectionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterMuneraCodeSection(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).enterMaiorSection(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitMuneraCodeSection(this);
+			if ( listener instanceof CodexLatinusParserListener ) ((CodexLatinusParserListener)listener).exitMaiorSection(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitMuneraCodeSection(this);
+			if ( visitor instanceof CodexLatinusParserVisitor ) return ((CodexLatinusParserVisitor<? extends T>)visitor).visitMaiorSection(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1585,7 +1595,7 @@ public class CodexLatinusParser extends Parser {
 		Maior_sectionContext _localctx = new Maior_sectionContext(_ctx, getState());
 		enterRule(_localctx, 32, RULE_maior_section);
 		try {
-			_localctx = new MuneraCodeSectionContext(_localctx);
+			_localctx = new MaiorSectionContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(253);

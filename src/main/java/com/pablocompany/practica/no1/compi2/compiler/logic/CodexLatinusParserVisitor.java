@@ -11,11 +11,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link CodexLatinusParser#program}.
+	 * Visit a parse tree produced by the {@code ProgramRoot}
+	 * labeled alternative in {@link CodexLatinusParser#program}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProgram(CodexLatinusParser.ProgramContext ctx);
+	T visitProgramRoot(CodexLatinusParser.ProgramRootContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CodexLatinusParser#body}.
 	 * @param ctx the parse tree
@@ -170,12 +171,12 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code MuneraCodeSection}
+	 * Visit a parse tree produced by the {@code MaiorSection}
 	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
+	T visitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code BlockControlList}
 	 * labeled alternative in {@link CodexLatinusParser#code_body}.

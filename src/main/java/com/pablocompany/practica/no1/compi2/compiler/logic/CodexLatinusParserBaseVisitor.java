@@ -18,7 +18,7 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitProgram(CodexLatinusParser.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override public T visitProgramRoot(CodexLatinusParser.ProgramRootContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -179,7 +179,7 @@ public class CodexLatinusParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

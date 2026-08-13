@@ -8,15 +8,17 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface CodexLatinusParserListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link CodexLatinusParser#program}.
+	 * Enter a parse tree produced by the {@code ProgramRoot}
+	 * labeled alternative in {@link CodexLatinusParser#program}.
 	 * @param ctx the parse tree
 	 */
-	void enterProgram(CodexLatinusParser.ProgramContext ctx);
+	void enterProgramRoot(CodexLatinusParser.ProgramRootContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CodexLatinusParser#program}.
+	 * Exit a parse tree produced by the {@code ProgramRoot}
+	 * labeled alternative in {@link CodexLatinusParser#program}.
 	 * @param ctx the parse tree
 	 */
-	void exitProgram(CodexLatinusParser.ProgramContext ctx);
+	void exitProgramRoot(CodexLatinusParser.ProgramRootContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CodexLatinusParser#body}.
 	 * @param ctx the parse tree
@@ -280,17 +282,17 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 */
 	void exitArgumentArrayNormalDeclaration(CodexLatinusParser.ArgumentArrayNormalDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code MuneraCodeSection}
+	 * Enter a parse tree produced by the {@code MaiorSection}
 	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 */
-	void enterMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
+	void enterMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code MuneraCodeSection}
+	 * Exit a parse tree produced by the {@code MaiorSection}
 	 * labeled alternative in {@link CodexLatinusParser#maior_section}.
 	 * @param ctx the parse tree
 	 */
-	void exitMuneraCodeSection(CodexLatinusParser.MuneraCodeSectionContext ctx);
+	void exitMaiorSection(CodexLatinusParser.MaiorSectionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code BlockControlList}
 	 * labeled alternative in {@link CodexLatinusParser#code_body}.
