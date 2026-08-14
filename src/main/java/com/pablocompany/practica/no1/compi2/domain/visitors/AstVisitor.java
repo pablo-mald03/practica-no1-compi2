@@ -39,7 +39,22 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.principals.Variables
 //This interface is the principal to generate the diferent compiler phases
 public interface AstVisitor<T> {
 
-    //TODO: DECLARATE ALL THE CLASSES
+
+    //======Top node values
+    T visit(ProgramNode node);
+
+    T visit(BodyNode node);
+
+
+    //=======Principal sections
+    T visit(MuneraSectionNode node);
+
+    T visit(MaiorSectionNode node);
+
+    T visit(VariableAssignmentNode node);
+
+
+    //=======Variables
     T visit(VariableDeclarationNode node);
 
     T visit(BinaryExpressionNode node);
@@ -47,6 +62,8 @@ public interface AstVisitor<T> {
     T visit(TypeNode node);
 
     T visit(UnaryExpressionNode node);
+
+    //=======Values
 
     T visit(LiteralExpressionNode node);
 
@@ -56,13 +73,16 @@ public interface AstVisitor<T> {
 
     T visit(FunctionCallExpressionNode node);
 
+
     T visit(ArrayInitExpressionNode node);
 
     T visit(ArrayDeclarationNode node);
 
-    T visit(StructAttributeNode node);
+    //======Struct values and eclarations
 
     T visit(StructDeclarationNode node);
+
+    T visit(StructAttributeNode node);
 
     T visit(StructPropertyNode node);
 
@@ -70,22 +90,16 @@ public interface AstVisitor<T> {
 
     T visit(StructInstanceNode node);
 
+    //Nested and properties
+
     T visit(PropertyAccessExpressionNode node);
 
     T visit(MemberArrayAccessExpressionNode node);
 
-    T visit(ProgramNode node);
-
-    T visit(BodyNode node);
-
     T visit(VariablesSectionNode node);
 
-    T visit(MuneraSectionNode node);
 
-    T visit(MaiorSectionNode node);
-
-    T visit(VariableAssignmentNode node);
-
+    //Abbreviation value variables
     T visit(IncrementStatementNode node);
 
     T visit(DecrementStatementNode node);
@@ -100,22 +114,29 @@ public interface AstVisitor<T> {
 
     //Loops
     T visit(WhileStatementNode node);
+
     T visit(DoWhileStatementNode node);
+
     T visit(ForStatementNode node);
 
     //IO stetements
     T visit(PrintStatementNode node);
+
     T visit(ReadStatementNode node);
 
 
     //Break points control flux
     T visit(ReturnStatementNode node);
+
     T visit(BreakStatementNode node);
+
     T visit(ContinueStatementNode node);
 
     //Functions
     T visit(FunctionDeclarationNode node);
+
     T visit(ProcedureDeclarationNode node);
+
     T visit(ParameterNode node);
 
 }

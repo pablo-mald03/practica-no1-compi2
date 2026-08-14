@@ -139,7 +139,14 @@ public class CodeEditorPanel extends JPanel {
             // --- SEMANTIC PART ---
             //Semantic delegated
             CodexSemanticAnalyzer semanticAnalyzer = new CodexSemanticAnalyzer();
-            semanticAnalyzer.executeSemanticPhase(this.editor.getEditorContext(), notifier);
+            boolean isSemanticValid = semanticAnalyzer.executeSemanticPhase(this.editor.getEditorContext(), notifier);
+
+            if (!isSemanticValid) {
+                notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
+                return false;
+            }
+
+
 
             this.notifierReference.notifyCompiledCode(getCompiledCode());
 

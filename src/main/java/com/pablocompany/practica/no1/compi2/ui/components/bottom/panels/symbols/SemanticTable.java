@@ -154,8 +154,8 @@ public class SemanticTable extends JTable {
         for (Symbol symbol : symbols) {
             tableModel.addRow(new Object[]{
                 symbol.getId(),
-                symbol.getSymbolType(),
-                symbol.getDataType(),
+                symbol.getKind(),
+                symbol.getType().getCustomTypeName(),
                 symbol.getScope(),
                 symbol.getLine(),
                 symbol.getColumn()

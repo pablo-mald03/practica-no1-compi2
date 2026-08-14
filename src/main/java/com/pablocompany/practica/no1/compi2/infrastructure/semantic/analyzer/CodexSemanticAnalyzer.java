@@ -4,8 +4,10 @@ import com.ibm.icu.text.SymbolTable;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.ProgramNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.generator.CodeGeneratorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.code.AstBuilderVisitor;
+import com.pablocompany.practica.no1.compi2.infrastructure.typechecker.SymbolTableBuilderVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 //This is the principal semantic phase to excecute all semantic steps compiler
@@ -20,6 +22,8 @@ public class CodexSemanticAnalyzer {
             return false;
         }
 
+        notifier.logInfo("[1/4] Construyendo AST...");
+
         // ===== PHASE 1: build the AST =====
         AstBuilderVisitor builderVisitor = new AstBuilderVisitor();
         AstNode astNode = builderVisitor.visit(parseTree);
@@ -27,18 +31,19 @@ public class CodexSemanticAnalyzer {
         notifier.logInfo("AST construido correctamente.");
 
         // ===== PHASE 2: Build the symbols table =====
+        notifier.logInfo("[2/4] Construyendo tabla de símbolos...");
 
-        // notifier.logInfo("Construyendo tabla de símbolos...");
-        // SymbolTable symbolTable = new SymbolTable();
-        // SymbolTableBuilderVisitor symbolVisitor = new SymbolTableBuilderVisitor(symbolTable, context.getSemanticErrors());
-        // symbolVisitor.visit(astNode); // Visitar el AST, no el ParseTree
+        SymbolTableBuilderVisitor symbolBuilder = new SymbolTableBuilderVisitor(
+                context.getSemanticErrors()
+        );
+        symbolBuilder.visit((ProgramNode) astNode);
 
-        // if (!context.getSemanticErrors().isEmpty()) {
-        //     notifier.logError("Se encontraron errores al construir la tabla de simbolos.");
-        //     return false;
-        // }
-        // context.setSymbolTable(symbolTable);
-        // notifier.logInfo("Tabla de símbolos construida correctamente.");
+        if (!context.getSemanticErrors().isEmpty()) {
+            context.setSemanticErrors(symbolBuilder.getErrors());
+            notifier.logError("Se encontraron errores semanticos de variables.");
+            return false;
+        }
+
 
         // ===== PHASE 3: Type checker =====
         // notifier.logInfo("Realizando chequeo de tipos...");
