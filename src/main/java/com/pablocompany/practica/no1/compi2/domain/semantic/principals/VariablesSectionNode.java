@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class VariablesSectionNode extends AstNode {
 
-    private List<AstNode> declarations;
+    private final List<AstNode> declarations;
 
     public VariablesSectionNode(int line, int column, List<AstNode> declarations) {
         super(line, column);

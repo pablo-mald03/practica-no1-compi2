@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 public class MuneraSectionNode extends AstNode {
 
-    private List<AstNode> declarations;
+    private final List<AstNode> functions;
 
 
-    public MuneraSectionNode(int line, int column, List<AstNode> declarations) {
+    public MuneraSectionNode(int line, int column, List<AstNode> functions) {
         super(line, column);
-        this.declarations = declarations;
+        this.functions = functions;
     }
 
 

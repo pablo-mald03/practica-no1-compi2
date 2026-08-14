@@ -120,8 +120,8 @@ public class EditorContext {
 
     //This method clear all the memory in the instances
     public void clearAll() {
-        this.sourceCode = "";
-        //this.hiddenTokens.clear();
-
+        this.compiledCode = "";
+        this.ast = null;
     }
+
 }

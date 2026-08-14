@@ -86,8 +86,6 @@ public interface AstVisitor<T> {
 
     T visit(VariableAssignmentNode node);
 
-    T visit(ArrayAssignmentNode node);
-
     T visit(IncrementStatementNode node);
 
     T visit(DecrementStatementNode node);

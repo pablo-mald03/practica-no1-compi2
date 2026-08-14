@@ -699,6 +699,8 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         int column = ctx.getStart().getCharPositionInLine();
         String structName = ctx.ID().getText();
 
+        boolean hasComma = false;
+
         List<StructAttributeNode> attributes = new ArrayList<>();
         CodexLatinusParser.Struct_bodyContext bodyCtx = ctx.struct_body();
 
@@ -716,6 +718,8 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
             }
         }
         else if (bodyCtx instanceof CodexLatinusParser.StructCommaBodyContext) {
+
+            hasComma = true;
             CodexLatinusParser.Struct_comma_bodyContext current = ((CodexLatinusParser.StructCommaBodyContext) bodyCtx).struct_comma_body();
 
             while (current instanceof CodexLatinusParser.StructCommaBodyListContext) {
@@ -729,7 +733,7 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
             }
         }
 
-        return new StructDeclarationNode(line, column, structName, attributes);
+        return new StructDeclarationNode(line, column, attributes, structName, hasComma);
     }
 
     //----******----- STRUCT VALUES DECLARATION ----******-----

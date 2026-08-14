@@ -12,10 +12,13 @@ public class StructDeclarationNode extends StatementNode {
     private final String structName;
     private final List<StructAttributeNode> attributes;
 
-    public StructDeclarationNode(int line, int column, String structName, List<StructAttributeNode> attributes) {
+    private final boolean hasCommas;
+
+    public StructDeclarationNode(int line, int column, List<StructAttributeNode> attributes, String structName, boolean hasCommas) {
         super(line, column);
-        this.structName = structName;
         this.attributes = attributes;
+        this.structName = structName;
+        this.hasCommas = hasCommas;
     }
 
     @Override

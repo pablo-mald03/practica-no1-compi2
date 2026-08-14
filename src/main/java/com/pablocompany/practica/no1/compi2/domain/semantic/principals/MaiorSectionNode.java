@@ -11,11 +11,11 @@ import java.util.List;
 @Getter
 public class MaiorSectionNode extends AstNode {
 
-    private List<AstNode> declarations;
+    private final List<AstNode> statements;
 
-    public MaiorSectionNode(int line, int column, List<AstNode> declarations) {
+    public MaiorSectionNode(int line, int column, List<AstNode> statements) {
         super(line, column);
-        this.declarations = declarations;
+        this.statements = statements;
     }
 
 

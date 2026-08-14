@@ -4,6 +4,7 @@ import com.ibm.icu.text.SymbolTable;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
+import com.pablocompany.practica.no1.compi2.infrastructure.generator.CodeGeneratorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.code.AstBuilderVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -11,46 +12,53 @@ import org.antlr.v4.runtime.tree.ParseTree;
 public class CodexSemanticAnalyzer {
 
     public boolean executeSemanticPhase(EditorContext context, WorkspaceNotifier notifier) {
-        notifier.logInfo("Semantica: Iniciando análisis semántico...");
+        notifier.logInfo("Semantica: Iniciando analisis semantico...");
 
         ParseTree parseTree = context.getParseTree();
         if (parseTree == null) {
-            notifier.logError("No existe un ParseTree válido para el análisis semántico.");
+            notifier.logError("No existe un ParseTree válido para el analisis semantico.");
             return false;
         }
 
+        // ===== PHASE 1: build the AST =====
         AstBuilderVisitor builderVisitor = new AstBuilderVisitor();
-
         AstNode astNode = builderVisitor.visit(parseTree);
-
-        String generated =( astNode != null) ? "Si se genero": "no se genero";
-        System.out.println(generated);
-
         context.setAst(astNode);
+        notifier.logInfo("AST construido correctamente.");
 
-        //SymbolTable symbolTable = new SymbolTable();
+        // ===== PHASE 2: Build the symbols table =====
 
-        // PASADA 1: Construir la Tabla de Símbolos y Ámbitos
-        //SymbolTableBuilderVisitor symbolVisitor = new SymbolTableBuilderVisitor(symbolTable, context.getSemanticErrors());
-        //symbolVisitor.visit(parseTree);
+        // notifier.logInfo("Construyendo tabla de símbolos...");
+        // SymbolTable symbolTable = new SymbolTable();
+        // SymbolTableBuilderVisitor symbolVisitor = new SymbolTableBuilderVisitor(symbolTable, context.getSemanticErrors());
+        // symbolVisitor.visit(astNode); // Visitar el AST, no el ParseTree
 
-        // Si falló la declaración de símbolos (ej. variables duplicadas), cortamos o continuamos según política
-        if (!context.getSemanticErrors().isEmpty()) {
-            notifier.logError("Se encontraron errores al construir la tabla de simbolos.");
-            return false;
-        }
+        // if (!context.getSemanticErrors().isEmpty()) {
+        //     notifier.logError("Se encontraron errores al construir la tabla de simbolos.");
+        //     return false;
+        // }
+        // context.setSymbolTable(symbolTable);
+        // notifier.logInfo("Tabla de símbolos construida correctamente.");
 
-        // PASADA 2: Chequeo de Tipos y Reglas de Negocio
-        //TypeCheckerVisitor typeCheckerVisitor = new TypeCheckerVisitor(symbolTable, context.getSemanticErrors());
-        //typeCheckerVisitor.visit(parseTree);
+        // ===== PHASE 3: Type checker =====
+        // notifier.logInfo("Realizando chequeo de tipos...");
+        // TypeCheckerVisitor typeCheckerVisitor = new TypeCheckerVisitor(symbolTable, context.getSemanticErrors());
+        // typeCheckerVisitor.visit(astNode);
 
-        if (!context.getSemanticErrors().isEmpty()) {
-            notifier.logError("Se encontraron errores semánticos / de tipos.");
-            return false;
-        }
+        // if (!context.getSemanticErrors().isEmpty()) {
+        //     notifier.logError("Se encontraron errores semánticos / de tipos.");
+        //     return false;
+        // }
+        // notifier.logInfo("Chequeo de tipos completado exitosamente.");
 
-       // context.setSymbolTable(symbolTable);
-        notifier.logSuccess("Análisis semántico completado con éxito.");
+        // ===== PHASE 4: Translated code (PigLatin) =====
+        notifier.logInfo("Generando traduccion...");
+        CodeGeneratorVisitor codeGenerator = new CodeGeneratorVisitor();
+        String compiledCode = astNode.accept(codeGenerator);
+        context.setCompiledCode(compiledCode);
+        notifier.logInfo("PigLatin generado correctamente.");
+
+        notifier.logSuccess("Analisis semantico completado con exito.");
         return true;
     }
 }
