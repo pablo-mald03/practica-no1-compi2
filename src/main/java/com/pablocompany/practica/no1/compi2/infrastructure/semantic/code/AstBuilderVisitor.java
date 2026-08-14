@@ -613,7 +613,7 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         ExpressionNode target = (ExpressionNode) visit(ctx.struct_values());
         ExpressionNode index = (ExpressionNode) visit(ctx.expression());
 
-        return new MemberArrayAccessExpressionNode(line, column, target, index);
+        return new MemberArrayAccessExpressionNode(line, column,index, target);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class TranslateExpressionService {
 
         IdentifierFormatEnum format = detectFormat(identifier);
 
-        String baseTranslation = translateBase(identifier.toLowerCase());
+        String baseTranslation = translateBase(identifier);
 
         return applyFormat(baseTranslation, format, identifier);
     }

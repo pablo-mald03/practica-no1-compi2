@@ -75,10 +75,9 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
             sb.append(node.getMaiorSection().accept(this));
         }
 
-        sb.append(translateService.translateUpperCase("FINIS"))
-                .append(" ")
+        sb.append("\n").append(translateService.translateUpperCase("FINIS"))
                 .append(";")
-                .append("\n");
+                .append("\n\n");
 
         return sb.toString();
     }
@@ -89,8 +88,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(VariablesSectionNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translateUpperCase("VARIABILES"))
-                .append(" >\n");
+        sb.append("\n").append(translateService.translateUpperCase("VARIABILES"))
+                .append(">\n\n");
 
         for (AstNode declaration : node.getDeclarations()) {
             sb.append(declaration.accept(this));
@@ -103,8 +102,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(MuneraSectionNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translateUpperCase("MUNERA"))
-                .append(" >\n");
+        sb.append("\n").append(translateService.translateUpperCase("MUNERA"))
+                .append(">\n\n");
 
         for (AstNode function : node.getFunctions()) {
             sb.append(function.accept(this));
@@ -117,8 +116,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(MaiorSectionNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translateUpperCase("MAIOR"))
-                .append(" >\n");
+        sb.append("\n").append(translateService.translateUpperCase("MAIOR"))
+                .append(">\n\n");
 
         for (AstNode statement : node.getStatements()) {
             sb.append(statement.accept(this));
@@ -156,11 +155,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         sb.append(translateService.translatePreserveCase("series"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getIdentifier()))
-                .append(" ")
                 .append("[")
-                .append(" ")
                 .append(node.getSize().accept(this))
-                .append(" ")
                 .append("]")
                 .append(" ")
                 .append(":")
@@ -184,12 +180,12 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(StructDeclarationNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("structura"))
+        sb.append("\n").append(translateService.translatePreserveCase("structura"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getStructName()))
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         String separator = node.isHasCommas()? ",": ";";
 
@@ -200,11 +196,11 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
 
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append(" ")
                 .append(translateService.translatePreserveCase("finis"))
                 .append(";")
-                .append("\n");
+                .append("\n\n");
 
         return sb.toString();
     }
@@ -213,7 +209,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(StructInstanceNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translateUpperCase("esto"))
+        sb.append(translateService.translatePreserveCase("esto"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getIdentifier()))
                 .append(" ")
@@ -280,7 +276,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(IfStatementNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("si"))
+        sb.append("\n").append(translateService.translatePreserveCase("si"))
                 .append(" ")
                 .append("(")
                 .append(" ")
@@ -289,14 +285,13 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getThenBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
-                .append("\n");
+        sb.append("\n").append("}");
 
         for (ElseIfNode elseIf : node.getElseIfs()) {
             sb.append(elseIf.accept(this));
@@ -308,7 +303,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
 
         sb.append(translateService.translatePreserveCase("finis"))
                 .append(";")
-                .append("\n");
+                .append("\n\n");
 
         return sb.toString();
     }
@@ -318,7 +313,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(ElseIfNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("aliter"))
+        sb.append("\n").append(translateService.translatePreserveCase("aliter"))
                 .append(" ")
                 .append("(")
                 .append(" ")
@@ -327,14 +322,13 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
-                .append("\n");
+        sb.append("\n").append("}");
 
         return sb.toString();
     }
@@ -344,17 +338,16 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(ElseBlockNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("aliter"))
+        sb.append("\n").append(translateService.translatePreserveCase("aliter"))
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
-                .append("\n");
+        sb.append("\n").append("}");
 
         return sb.toString();
     }
@@ -365,7 +358,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(WhileStatementNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("dum"))
+        sb.append("\n").append(translateService.translatePreserveCase("dum"))
                 .append(" ")
                 .append("(")
                 .append(" ")
@@ -374,13 +367,13 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append(" ")
                 .append(translateService.translatePreserveCase("finis"))
                 .append(";")
@@ -394,16 +387,16 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(DoWhileStatementNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("facere"))
+        sb.append("\n").append(translateService.translatePreserveCase("facere"))
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append(" ")
                 .append(translateService.translatePreserveCase("dum"))
                 .append(" ")
@@ -422,7 +415,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(ForStatementNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("per"))
+        sb.append("\n").append(translateService.translatePreserveCase("per"))
                 .append(" ")
                 .append("(");
 
@@ -451,13 +444,13 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append("\n");
 
         return sb.toString();
@@ -495,7 +488,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
             sb.append(node.getTarget().accept(this)).append(" ");
         }
 
-        sb.append("%OINK_OINK\"")
+        sb.append("%OINK_OINK")
                 .append("\n");
 
         return sb.toString();
@@ -623,11 +616,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(translateService.translatePreserveCase(node.getArrayName()))
-                .append(" ")
                 .append("[")
-                .append(" ")
                 .append(node.getIndexExpression().accept(this))
-                .append(" ")
                 .append("]");
 
         return sb.toString();
@@ -638,9 +628,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(node.getTarget().accept(this))
-                .append(" ")
                 .append(".")
-                .append(" ")
                 .append(translateService.translatePreserveCase(node.getPropertyName()));
 
         return sb.toString();
@@ -651,11 +639,8 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(node.getTarget().accept(this))
-                .append(" ")
                 .append("[")
-                .append(" ")
                 .append(node.getIndex().accept(this))
-                .append(" ")
                 .append("]");
 
         return sb.toString();
@@ -765,7 +750,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         if (!node.getLocalVariables().isEmpty()) {
             sb.append(translateService.translateUpperCase("VARIABILES"))
@@ -778,18 +763,18 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
             }
 
             sb.append("]")
-                    .append("\n");
+                    .append("\n\n");
         }
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append(" ")
                 .append(translateService.translatePreserveCase("finis"))
                 .append(";")
-                .append("\n");
+                .append("\n\n");
 
         return sb.toString();
     }
@@ -817,7 +802,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
                 .append(")")
                 .append(" ")
                 .append("{")
-                .append("\n");
+                .append("\n\n");
 
         if (!node.getLocalVariables().isEmpty()) {
             sb.append(translateService.translateUpperCase("VARIABILES"))
@@ -830,18 +815,18 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
             }
 
             sb.append("]")
-                    .append("\n");
+                    .append("\n\n");
         }
 
         for (AstNode stmt : node.getBody()) {
             sb.append(stmt.accept(this));
         }
 
-        sb.append("}")
+        sb.append("\n").append("}")
                 .append(" ")
                 .append(translateService.translatePreserveCase("finis"))
                 .append(";")
-                .append("\n");
+                .append("\n\n");
 
         return sb.toString();
     }
