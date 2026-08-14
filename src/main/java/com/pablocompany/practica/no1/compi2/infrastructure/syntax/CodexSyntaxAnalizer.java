@@ -24,6 +24,8 @@ public class CodexSyntaxAnalizer {
 
         context.setTokens(tokens.getTokens());
 
+        context.clearParsingErrors();
+
         CodexLatinusParser parser = new CodexLatinusParser(tokens);
 
         parser.removeErrorListeners();

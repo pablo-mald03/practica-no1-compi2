@@ -310,12 +310,12 @@ struct_attribute
 /*-----STRUCT VARIABLE INSTANCE PRODUCTIONS-----*/
 
 variable_without_value
-    : ESTO ID TWO_POINTS variable_type # InternalStructNormalVariable
+    : ESTO ID TWO_POINTS variable_type      # InternalStructNormalVariable
     ;
 
 
 array_variable_struct
-    : SERIES ID TWO_POINTS ID           # InternalStructArray
+    : SERIES ID TWO_POINTS variable_type           # InternalStructArray
     ;
 
 

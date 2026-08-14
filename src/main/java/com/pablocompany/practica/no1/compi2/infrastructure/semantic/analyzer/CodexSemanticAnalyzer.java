@@ -16,6 +16,8 @@ public class CodexSemanticAnalyzer {
     public boolean executeSemanticPhase(EditorContext context, WorkspaceNotifier notifier) {
         notifier.logInfo("Semantica: Iniciando analisis semantico...");
 
+        context.clearSemanticErrors();
+
         ParseTree parseTree = context.getParseTree();
         if (parseTree == null) {
             notifier.logError("No existe un ParseTree válido para el analisis semantico.");
@@ -37,6 +39,8 @@ public class CodexSemanticAnalyzer {
                 context.getSemanticErrors()
         );
         symbolBuilder.visit((ProgramNode) astNode);
+        context.setGlobalEnvironment(symbolBuilder.getGlobalScope());
+        context.setCurrentEnvironment(symbolBuilder.getCurrentScope());
 
         if (!context.getSemanticErrors().isEmpty()) {
             context.setSemanticErrors(symbolBuilder.getErrors());

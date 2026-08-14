@@ -167,23 +167,26 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(StructDeclarationNode node) {
-
         String structName = node.getStructName();
         int line = node.getLine();
         int column = node.getColumn();
 
-        if (globalScope.containsLocal(structName)) {
-            addError(structName, line, column, "El struct '" + structName + "' ya está declarado.");
+        if (globalScope.getStruct(structName) != null) {
+            addError(structName, line, column, "El struct '" + structName + "' ya esta declarado.");
             return null;
         }
 
-        //Create new symbol for struct
-        Symbol structSymbol = new Symbol(structName, SymbolKind.STRUCT, line, column);
+        Symbol structSymbol = new Symbol(
+                structName,
+                SymbolKind.STRUCT,
+                null,
+                line,
+                column
+        );
 
         insideStructDeclaration = true;
         currentStructName = structName;
 
-        //Set the struct attributes (for the future validations)
         for (StructAttributeNode attr : node.getAttributes()) {
             attr.accept(this);
         }
@@ -193,6 +196,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
         TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName);
         globalScope.registerStruct(structName, structType);
+
         globalScope.put(structName, structSymbol);
 
         return null;

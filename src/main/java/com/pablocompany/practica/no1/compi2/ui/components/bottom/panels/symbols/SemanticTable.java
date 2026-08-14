@@ -4,6 +4,7 @@
  */
 package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols;
 
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types.TypeNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.Color;
@@ -152,10 +153,12 @@ public class SemanticTable extends JTable {
         }
 
         for (Symbol symbol : symbols) {
+
+            TypeNode customType = symbol.getType();
             tableModel.addRow(new Object[]{
                 symbol.getId(),
                 symbol.getKind(),
-                symbol.getType().getCustomTypeName(),
+                (customType == null)? "structura": customType.getCustomTypeName(),
                 symbol.getScope(),
                 symbol.getLine(),
                 symbol.getColumn()

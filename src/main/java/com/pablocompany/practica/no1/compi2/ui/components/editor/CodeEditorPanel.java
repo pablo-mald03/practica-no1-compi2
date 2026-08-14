@@ -133,6 +133,7 @@ public class CodeEditorPanel extends JPanel {
 
             if (!isSyntaxValid) {
                 notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
+                notifier.logError("Se encontraron errores Sintacticos");
                 return false;
             }
 
@@ -141,12 +142,13 @@ public class CodeEditorPanel extends JPanel {
             CodexSemanticAnalyzer semanticAnalyzer = new CodexSemanticAnalyzer();
             boolean isSemanticValid = semanticAnalyzer.executeSemanticPhase(this.editor.getEditorContext(), notifier);
 
+            notifier.notifySymbolUpdated(this.editor.getEditorContext().getGlobalEnvironment().getAllSymbolsForUI());
+
             if (!isSemanticValid) {
                 notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
+                notifier.logError("Se encontraron errores Semanticos");
                 return false;
             }
-
-
 
             this.notifierReference.notifyCompiledCode(getCompiledCode());
 

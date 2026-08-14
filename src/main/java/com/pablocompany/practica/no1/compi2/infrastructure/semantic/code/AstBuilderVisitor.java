@@ -763,8 +763,8 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
 
-        String id = ctx.ID(0).getText();
-        TypeNode type = new TypeNode(line, column, DataType.CUSTOM, ctx.ID(1).getText());
+        String id = ctx.ID().getText();
+        TypeNode type = (TypeNode) visit(ctx.variable_type());
 
         return new StructAttributeNode(line, column, id, type, true);
     }
