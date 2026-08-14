@@ -8,8 +8,11 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.access.PropertyAccessExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.DecrementStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.IncrementStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.UnaryExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.VariableAssignmentNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.enums.AbreviationOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.UnaryOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructAttributeNode;
@@ -23,12 +26,27 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.v
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.IdentifierExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.values.LiteralExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.VariableDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.BreakStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ContinueStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.breakpoints.ReturnStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseBlockNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.ElseIfNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.conditionals.IfStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.FunctionDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ParameterNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.functions.ProcedureDeclarationNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.PrintStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.iostreams.ReadStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.DoWhileStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.ForStatementNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.WhileStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.services.ExpressionHelperService;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +146,394 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         return new MaiorSectionNode(line, column, statements);
     }
 
-    //TODO: define all the overraideable methods
+
+
+    //----******----- CALLEABLE STATEMENTS SECTION  ----******-----
+
+    @Override
+    public AstNode visitFunctionSingleCall(CodexLatinusParser.FunctionSingleCallContext ctx) {
+        return visit(ctx.function_call());
+    }
+
+    @Override
+    public AstNode visitFunctionReturNormalType(CodexLatinusParser.FunctionReturNormalTypeContext ctx) {
+        return visit(ctx.variable_type());
+    }
+
+
+    @Override
+    public AstNode visitProcDeclBlock(CodexLatinusParser.ProcDeclBlockContext ctx) {
+        return visit(ctx.procedure_declaration());
+    }
+
+    @Override
+    public AstNode visitFuncDeclBlock(CodexLatinusParser.FuncDeclBlockContext ctx) {
+        return visit(ctx.function_declaration());
+    }
+
+
+    //----******----- STATEMENT SECTION  ----******-----
+
+    //----******----- CONDITIONAL SECTION  ----******-----
+
+    @Override
+    public AstNode visitElseEmpty(CodexLatinusParser.ElseEmptyContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+        return new ElseBlockNode(line, column, new ArrayList<>());
+    }
+
+    @Override
+    public AstNode visitIfStatement(CodexLatinusParser.IfStatementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+        List<AstNode> thenBody = parseCodeBody(ctx.code_body());
+
+        List<ElseIfNode> elseIfs = new ArrayList<>();
+        if (ctx.else_if_list() != null) {
+            CodexLatinusParser.Else_if_listContext current = ctx.else_if_list();
+            while (current instanceof CodexLatinusParser.ElseIfListContext) {
+                CodexLatinusParser.ElseIfListContext listCtx = (CodexLatinusParser.ElseIfListContext) current;
+                elseIfs.add(0, (ElseIfNode) visit(listCtx.else_if_clause()));
+                current = listCtx.else_if_list();
+            }
+            if (current instanceof CodexLatinusParser.ElseIfSingleContext) {
+                elseIfs.add(0, (ElseIfNode) visit(((CodexLatinusParser.ElseIfSingleContext) current).else_if_clause()));
+            }
+        }
+
+        ElseBlockNode elseBody = null;
+        if (ctx.else_statement() instanceof CodexLatinusParser.ElseBlockContext) {
+            CodexLatinusParser.ElseBlockContext elseCtx = (CodexLatinusParser.ElseBlockContext) ctx.else_statement();
+            int elseLine = elseCtx.getStart().getLine();
+            int elseColumn = elseCtx.getStart().getCharPositionInLine();
+            List<AstNode> body = parseCodeBody(elseCtx.code_body());
+            elseBody = new ElseBlockNode(elseLine, elseColumn, body);
+        }
+
+        return new IfStatementNode(line, column, condition, thenBody, elseIfs, elseBody);
+    }
+
+    @Override
+    public AstNode visitElseIfClause(CodexLatinusParser.ElseIfClauseContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+        List<AstNode> body = parseCodeBody(ctx.code_body());
+
+        return new ElseIfNode(line, column, body, condition);
+    }
+
+    //----******----- FUNCTION SECTION PRODUCTIONS  ----******-----
+
+    @Override
+    public AstNode visitFunctionDeclaration(CodexLatinusParser.FunctionDeclarationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String name = ctx.ID().getText();
+        TypeNode returnType = (TypeNode) visit(ctx.variable_function_type());
+
+        List<ParameterNode> parameters = new ArrayList<>();
+        if (ctx.function_arguments() != null) {
+            parameters = parseFunctionArguments(ctx.function_arguments());
+        }
+
+        CodexLatinusParser.FunctionBodyContext bodyCtx =
+                (CodexLatinusParser.FunctionBodyContext) ctx.function_body();
+
+        List<AstNode> localVars = new ArrayList<>();
+        if (bodyCtx.local_variable_list() != null) {
+            localVars = parseLocalVariableList(bodyCtx.local_variable_list());
+        }
+
+        List<AstNode> body = new ArrayList<>();
+        if (bodyCtx.code_body() != null) {
+            body = parseCodeBody(bodyCtx.code_body());
+        }
+
+        return new FunctionDeclarationNode(line, column,body, name, returnType, parameters, localVars);
+    }
+
+    @Override
+    public AstNode visitProcedureDeclaration(CodexLatinusParser.ProcedureDeclarationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String name = ctx.ID().getText();
+
+        List<ParameterNode> parameters = new ArrayList<>();
+        if (ctx.function_arguments() != null) {
+            parameters = parseFunctionArguments(ctx.function_arguments());
+        }
+
+        CodexLatinusParser.ProcedureBodyContext bodyCtx =
+                (CodexLatinusParser.ProcedureBodyContext) ctx.procedure_body();
+
+        List<AstNode> localVars = new ArrayList<>();
+        if (bodyCtx.local_variable_list() != null) {
+            localVars = parseLocalVariableList(bodyCtx.local_variable_list());
+        }
+
+        List<AstNode> body = new ArrayList<>();
+        if (bodyCtx.code_body() != null) {
+            body = parseCodeBody(bodyCtx.code_body());
+        }
+
+        return new ProcedureDeclarationNode(line, column,body, name, parameters, localVars);
+    }
+
+
+    //----******----- LOCAL SECTION DECLARATION  ----******-----
+
+    //----******----- PARAMETERS  ----******-----
+
+    @Override
+    public AstNode visitArgumentArrayDeclarationn(CodexLatinusParser.ArgumentArrayDeclarationnContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String name = ctx.ID().getText();
+        TypeNode type = (TypeNode) visit(ctx.argument_series_type());
+
+        return new ParameterNode(line, column,true, name, type);
+    }
+
+    @Override
+    public AstNode visitArgumentVariableDeclaration(CodexLatinusParser.ArgumentVariableDeclarationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String name = ctx.ID().getText();
+        TypeNode type = (TypeNode) visit(ctx.argument_variable_type());
+
+        return new ParameterNode(line, column,false, name, type);
+    }
+
+
+    //----******----- LOCAL VARIABLES  ----******-----
+
+    @Override
+    public AstNode visitLocalVarDeclaration(CodexLatinusParser.LocalVarDeclarationContext ctx) {
+        return visit(ctx.variable_declaration());
+    }
+
+    @Override
+    public AstNode visitLocalArrayDeclaration(CodexLatinusParser.LocalArrayDeclarationContext ctx) {
+        return visit(ctx.normal_array_declaration());
+    }
+
+    @Override
+    public AstNode visitLocalStructInstance(CodexLatinusParser.LocalStructInstanceContext ctx) {
+        return visit(ctx.struct_instance());
+    }
+
+    //----******----- LOOPS SECTION  ----******-----
+
+
+    @Override
+    public AstNode visitIncOperation(CodexLatinusParser.IncOperationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.nest_variable());
+
+        return new IncrementStatementNode(line, column,AbreviationOperator.ABREV_PLUS, target);
+    }
+
+    @Override
+    public AstNode visitDecOperation(CodexLatinusParser.DecOperationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.nest_variable());
+
+        return new DecrementStatementNode(line, column,AbreviationOperator.ABREV_MINUS, target);
+    }
+
+    @Override
+    public AstNode visitWhileStatement(CodexLatinusParser.WhileStatementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+        List<AstNode> body = parseCodeBody(ctx.code_body());
+
+        return new WhileStatementNode(line, column, body, condition);
+    }
+
+    @Override
+    public AstNode visitDoWhileStatement(CodexLatinusParser.DoWhileStatementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        List<AstNode> body = parseCodeBody(ctx.code_body());
+        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+
+        return new DoWhileStatementNode(line, column, body, condition);
+    }
+
+    /*----THE FOR STATEMENT (THE MOST COMPLEX PRODUCTION)----*/
+
+    @Override
+    public AstNode visitForStatement(CodexLatinusParser.ForStatementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        AstNode init = null;
+        if (ctx.for_init() instanceof CodexLatinusParser.ForInitVarDeclContext) {
+            init = (AstNode) visit(ctx.for_init());
+        } else if (ctx.for_init() instanceof CodexLatinusParser.ForInitAssignContext) {
+            init = (AstNode) visit(ctx.for_init());
+        }
+
+        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+
+        AstNode update = (AstNode) visit(ctx.for_update());
+
+        List<AstNode> body = parseCodeBody(ctx.code_body());
+
+        return new ForStatementNode(line, column, body, init, condition, update);
+    }
+
+    @Override
+    public AstNode visitForInitVarDecl(CodexLatinusParser.ForInitVarDeclContext ctx) {
+
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        TypeNode type = (TypeNode) visit(ctx.variable_type());
+        ExpressionNode initializer = (ExpressionNode) visit(ctx.expression());
+
+        return new VariableDeclarationNode(line, column, type, id, initializer);
+    }
+
+    @Override
+    public AstNode visitForInitAssign(CodexLatinusParser.ForInitAssignContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+        IdentifierExpressionNode target = new IdentifierExpressionNode(line, column, id);
+
+        return new VariableAssignmentNode(line, column, value, target);
+    }
+
+    @Override
+    public AstNode visitForUpdateIncrement(CodexLatinusParser.ForUpdateIncrementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        IdentifierExpressionNode target = new IdentifierExpressionNode(line, column, id);
+
+        return new IncrementStatementNode(line, column, AbreviationOperator.ABREV_PLUS, target);
+    }
+
+    @Override
+    public AstNode visitForUpdateDecrement(CodexLatinusParser.ForUpdateDecrementContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        IdentifierExpressionNode target = new IdentifierExpressionNode(line, column, id);
+
+        return new DecrementStatementNode(line, column, AbreviationOperator.ABREV_MINUS, target);
+    }
+
+    @Override
+    public AstNode visitForUpdateAssign(CodexLatinusParser.ForUpdateAssignContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String id = ctx.ID().getText();
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+        IdentifierExpressionNode target = new IdentifierExpressionNode(line, column, id);
+
+        return new VariableAssignmentNode(line, column, value,target);
+    }
+
+    //----******----- IO FUNCTION PRODUCTIONS VARIABLES ----******-----
+
+    @Override
+    public AstNode visitPrintAction(CodexLatinusParser.PrintActionContext ctx) {
+        List<ExpressionNode> expressions = new ArrayList<>();
+        CodexLatinusParser.Print_functionContext printCtx = ctx.print_function();
+
+        while (printCtx instanceof CodexLatinusParser.PrintMultipleExprContext) {
+            CodexLatinusParser.PrintMultipleExprContext multiCtx = (CodexLatinusParser.PrintMultipleExprContext) printCtx;
+            expressions.add(0, (ExpressionNode) visit(multiCtx.expression()));
+            printCtx = multiCtx.print_function();
+        }
+
+        if (printCtx instanceof CodexLatinusParser.PrintSingleExprContext) {
+            expressions.add(0, (ExpressionNode) visit(((CodexLatinusParser.PrintSingleExprContext) printCtx).expression()));
+        }
+
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        return new PrintStatementNode(line, column, expressions);
+    }
+
+    @Override
+    public AstNode visitReadInput(CodexLatinusParser.ReadInputContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        return new ReadStatementNode(line, column, null);
+    }
+
+    @Override
+    public AstNode visitReadVariableInput(CodexLatinusParser.ReadVariableInputContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.nest_variable());
+
+        return new ReadStatementNode(line, column, target);
+    }
+
+    //----******----- BREAKPOINTS PRODUCTIONS DATA ----******-----
+
+    @Override
+    public AstNode visitReturnWithValue(CodexLatinusParser.ReturnWithValueContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+
+        return new ReturnStatementNode(line, column, value);
+    }
+
+    @Override
+    public AstNode visitReturnVoid(CodexLatinusParser.ReturnVoidContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        return new ReturnStatementNode(line, column, null);
+    }
+
+    @Override
+    public AstNode visitLoopBreak(CodexLatinusParser.LoopBreakContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        return new BreakStatementNode(line, column);
+    }
+
+    @Override
+    public AstNode visitLoopContinue(CodexLatinusParser.LoopContinueContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        return new ContinueStatementNode(line, column);
+    }
 
     //----******----- NESTED VALUES ----******-----
 
@@ -140,13 +545,45 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         String id = ctx.ID().getText();
         ExpressionNode value = (ExpressionNode) visit(ctx.expression());
 
-        return new VariableAssignmentNode(line, column, value, id);
+        IdentifierExpressionNode idNode = new IdentifierExpressionNode(ctx.ID().getSymbol().getLine(),ctx.ID().getSymbol().getCharPositionInLine(), id );
+        return new VariableAssignmentNode(line, column, value, idNode);
     }
 
-    //----******----- ABREVIATED VALUES ----******-----
+    //----******----- NESTED VALUES ----******-----
+
+    @Override
+    public AstNode visitNestedValueVariable(CodexLatinusParser.NestedValueVariableContext ctx) {
+        return visit(ctx.struct_values());
+    }
+
+    @Override
+    public AstNode visitArrayCallVariable(CodexLatinusParser.ArrayCallVariableContext ctx) {
+        return visit(ctx.array_call());
+    }
+
+    @Override
+    public AstNode visitSigleValueVariable(CodexLatinusParser.SigleValueVariableContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+        return new IdentifierExpressionNode(line, column, ctx.ID().getText());
+    }
 
 
     //----******----- STRUCTS PROPERTIES ----******-----
+
+    @Override
+    public AstNode visitRedefiniedArrayUssage(CodexLatinusParser.RedefiniedArrayUssageContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        String arrayName = ctx.ID().getText();
+        ExpressionNode index = (ExpressionNode) visit(ctx.expression(0));
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression(1));
+
+        ArrayCallExpressionNode target = new ArrayCallExpressionNode(line, column, arrayName, index);
+
+        return new VariableAssignmentNode(line, column, value, target);
+    }
 
     @Override
     public AstNode visitStructBaseProperty(CodexLatinusParser.StructBasePropertyContext ctx) {
@@ -191,6 +628,18 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
 
 
     //----******----- INSTANCE STRUCT PRODUCTIONS----******-----
+
+
+    @Override
+    public AstNode visitNestedStructRedefiniedValue(CodexLatinusParser.NestedStructRedefiniedValueContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.struct_values());
+        ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+
+        return new VariableAssignmentNode(line, column, value, target);
+    }
 
     @Override
     public AstNode visitStructInstance(CodexLatinusParser.StructInstanceContext ctx) {
@@ -640,5 +1089,81 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         }
 
         return statements;
+    }
+
+
+    private <T> List<T> buildRecursiveList(ParseTree ctx,
+                                           java.util.function.Function<ParseTree, Boolean> isListContext,
+                                           java.util.function.Function<ParseTree, ParseTree> getNextContext,
+                                           java.util.function.Function<ParseTree, ParseTree> getCurrentValue,
+                                           java.util.function.Function<ParseTree, T> visitValue) {
+        List<T> result = new ArrayList<>();
+        ParseTree current = ctx;
+
+        while (current != null && isListContext.apply(current)) {
+            ParseTree value = getCurrentValue.apply(current);
+            if (value != null) {
+                result.add(0, visitValue.apply(value));
+            }
+            current = getNextContext.apply(current);
+        }
+
+        if (current != null) {
+            result.add(0, visitValue.apply(current));
+        }
+
+        return result;
+    }
+
+    private List<ExpressionNode> parseArgumentsList(CodexLatinusParser.Arguments_listContext ctx) {
+        if (ctx == null) return new ArrayList<>();
+
+        return buildRecursiveList(ctx,
+                c -> c instanceof CodexLatinusParser.ArgumentFunctionListContext,
+                c -> ((CodexLatinusParser.ArgumentFunctionListContext) c).arguments_list(),
+                c -> ((CodexLatinusParser.ArgumentFunctionListContext) c).expression(),
+                expr -> (ExpressionNode) visit(expr)
+        );
+    }
+
+    private List<ParameterNode> parseFunctionArguments(CodexLatinusParser.Function_argumentsContext ctx) {
+        if (ctx == null) return new ArrayList<>();
+
+        return buildRecursiveList(ctx,
+                c -> c instanceof CodexLatinusParser.FunctionArgsListContext,
+                c -> ((CodexLatinusParser.FunctionArgsListContext) c).function_arguments(),
+                c -> ((CodexLatinusParser.FunctionArgsListContext) c).argument(),
+                arg -> (ParameterNode) visit(arg)
+        );
+    }
+
+    private List<AstNode> parseLocalVariableList(CodexLatinusParser.Local_variable_listContext ctx) {
+        if (ctx == null) return new ArrayList<>();
+
+        List<AstNode> result = new ArrayList<>();
+        ParseTree current = ctx;
+
+        while (current instanceof CodexLatinusParser.LocalVariablesListContext) {
+            CodexLatinusParser.LocalVariablesListContext listCtx =
+                    (CodexLatinusParser.LocalVariablesListContext) current;
+            AstNode node = visit(listCtx.local_variable());
+
+            if (node != null) {
+                result.add(0, node);
+            }
+
+            current = listCtx.local_variable_list();
+        }
+
+        if (current instanceof CodexLatinusParser.LocalSingleVariableContext) {
+            CodexLatinusParser.LocalSingleVariableContext singleCtx =
+                    (CodexLatinusParser.LocalSingleVariableContext) current;
+            AstNode node = visit(singleCtx.local_variable());
+            if (node != null) {
+                result.add(0, node);
+            }
+        }
+
+        return result;
     }
 }

@@ -17,10 +17,10 @@ public class FunctionDeclarationNode extends StatementNode {
     private final String name;
     private final TypeNode returnType;
     private final List<ParameterNode> parameters;
-    private final List<VariableDeclarationNode> localVariables;
+    private final List<AstNode> localVariables;
     private final List<AstNode> body;
 
-    public FunctionDeclarationNode(int line, int column, List<AstNode> body, String name, TypeNode returnType, List<ParameterNode> parameters, List<VariableDeclarationNode> localVariables) {
+    public FunctionDeclarationNode(int line, int column, List<AstNode> body, String name, TypeNode returnType, List<ParameterNode> parameters, List<AstNode> localVariables) {
         super(line, column);
         this.body = body;
         this.name = name;

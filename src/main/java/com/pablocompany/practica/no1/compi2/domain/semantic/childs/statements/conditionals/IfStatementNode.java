@@ -15,15 +15,13 @@ public class IfStatementNode extends StatementNode {
     private final List<AstNode> thenBody;
     private final List<ElseIfNode> elseIfs;
     private final ElseBlockNode elseBlockNode;
-    private final AstNode elseBody;
 
-    public IfStatementNode(int line, int column, ExpressionNode condition, List<AstNode> thenBody, List<ElseIfNode> elseIfs, ElseBlockNode elseBlockNode, AstNode elseBody) {
+    public IfStatementNode(int line, int column, ExpressionNode condition, List<AstNode> thenBody, List<ElseIfNode> elseIfs, ElseBlockNode elseBlockNode) {
         super(line, column);
         this.condition = condition;
         this.thenBody = thenBody;
         this.elseIfs = elseIfs;
         this.elseBlockNode = elseBlockNode;
-        this.elseBody = elseBody;
     }
 
     @Override

@@ -15,10 +15,10 @@ public class ProcedureDeclarationNode extends StatementNode {
 
     private final String name;
     private final List<ParameterNode> parameters;
-    private final List<VariableDeclarationNode> localVariables;
+    private final List<AstNode> localVariables;
     private final List<AstNode> body;
 
-    public ProcedureDeclarationNode(int line, int column, List<AstNode> body, String name, List<ParameterNode> parameters, List<VariableDeclarationNode> localVariables) {
+    public ProcedureDeclarationNode(int line, int column, List<AstNode> body, String name, List<ParameterNode> parameters, List<AstNode> localVariables) {
         super(line, column);
         this.body = body;
         this.name = name;
