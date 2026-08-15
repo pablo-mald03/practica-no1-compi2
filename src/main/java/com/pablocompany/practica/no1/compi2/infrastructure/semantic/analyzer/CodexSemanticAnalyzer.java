@@ -1,13 +1,13 @@
 package com.pablocompany.practica.no1.compi2.infrastructure.semantic.analyzer;
 
-import com.ibm.icu.text.SymbolTable;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.context.EditorContext;
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.ProgramNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.generator.CodeGeneratorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.code.AstBuilderVisitor;
-import com.pablocompany.practica.no1.compi2.infrastructure.typechecker.SymbolTableBuilderVisitor;
+import com.pablocompany.practica.no1.compi2.infrastructure.walkers.SymbolTableBuilderVisitor;
+import com.pablocompany.practica.no1.compi2.infrastructure.walkers.TypeCheckerVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 //This is the principal semantic phase to excecute all semantic steps compiler
@@ -39,8 +39,20 @@ public class CodexSemanticAnalyzer {
                 context.getSemanticErrors()
         );
         symbolBuilder.visit((ProgramNode) astNode);
+
         context.setGlobalEnvironment(symbolBuilder.getGlobalScope());
         context.setCurrentEnvironment(symbolBuilder.getCurrentScope());
+
+        notifier.logInfo("Tabla de simbolos construida.");
+
+
+        // ===== PHASE 3: Type checker =====
+        notifier.logInfo("[3/4] Realizando Chequeo de tipos...");
+        TypeCheckerVisitor typeChecker = new TypeCheckerVisitor(
+                symbolBuilder.getGlobalScope(),
+                context.getSemanticErrors()
+        );
+        typeChecker.visit((ProgramNode) astNode);
 
         if (!context.getSemanticErrors().isEmpty()) {
             context.setSemanticErrors(symbolBuilder.getErrors());
@@ -48,20 +60,10 @@ public class CodexSemanticAnalyzer {
             return false;
         }
 
-
-        // ===== PHASE 3: Type checker =====
-        // notifier.logInfo("Realizando chequeo de tipos...");
-        // TypeCheckerVisitor typeCheckerVisitor = new TypeCheckerVisitor(symbolTable, context.getSemanticErrors());
-        // typeCheckerVisitor.visit(astNode);
-
-        // if (!context.getSemanticErrors().isEmpty()) {
-        //     notifier.logError("Se encontraron errores semánticos / de tipos.");
-        //     return false;
-        // }
-        // notifier.logInfo("Chequeo de tipos completado exitosamente.");
+        notifier.logInfo("Chequeo de tipos completado sin problemas...");
 
         // ===== PHASE 4: Translated code (PigLatin) =====
-        notifier.logInfo("Generando traduccion...");
+        notifier.logInfo("[4/4] Generando traduccion...");
         CodeGeneratorVisitor codeGenerator = new CodeGeneratorVisitor();
         String compiledCode = astNode.accept(codeGenerator);
         context.setCompiledCode(compiledCode);

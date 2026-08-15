@@ -1,4 +1,4 @@
-package com.pablocompany.practica.no1.compi2.infrastructure.typechecker;
+package com.pablocompany.practica.no1.compi2.infrastructure.walkers;
 
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
 import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
