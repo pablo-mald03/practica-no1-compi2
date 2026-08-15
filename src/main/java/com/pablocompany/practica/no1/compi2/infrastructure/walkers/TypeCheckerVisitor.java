@@ -35,6 +35,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.lo
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.ForStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.WhileStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
@@ -45,7 +46,9 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symb
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //This is the second phase of the compilator (the type checker)
 public class TypeCheckerVisitor implements AstVisitor<Void> {
@@ -57,7 +60,6 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     private boolean insideFunction = false;
     private boolean insideLoop = false;
     private TypeNode expectedReturnType = null;
-
 
     public TypeCheckerVisitor(Environment globalScope, List<CompilerError> errors) {
         this.errors = errors;
@@ -79,25 +81,16 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         currentScope = scopeStack.getLast();
     }
 
-    //Method to register a new error (if is needed)
     private void addError(String lexeme, int line, int column, String message) {
         errors.add(new CompilerError(lexeme, line, column, ErrorType.SEMANTIC, message));
     }
 
-
-    //This method is the principal resolver to find the id in the scopes
     private Symbol resolveSymbol(String id, int line, int column) {
         Symbol symbol = currentScope.get(id);
         if (symbol == null) {
-            addError(id, line, column, "Símbolo no encontrado: '" + id + "'");
+            addError(id, line, column, "variable: '" + id + "' no encontrada en el ambito actual.");
         }
         return symbol;
-    }
-
-    //This is a helper to return the type of the symbol
-    private TypeNode resolveType(Symbol symbol) {
-        if (symbol == null) return null;
-        return symbol.getType();
     }
 
     private boolean isAssignable(TypeNode target, TypeNode source) {
@@ -110,16 +103,15 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             return true;
         }
 
-        if (target.getDataType() == DataType.DECIMAL &&
-                source.getDataType() == DataType.INT) {
+        if (target.getDataType() == DataType.DECIMAL && source.getDataType() == DataType.INT) {
             return true;
         }
 
         return false;
     }
 
+    // ========== PRINCIPAL PROGRAM PRODUCTIONS =========
 
-    //========= PRINCIPAL PROGRAM PRODUCTIONS =========
     @Override
     public Void visit(ProgramNode node) {
         for (BodyNode body : node.getBodies()) {
@@ -142,8 +134,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         return null;
     }
 
-
-    //========= PRINCIPAL SECTION PRODUCTIONS =========
+    // ========== PRINCIPAL SECTION PRODUCTIONS =========
 
     @Override
     public Void visit(VariablesSectionNode node) {
@@ -163,29 +154,34 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(MaiorSectionNode node) {
-        for (AstNode func : node.getStatements()) {
-            func.accept(this);
+        for (AstNode stmt : node.getStatements()) {
+            stmt.accept(this);
         }
         return null;
     }
 
-    //========= PRINCIPAL VARIABLE DECLARATIONS =========
+    // ========== DECLARACIONES =========
 
     @Override
     public Void visit(VariableDeclarationNode node) {
         if (node.getDataType().getDataType() == DataType.CUSTOM) {
             if (globalScope.getStruct(node.getDataType().getCustomTypeName()) == null) {
                 addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                        "Tipo desconocido: '" + node.getDataType().getCustomTypeName() + "'");
+                        "Tipo de variable desconocido: '" + node.getDataType().getCustomTypeName() + "'");
                 return null;
             }
         }
 
-        TypeNode initType = node.getInitializer().accept(new TypeResolverVisitor(currentScope, errors));
-        if (initType != null && !isAssignable(node.getDataType(), initType)) {
-            addError(initType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "Tipo incorrecto. Se esperaba: " + node.getDataType().getDataType() +
-                            ", pero se obtuvo: " + initType.getDataType());
+        if (node.getInitializer() != null) {
+            TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+            TypeNode initType = node.getInitializer().accept(resolver);
+
+            if (initType != null && !isAssignable(node.getDataType(), initType)) {
+                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                        "Tipo incorrecto en inicializacion. Se esperaba: " +
+                                node.getDataType().getDataType() + ", se obtuvo: " +
+                                initType.getDataType());
+            }
         }
 
         return null;
@@ -195,39 +191,48 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ArrayDeclarationNode node) {
         if (node.getDataType().getDataType() == DataType.CUSTOM) {
             if (globalScope.getStruct(node.getDataType().getCustomTypeName()) == null) {
-
-                String customTypeName = node.getDataType().getCustomTypeName();
                 addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                        "Tipo desconocido: '" + customTypeName + "'");
+                        "Tipo de variable desconocido: '" + node.getDataType().getCustomTypeName() + "'");
                 return null;
             }
         }
 
-        TypeNode sizeType = node.getSize().accept(new TypeResolverVisitor(currentScope, errors));
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode sizeType = node.getSize().accept(resolver);
         if (sizeType != null && sizeType.getDataType() != DataType.INT) {
             addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                    "El tamaño del arreglo debe ser un entero.");
+                    "El tamaño del arreglo debe ser un valor entero.");
         }
 
         if (node.getInitializer() != null) {
-            TypeNode initType = node.getInitializer().accept(new TypeResolverVisitor(currentScope, errors));
-            if (initType != null && !isAssignable(node.getDataType(), initType)) {
-                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                        "Tipo incorrecto en inicialización del arreglo.");
+            ArrayInitExpressionNode init = node.getInitializer();
+            for (ExpressionNode elem : init.getElements()) {
+                TypeNode elemType = elem.accept(resolver);
+
+                if (elem instanceof IdentifierExpressionNode) {
+                    IdentifierExpressionNode idNode = (IdentifierExpressionNode) elem;
+                    Symbol symbol = resolveSymbol(idNode.getIdentifier(), idNode.getLine(), idNode.getColumn());
+
+                    if (symbol != null && symbol.getType() != null) {
+                        if (!isAssignable(node.getDataType(), symbol.getType())) {
+                            addError(idNode.getIdentifier(), idNode.getLine(), idNode.getColumn(),
+                                    "Tipo incorrecto. El arreglo espera: " +
+                                            node.getDataType().getCustomTypeName() +
+                                            ", pero '" + idNode.getIdentifier() +
+                                            "' es de tipo: " + symbol.getType().getCustomTypeName());
+                        }
+                    }
+                } else if (elem instanceof StructLiteralExpressionNode) {
+                    verifyStructLiteral((StructLiteralExpressionNode) elem, node.getDataType());
+                } else if (elemType != null && !isAssignable(node.getDataType(), elemType)) {
+                    addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                            "Tipo incorrecto en inicialización del arreglo. Espera: " +
+                                    node.getDataType().getDataType() + ", se obtuvo: " +
+                                    elemType.getDataType());
+                }
             }
         }
 
-        return null;
-    }
-
-    //TODO
-    @Override
-    public Void visit(StructDeclarationNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(StructAttributeNode node) {
         return null;
     }
 
@@ -240,122 +245,52 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             return null;
         }
 
-        //Type properties checking delegated
-        node.getLiteral().accept(this);
+
+        if (node.getLiteral() != null) {
+            verifyStructLiteral(node.getLiteral(), structType);
+        }
 
         return null;
     }
 
+    //The structs are registered yet
+    @Override
+    public Void visit(StructDeclarationNode node) {
+        return null;
+    }
 
-    //======= ASSIGNATIONS =======
+    @Override
+    public Void visit(StructAttributeNode node) {
+        return null;
+    }
+
+    // ========== ASSIGNATIONS =========
 
     @Override
     public Void visit(VariableAssignmentNode node) {
-        TypeNode targetType = node.getIdentifier().accept(new TypeResolverVisitor(currentScope, errors));
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+
+        TypeNode targetType = node.getIdentifier().accept(resolver);
         if (targetType == null) {
-            addError("variable indefinida", node.getLine(), node.getColumn(),
-                    "La variable de la asignación no es valida.");
+            addError("asignación", node.getLine(), node.getColumn(),
+                    "El target de la asignación no es válido.");
             return null;
         }
 
-        TypeNode valueType = node.getExpressionNode().accept(new TypeResolverVisitor(currentScope, errors));
+        TypeNode valueType = node.getExpressionNode().accept(resolver);
         if (valueType != null && !isAssignable(targetType, valueType)) {
-            addError(valueType.getCustomTypeName(), node.getLine(), node.getColumn(),
-                    "Tipo de asignacion incorrecto. Se esperaba: " + targetType.getDataType() +
-                            ", se obtuvo: " + valueType.getDataType());
+            addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
+                    "Tipo de asignacion incorrecto. Se esperaba: " +
+                            targetType.getDataType().getValue() + ", se obtuvo: " +
+                            valueType.getDataType().getValue());
         }
 
         return null;
     }
 
-    //===== EXPRESSION RESOLVER =====
+    // ========== FUNCIONES Y PROCEDIMIENTOS =========
 
-    @Override
-    public Void visit(IdentifierExpressionNode node) {
-        resolveSymbol(node.getIdentifier(), node.getLine(), node.getColumn());
-        return null;
-    }
-
-    @Override
-    public Void visit(PropertyAccessExpressionNode node) {
-        TypeNode targetType = node.getTarget().accept(new TypeResolverVisitor(currentScope, errors));
-        if (targetType == null) {
-            addError("propiedad indefinida", node.getLine(), node.getColumn(),
-                    "No se puede acceder a la propiedad de un tipo nulo.");
-            return null;
-        }
-
-        if (targetType.getDataType() == DataType.CUSTOM) {
-            String structName = targetType.getCustomTypeName();
-            Symbol structSymbol = globalScope.get(structName);
-            if (structSymbol != null && structSymbol.getKind() == SymbolKind.STRUCT) {
-                boolean propertyExists = false;
-                for (Symbol field : structSymbol.getStructFields()) {
-                    if (field.getId().equals(node.getPropertyName())) {
-                        propertyExists = true;
-                        break;
-                    }
-                }
-                if (!propertyExists) {
-                    addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                            "La propiedad '" + node.getPropertyName() +
-                                    "' no existe en el struct '" + structName + "'");
-                }
-            } else {
-                addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                        "El tipo '" + structName + "' no es un struct válido.");
-            }
-        } else {
-            addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                    "Solo se puede acceder a propiedades definidas del struct.");
-        }
-
-        return null;
-    }
-
-    @Override
-    public Void visit(ArrayCallExpressionNode node) {
-        Symbol arraySymbol = resolveSymbol(node.getArrayName(), node.getLine(), node.getColumn());
-        if (arraySymbol == null) {
-            return null;
-        }
-
-        if (arraySymbol.getKind() != SymbolKind.ARRAY &&
-                arraySymbol.getKind() != SymbolKind.PARAMETER) {
-            addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                    "La variable: '" + node.getArrayName() + "' no es un arreglo.");
-            return null;
-        }
-
-        TypeNode indexType = node.getIndexExpression().accept(new TypeResolverVisitor(currentScope, errors));
-        if (indexType != null && indexType.getDataType() != DataType.INT) {
-            addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                    "El indice del arreglo debe ser un valor entero.");
-        }
-
-        return null;
-    }
-
-    @Override
-    public Void visit(MemberArrayAccessExpressionNode node) {
-        TypeNode targetType = node.getTarget().accept(new TypeResolverVisitor(currentScope, errors));
-        if (targetType == null) {
-            addError("propiedad indefinida", node.getLine(), node.getColumn(),
-                    "No se puede acceder a un arreglo nulo.");
-            return null;
-        }
-
-        TypeNode indexType = node.getIndex().accept(new TypeResolverVisitor(currentScope, errors));
-        if (indexType != null && indexType.getDataType() != DataType.INT) {
-            addError(indexType.getCustomTypeName(), node.getLine(), node.getColumn(),
-                    "El indice del arreglo debe ser un valor entero.");
-        }
-
-        return null;
-    }
-
-    // ===== FUNCTIONS =====
-
+    //Struct validation global and local scopes
     @Override
     public Void visit(FunctionDeclarationNode node) {
         insideFunction = true;
@@ -363,16 +298,18 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         enterScope("function_" + node.getName());
 
+        for (AstNode localVar : node.getLocalVariables()) {
+            localVar.accept(this);
+        }
+
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
 
-        //Verify if the function has any return value
         boolean hasReturn = checkAllPathsHaveReturn(node.getBody());
         if (!hasReturn) {
             addError(node.getName(), node.getLine(), node.getColumn(),
-                    "La funcion '" + node.getName() +
-                            "' no tiene un valor de retorno definido.");
+                    "La funcion '" + node.getName() + "' no tiene un valor de retorno definido.");
         }
 
         exitScope();
@@ -388,6 +325,10 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         enterScope("procedure_" + node.getName());
 
+        for (AstNode localVar : node.getLocalVariables()) {
+            localVar.accept(this);
+        }
+
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
@@ -398,9 +339,15 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    //TODO
     @Override
     public Void visit(ParameterNode node) {
+        if (node.getType().getDataType() == DataType.CUSTOM) {
+            if (globalScope.getStruct(node.getType().getCustomTypeName()) == null) {
+                addError(node.getName(), node.getLine(), node.getColumn(),
+                        "Tipo de parametro desconocido: '" +
+                                node.getType().getCustomTypeName() + "'");
+            }
+        }
         return null;
     }
 
@@ -408,22 +355,24 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ReturnStatementNode node) {
         if (!insideFunction) {
             addError("reddere", node.getLine(), node.getColumn(),
-                    "'reddere' solo puede usarse dentro de una funcion.");
+                    "'reddere' solo puede usarse dentro de una función.");
             return null;
         }
 
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+
         if (node.getValue() != null) {
-            TypeNode returnType = node.getValue().accept(new TypeResolverVisitor(currentScope, errors));
+            TypeNode returnType = node.getValue().accept(resolver);
             if (returnType != null && expectedReturnType != null) {
                 if (!isAssignable(expectedReturnType, returnType)) {
-                    addError(expectedReturnType.getCustomTypeName(), node.getLine(), node.getColumn(),
-                            "El tipo de retorno de la funcion es incorrecto. Esperado: " +
-                                    expectedReturnType.getDataType() + ", se declaro: " +
+                    addError("reddere", node.getLine(), node.getColumn(),
+                            "Tipo de retorno incorrecto. Esperado: " +
+                                    expectedReturnType.getDataType() + ", se obtuvo: " +
                                     returnType.getDataType());
                 }
             }
         } else if (expectedReturnType != null) {
-            addError(expectedReturnType.getCustomTypeName(), node.getLine(), node.getColumn(),
+            addError("reddere", node.getLine(), node.getColumn(),
                     "La funcion debe retornar un valor de tipo: " +
                             expectedReturnType.getDataType());
         }
@@ -431,20 +380,143 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    // ===== LOOPS =====
+    // ========== EXPRESIONES =========
+
+    @Override
+    public Void visit(IdentifierExpressionNode node) {
+        Symbol symbol = currentScope.get(node.getIdentifier());
+        if (symbol == null) {
+            symbol = globalScope.get(node.getIdentifier());
+            if (symbol == null) {
+                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                        "Variable no definida: '" + node.getIdentifier() + "'");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(PropertyAccessExpressionNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode targetType = node.getTarget().accept(resolver);
+
+        if (targetType == null) {
+            addError("propiedad", node.getLine(), node.getColumn(),
+                    "No se puede acceder a la propiedad de un tipo nulo.");
+            return null;
+        }
+
+        if (targetType.getDataType() == DataType.CUSTOM) {
+            String structName = targetType.getCustomTypeName();
+
+            TypeNode structType = globalScope.getStruct(structName);
+            if (structType == null) {
+                addError(structName, node.getLine(), node.getColumn(),
+                        "El tipo '" + structName + "' no es un struct válido.");
+                return null;
+            }
+
+            Symbol structSymbol = globalScope.get(structName);
+            if (structSymbol != null && structSymbol.getKind() == SymbolKind.STRUCT) {
+                boolean propertyExists = false;
+                for (Symbol field : structSymbol.getStructFields()) {
+                    if (field.getId().equals(node.getPropertyName())) {
+                        propertyExists = true;
+                        break;
+                    }
+                }
+                if (!propertyExists) {
+                    addError(node.getPropertyName(), node.getLine(), node.getColumn(),
+                            "La propiedad '" + node.getPropertyName() +
+                                    "' no existe en el struct '" + structName + "'");
+                }
+            }
+        } else {
+            addError(node.getPropertyName(), node.getLine(), node.getColumn(),
+                    "Solo se puede acceder a propiedades de structs.");
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visit(ArrayCallExpressionNode node) {
+        Symbol arraySymbol = currentScope.get(node.getArrayName());
+        if (arraySymbol == null) {
+            arraySymbol = globalScope.get(node.getArrayName());
+            if (arraySymbol == null) {
+                addError(node.getArrayName(), node.getLine(), node.getColumn(),
+                        "Array no definido: '" + node.getArrayName() + "'");
+                return null;
+            }
+        }
+
+        if (arraySymbol.getKind() != SymbolKind.ARRAY &&
+                arraySymbol.getKind() != SymbolKind.PARAMETER) {
+            addError(node.getArrayName(), node.getLine(), node.getColumn(),
+                    "'" + node.getArrayName() + "' no es un arreglo.");
+            return null;
+        }
+
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode indexType = node.getIndexExpression().accept(resolver);
+        if (indexType != null && indexType.getDataType() != DataType.INT) {
+            addError(node.getArrayName(), node.getLine(), node.getColumn(),
+                    "El índice del arreglo debe ser un valor entero.");
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visit(MemberArrayAccessExpressionNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode targetType = node.getTarget().accept(resolver);
+
+        if (targetType == null) {
+            addError("array", node.getLine(), node.getColumn(),
+                    "No se puede acceder a un arreglo de un tipo nulo.");
+            return null;
+        }
+
+        TypeNode indexType = node.getIndex().accept(resolver);
+        if (indexType != null && indexType.getDataType() != DataType.INT) {
+            addError("indice", node.getLine(), node.getColumn(),
+                    "El índice del arreglo debe ser un valor entero.");
+        }
+
+        return null;
+    }
+
+    // ========== STRUCT LITERALS =========
+
+    @Override
+    public Void visit(StructLiteralExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(StructPropertyNode node) {
+        return null;
+    }
+
+    // ========== LOOPS =========
 
     @Override
     public Void visit(WhileStatementNode node) {
         insideLoop = true;
-        TypeNode conditionType = node.getCondition().accept(new TypeResolverVisitor(currentScope, errors));
+
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError(conditionType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "La condicion del ciclo 'dum' debe ser booleana.");
+            addError("dum", node.getLine(), node.getColumn(),
+                    "La condicion del ciclo 'dum' debe ser de tipo bool.");
         }
 
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
+
         insideLoop = false;
         return null;
     }
@@ -452,29 +524,33 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     @Override
     public Void visit(DoWhileStatementNode node) {
         insideLoop = true;
-        TypeNode conditionType = node.getCondion().accept(new TypeResolverVisitor(currentScope, errors));
+
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+        TypeNode conditionType = node.getCondion().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError(conditionType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "La condición del facere-dum debe ser booleana.");
+            addError("facere-dum", node.getLine(), node.getColumn(),
+                    "La condición del 'facere-dum' debe ser de tipo bool.");
         }
 
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
+
         insideLoop = false;
         return null;
     }
-
 
     @Override
     public Void visit(ForStatementNode node) {
         insideLoop = true;
 
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+
         if (node.getCondition() != null) {
-            TypeNode conditionType = node.getCondition().accept(new TypeResolverVisitor(currentScope, errors));
+            TypeNode conditionType = node.getCondition().accept(resolver);
             if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-                addError(conditionType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                        "La condicion del ciclo 'per' debe ser booleana.");
+                addError("per", node.getLine(), node.getColumn(),
+                        "La condición del ciclo 'per' debe ser booleana.");
             }
         }
 
@@ -488,16 +564,18 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
+
         insideLoop = false;
         return null;
     }
 
-    //====BREAK POINTS====
+    // ========== BREAK/CONTINUE =========
+
     @Override
     public Void visit(BreakStatementNode node) {
         if (!insideLoop) {
             addError("interrumpe", node.getLine(), node.getColumn(),
-                    "La instruccion 'interrumpe' solo puede usarse dentro de un ciclo.");
+                    "La instrucción 'interrumpe' solo puede usarse dentro de un ciclo.");
         }
         return null;
     }
@@ -506,21 +584,43 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ContinueStatementNode node) {
         if (!insideLoop) {
             addError("perge", node.getLine(), node.getColumn(),
-                    "La instruccion 'perge' solo puede usarse dentro de un ciclo.");
+                    "La instrucción 'perge' solo puede usarse dentro de un ciclo.");
         }
         return null;
     }
 
+    // ========== CONDICIONALES =========
 
-    // ===== CONDICIONAL STATEMENTS =====
+    @Override
+    public Void visit(IfStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+
+        TypeNode conditionType = node.getCondition().accept(resolver);
+        if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
+            addError("condición", node.getLine(), node.getColumn(),
+                    "La condición del 'si' debe ser booleana.");
+        }
+
+        for (AstNode stmt : node.getThenBody()) {
+            stmt.accept(this);
+        }
+        for (ElseIfNode elseIf : node.getElseIfs()) {
+            elseIf.accept(this);
+        }
+        if (node.getElseBlockNode() != null) {
+            node.getElseBlockNode().accept(this);
+        }
+        return null;
+    }
 
     @Override
     public Void visit(ElseIfNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
 
-        TypeNode conditionType = node.getCondition().accept(new TypeResolverVisitor(currentScope, errors));
+        TypeNode conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError(conditionType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "La condicion de 'aliter' debe ser booleana.");
+            addError("condición", node.getLine(), node.getColumn(),
+                    "La condición de 'aliter' debe ser booleana.");
         }
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
@@ -536,94 +636,74 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(IfStatementNode node) {
+    // ========== AUXILIAR METHODS =========
 
-        TypeNode conditionType = node.getCondition().accept(new TypeResolverVisitor(currentScope, errors));
-        if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError(conditionType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "La condicion del 'si' debe ser booleana.");
+    /*
+     * This method verify if the type of the variable is registered in types table
+     */
+    private void verifyStructLiteral(StructLiteralExpressionNode literal, TypeNode expectedType) {
+        if (expectedType == null || expectedType.getDataType() != DataType.CUSTOM) {
+            addError("literal", literal.getLine(), literal.getColumn(),
+                    "El literal no corresponde a un tipo struct.");
+            return;
         }
 
-        for (AstNode stmt : node.getThenBody()) {
-            stmt.accept(this);
+        String structName = expectedType.getCustomTypeName();
+
+        TypeNode structTypeNode = globalScope.getStruct(structName);
+        if (structTypeNode == null) {
+            addError(structName, literal.getLine(), literal.getColumn(),
+                    "El struct '" + structName + "' no existe.");
+            return;
         }
-        for (ElseIfNode elseIf : node.getElseIfs()) {
-            elseIf.accept(this);
+
+        List<StructAttributeNode> fields = structTypeNode.getFields();
+        Map<String, StructAttributeNode> fieldMap = new HashMap<>();
+        for (StructAttributeNode field : fields) {
+            fieldMap.put(field.getIdentifier(), field);
         }
-        if (node.getElseBlockNode() != null) {
-            node.getElseBlockNode().accept(this);
+
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, errors);
+
+        for (StructPropertyNode prop : literal.getProperties()) {
+            String propName = prop.getPropertyName();
+            StructAttributeNode fieldNode = fieldMap.get(propName);
+
+            if (fieldNode == null) {
+                addError(propName, prop.getLine(), prop.getColumn(),
+                        "La propiedad '" + propName + "' no existe en el struct '" +
+                                structName + "'.");
+                continue;
+            }
+
+            TypeNode valueType = prop.getValue().accept(resolver);
+            if (valueType != null && fieldNode.getType() != null) {
+                if (!isAssignable(fieldNode.getType(), valueType)) {
+                    addError(propName, prop.getLine(), prop.getColumn(),
+                            "Tipo incorrecto para propiedad '" + propName +
+                                    "'. Se espera: " + fieldNode.getType().getDataType().getValue() +
+                                    ", pero se obtuvo: " + valueType.getDataType().getValue());
+                }
+            }
         }
-        return null;
     }
-
-
-    @Override
-    public Void visit(LiteralExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(BinaryExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(UnaryExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(FunctionCallExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ArrayInitExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(StructLiteralExpressionNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(StructPropertyNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(TypeNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(PrintStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ReadStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(IncrementStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(DecrementStatementNode node) {
-        return null;
-    }
-
-
-    // ===== HELPER METHODS (FIND RETURN IN THE FUNCTIONS)=====
 
     private boolean checkAllPathsHaveReturn(List<AstNode> body) {
         if (body.isEmpty()) return false;
         AstNode last = body.get(body.size() - 1);
         return last instanceof ReturnStatementNode;
     }
+
+    // ========== STUBS =========
+
+    @Override public Void visit(LiteralExpressionNode node) { return null; }
+    @Override public Void visit(BinaryExpressionNode node) { return null; }
+    @Override public Void visit(UnaryExpressionNode node) { return null; }
+    @Override public Void visit(FunctionCallExpressionNode node) { return null; }
+    @Override public Void visit(ArrayInitExpressionNode node) { return null; }
+    @Override public Void visit(TypeNode node) { return null; }
+    @Override public Void visit(PrintStatementNode node) { return null; }
+    @Override public Void visit(ReadStatementNode node) { return null; }
+    @Override public Void visit(IncrementStatementNode node) { return null; }
+    @Override public Void visit(DecrementStatementNode node) { return null; }
 }

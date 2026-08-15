@@ -129,6 +129,8 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
             return;
         }
 
+        List<StructAttributeNode> attributes = new ArrayList<>(node.getAttributes());
+
         insideStructDeclaration = true;
         currentStructName = structName;
         for (StructAttributeNode attr : node.getAttributes()) {
@@ -137,7 +139,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         insideStructDeclaration = false;
         currentStructName = null;
 
-        TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName);
+        TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName, attributes);
         globalScope.registerStruct(structName, structType);
     }
 
