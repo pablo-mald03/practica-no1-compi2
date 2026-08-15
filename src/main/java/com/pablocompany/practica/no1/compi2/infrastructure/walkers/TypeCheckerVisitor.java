@@ -239,7 +239,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(StructInstanceNode node) {
-        TypeNode structType = globalScope.getStruct(node.getStructType());
+        Symbol structType = globalScope.getStruct(node.getStructType());
         if (structType == null) {
             addError(node.getIdentifier(), node.getLine(), node.getColumn(),
                     "Struct no definido: '" + node.getStructType() + "'");
@@ -248,7 +248,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
 
         if (node.getLiteral() != null) {
-            verifyStructLiteral(node.getLiteral(), structType);
+            verifyStructLiteral(node.getLiteral(), structType.getType());
         }
 
         return null;
@@ -410,7 +410,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         if (targetType.getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
 
-            TypeNode structType = globalScope.getStruct(structName);
+            Symbol structType = globalScope.getStruct(structName);
             if (structType == null) {
                 addError(structName, node.getLine(), node.getColumn(),
                         "El tipo '" + structName + "' no es un struct válido.");
@@ -667,6 +667,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
      * This method verify if the type of the variable is registered in types table
      */
     private void verifyStructLiteral(StructLiteralExpressionNode literal, TypeNode expectedType) {
+
         if (expectedType == null || expectedType.getDataType() != DataType.CUSTOM) {
             addError("literal", literal.getLine(), literal.getColumn(),
                     "El literal no corresponde a un tipo struct.");
@@ -675,24 +676,25 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         String structName = expectedType.getCustomTypeName();
 
-        TypeNode structTypeNode = globalScope.getStruct(structName);
-        if (structTypeNode == null) {
+        Symbol structSymbolType = globalScope.getStruct(structName);
+        if (structSymbolType == null) {
             addError(structName, literal.getLine(), literal.getColumn(),
                     "El struct '" + structName + "' no existe.");
             return;
         }
 
-        List<StructAttributeNode> fields = structTypeNode.getFields();
-        Map<String, StructAttributeNode> fieldMap = new HashMap<>();
-        for (StructAttributeNode field : fields) {
-            fieldMap.put(field.getIdentifier(), field);
+        List<Symbol> fields = structSymbolType.getStructFields();
+
+        Map<String, Symbol> fieldMap = new HashMap<>();
+        for (Symbol field : fields) {
+            fieldMap.put(field.getId(), field);
         }
 
         TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, errors);
 
         for (StructPropertyNode prop : literal.getProperties()) {
             String propName = prop.getPropertyName();
-            StructAttributeNode fieldNode = fieldMap.get(propName);
+            Symbol fieldNode = fieldMap.get(propName);
 
             if (fieldNode == null) {
                 addError(propName, prop.getLine(), prop.getColumn(),

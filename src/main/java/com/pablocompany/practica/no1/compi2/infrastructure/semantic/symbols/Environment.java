@@ -23,7 +23,7 @@ public class Environment {
     private final String scopeName;
     private final int depth;
     //This is the principal types table
-    private final Map<String, TypeNode> structTypes;
+    private final Map<String, Symbol> structTypes;
 
     //Constructor for the principal enviroment table
     public Environment(String scopeName) {
@@ -51,13 +51,13 @@ public class Environment {
     }
 
     // Set any struct in a different scope
-    public void registerStruct(String name, TypeNode type) {
+    public void registerStruct(String name, Symbol type) {
         structTypes.put(name, type);
     }
 
     // Getter for any struct in a different scope
-    public TypeNode getStruct(String name) {
-        TypeNode found = structTypes.get(name);
+    public Symbol getStruct(String name) {
+        Symbol found = structTypes.get(name);
         if (found != null) {
             return found;
         }
@@ -68,8 +68,8 @@ public class Environment {
     }
 
     // Get all structs for the UI
-    public Map<String, TypeNode> getAllStructTypes() {
-        Map<String, TypeNode> allStructs = new LinkedHashMap<>();
+    public Map<String, Symbol> getAllStructTypes() {
+        Map<String, Symbol> allStructs = new LinkedHashMap<>();
         allStructs.putAll(structTypes);
         if (parent != null) {
             allStructs.putAll(parent.getAllStructTypes());
@@ -126,7 +126,7 @@ public class Environment {
     public List<TypeInfo> getAllStructsForUI() {
         List<TypeInfo> allStructs = new ArrayList<>();
 
-        for (Map.Entry<String, TypeNode> entry : structTypes.entrySet()) {
+        for (Map.Entry<String, Symbol> entry : structTypes.entrySet()) {
             String structName = entry.getKey();
 
             Symbol structSymbol = table.get(structName);
@@ -150,18 +150,24 @@ public class Environment {
         return allStructs;
     }
 
+    /*
+    * This method returns all the fieldNames
+    * */
     private List<String> getFieldNames(List<Symbol> fields) {
         return fields.stream()
                 .map(Symbol::getId)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Obtiene solo los tipos de los campos
+    /*
+     * This method returns all the fields types
      */
     private List<String> getFieldTypes(List<Symbol> fields) {
         return fields.stream()
-                .map(f -> f.getType() != null ? f.getType().getDataType().toString() : "unknown")
+                .map(f ->
+                        f.getType().getCustomTypeName() != null ?
+                                f.getType().getCustomTypeName()
+                                : (f.getType().getDataType() != null? f.getType().getDataType().getValue(): "indefinido"))
                 .collect(Collectors.toList());
     }
 

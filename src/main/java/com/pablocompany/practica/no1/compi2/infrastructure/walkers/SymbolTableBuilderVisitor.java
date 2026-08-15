@@ -129,18 +129,32 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
             return;
         }
 
-        List<StructAttributeNode> attributes = new ArrayList<>(node.getAttributes());
+        Symbol structSymbol = new Symbol(structName, new TypeNode(line, column,DataType.CUSTOM, structName), SymbolKind.STRUCT, line, column);
 
         insideStructDeclaration = true;
         currentStructName = structName;
+
         for (StructAttributeNode attr : node.getAttributes()) {
+            Symbol fieldSymbol = new Symbol(
+                    attr.getIdentifier(),
+                    SymbolKind.STRUCT_FIELD,
+                    attr.getType(),
+                    attr.getLine(),
+                    attr.getColumn(),
+                    attr.isArray(),
+                    null
+            );
+            structSymbol.addStructField(fieldSymbol);
+
             attr.accept(this);
         }
+
         insideStructDeclaration = false;
         currentStructName = null;
 
-        TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName, attributes);
-        globalScope.registerStruct(structName, structType);
+        globalScope.registerStruct(structName, structSymbol);
+
+        globalScope.put(structName, structSymbol);
     }
 
     @Override
@@ -372,10 +386,22 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         insideFunctionOrProcedure = true;
 
         for (ParameterNode param : node.getParameters()) {
+
+            Symbol fieldSymbol = new Symbol(
+                    param.getName(),
+                    SymbolKind.STRUCT_FIELD,
+                    param.getType(),
+                    param.getLine(),
+                    param.getColumn(),
+                    param.isArray(),
+                    null
+            );
+
+            funcSymbol.addParameter(fieldSymbol);
+
             param.accept(this);
         }
 
-        // Register local variables
         for (AstNode localVar : node.getLocalVariables()) {
             if (localVar instanceof VariableDeclarationNode) {
                 localVar.accept(this);
@@ -394,11 +420,9 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
             }
         }
 
-        //Exit the scope
         insideFunctionOrProcedure = false;
         exitScope();
 
-        //Register the new scope (for the UI)
         currentScope.put(funcName, funcSymbol);
         return null;
     }
@@ -426,6 +450,19 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         insideFunctionOrProcedure = true;
 
         for (ParameterNode param : node.getParameters()) {
+
+            Symbol fieldSymbol = new Symbol(
+                    param.getName(),
+                    SymbolKind.STRUCT_FIELD,
+                    param.getType(),
+                    param.getLine(),
+                    param.getColumn(),
+                    param.isArray(),
+                    null
+            );
+
+            procSymbol.addParameter(fieldSymbol);
+
             param.accept(this);
         }
 

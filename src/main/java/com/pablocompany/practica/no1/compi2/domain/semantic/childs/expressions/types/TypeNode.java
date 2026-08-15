@@ -17,21 +17,14 @@ public class TypeNode extends AstNode {
     private final DataType dataType;
     private final String customTypeName;
 
-    //This attribute is setted for structs (is only used by structs)
-    private  List<StructAttributeNode> fields;
 
     // Constructor for structs
-    public TypeNode(int line, int column, DataType dataType, String customTypeName, List<StructAttributeNode> fields) {
+    public TypeNode(int line, int column, DataType dataType, String customTypeName) {
         super(line, column);
         this.dataType = dataType;
         this.customTypeName = customTypeName;
-        this.fields = fields;
     }
 
-    // Constructor for primitives types
-    public TypeNode(int line, int column, DataType dataType, String customTypeName) {
-        this(line, column, dataType, customTypeName, new ArrayList<>());
-    }
 
     public TypeNode(int line, int column, DataType dataType) {
         this(line, column, dataType, null);

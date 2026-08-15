@@ -325,15 +325,15 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
 
-            TypeNode structType = globalScope.getStruct(structName);
+            Symbol structType = globalScope.getStruct(structName);
             if (structType == null) {
                 addError(fullExpr, node.getLine(), node.getColumn(),
                         "El tipo '" + structName + "' no es un struct valido.");
                 return null;
             }
 
-            for (StructAttributeNode field : structType.getFields()) {
-                if (field.getIdentifier().equals(node.getPropertyName())) {
+            for (Symbol field : structType.getStructFields()) {
+                if (field.getId().equals(node.getPropertyName())) {
                     return new TypeWrapper(field.getType(), node.getPropertyName(), fullExpr);
                 }
             }
@@ -374,9 +374,9 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
         if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
-            TypeNode structType = globalScope.getStruct(structName);
+            Symbol structType = globalScope.getStruct(structName);
             if (structType != null) {
-                for (StructAttributeNode field : structType.getFields()) {
+                for (Symbol field : structType.getStructFields()) {
                     if (field.isArray()) {
                         return new TypeWrapper(field.getType(), fullExpr);
                     }
