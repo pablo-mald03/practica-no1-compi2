@@ -39,25 +39,30 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSect
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.visitors.AstVisitor;
+import com.pablocompany.practica.no1.compi2.domain.wrappers.TypeWrapper;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
+import com.pablocompany.practica.no1.compi2.infrastructure.walkers.services.ResolverTypesService;
 
 import java.util.List;
 
 //THIS IS THE PRINCIPAL AND THE MOST IMPORTANT CLASS
 //FOLLOW THE INFERENCE RULES
-public class TypeResolverVisitor implements AstVisitor<TypeNode> {
+public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
     private final Environment currentScope;
     private final Environment globalScope;
     private final List<CompilerError> errors;
 
+    private final ResolverTypesService resolver;
+
     public TypeResolverVisitor(Environment currentScope, Environment globalScope, List<CompilerError> errors) {
         this.currentScope = currentScope;
         this.errors = errors;
         this.globalScope = globalScope;
+        this.resolver = new ResolverTypesService();
     }
 
     //This method add a new semantic error
@@ -66,103 +71,158 @@ public class TypeResolverVisitor implements AstVisitor<TypeNode> {
     }
 
     @Override
-    public TypeNode visit(LiteralExpressionNode node) {
-        return new TypeNode(node.getLine(), node.getColumn(), node.getValueType(), null);
+    public TypeWrapper visit(LiteralExpressionNode node) {
+        return new TypeWrapper( new TypeNode(node.getLine(), node.getColumn(), node.getValueType(), null) , node.getValue());
     }
 
     //Identifier value checking
     @Override
-    public TypeNode visit(IdentifierExpressionNode node) {
+    public TypeWrapper visit(IdentifierExpressionNode node) {
         Symbol symbol = currentScope.get(node.getIdentifier());
         if (symbol == null) {
             addError(node.getIdentifier(), node.getLine(), node.getColumn(),
                     "La variable: '" + node.getIdentifier() + "' no esta definida.");
             return null;
         }
-        return symbol.getType();
+        return new TypeWrapper( symbol.getType(), node.getIdentifier());
     }
 
     //Type checking of a binary expression node (THE MOST IMPORTANT)
     @Override
-    public TypeNode visit(BinaryExpressionNode node) {
-        TypeNode left = node.getLeft().accept(this);
-        TypeNode right = node.getRight().accept(this);
+    public TypeWrapper visit(BinaryExpressionNode node) {
+        TypeWrapper left = node.getLeft().accept(this);
+        TypeWrapper right = node.getRight().accept(this);
 
-        if (left == null || right == null) return null;
-
-        String errorLexeme = left.getDataType().getValue() + " " + node.getOperator().getValue() + " " + right.getDataType().getValue();
-
-        // arithmetic operation
-        String op = node.getOperator().getValue();
-        if ("+".equals(op) || "-".equals(op) || "*".equals(op) || "/".equals(op)) {
-            if (left.getDataType() == DataType.INT && right.getDataType() == DataType.INT) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.INT, null);
+        if (left == null || right == null) {
+            if (left == null && right != null) {
+                addError("operacion", node.getLine(), node.getColumn(),
+                        "Operando izquierdo invalido en: " + this.resolver.getValueOperationString(node));
+            } else if (left != null && right == null) {
+                addError("operacion", node.getLine(), node.getColumn(),
+                        "Operando derecho invalido en: " + this.resolver.getValueOperationString(node));
             }
-            if (left.getDataType() == DataType.DECIMAL || right.getDataType() == DataType.DECIMAL) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.DECIMAL, null);
-            }
-
-            if (left.getDataType() == DataType.STRING && right.getDataType() == DataType.STRING) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.STRING, null);
-            }
-
-            addError(errorLexeme, node.getLine(), node.getColumn(),
-                    "Operacion aritmetica invalida entre " + left.getDataType() +
-                            " y " + right.getDataType());
             return null;
         }
 
-        // relational operators
+        String op = node.getOperator().getValue();
+        String fullExpr = this.resolver.getValueOperationString(node);
+        TypeNode leftType = left.getTypeNode();
+        TypeNode rightType = right.getTypeNode();
+
+        // === ARITHMETIC OPERATIONS ===
+        if ("+".equals(op) || "-".equals(op) || "*".equals(op) || "/".equals(op)) {
+            if ("+".equals(op)) {
+                if (leftType.getDataType() == DataType.STRING && rightType.getDataType() == DataType.STRING) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.STRING, null),
+                            fullExpr
+                    );
+                }
+                if (leftType.getDataType() == DataType.STRING) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.STRING, null),
+                            fullExpr
+                    );
+                }
+                if (rightType.getDataType() == DataType.STRING) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.STRING, null),
+                            fullExpr
+                    );
+                }
+            }
+
+            if (this.resolver.isNumeric(leftType) && this.resolver.isNumeric(rightType)) {
+                if (leftType.getDataType() == DataType.DECIMAL || rightType.getDataType() == DataType.DECIMAL) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.DECIMAL, null),
+                            fullExpr
+                    );
+                }
+                if (leftType.getDataType() == DataType.INT && rightType.getDataType() == DataType.INT) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.INT, null),
+                            fullExpr
+                    );
+                }
+            }
+
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "Operación aritmética inválida entre " +
+                            left.getDisplayString() + " y " + right.getDisplayString());
+            return null;
+        }
+
+        // === RELATIONAL OPERATORS ===
         if ("==".equals(op) || "!=".equals(op) || "<".equals(op) ||
                 ">".equals(op) || "<=".equals(op) || ">=".equals(op)) {
 
-            if (left.getDataType() == right.getDataType() ||
-                    (left.getDataType() == DataType.INT && right.getDataType() == DataType.DECIMAL) ||
-                    (left.getDataType() == DataType.DECIMAL && right.getDataType() == DataType.INT)) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null);
+            if ("==".equals(op) || "!=".equals(op)) {
+                if (this.resolver.areComparable(leftType, rightType)) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
+                            fullExpr
+                    );
+                }
+            } else {
+                if (this.resolver.isNumeric(leftType) && this.resolver.isNumeric(rightType)) {
+                    return new TypeWrapper(
+                            new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
+                            fullExpr
+                    );
+                }
             }
 
-
-            addError(errorLexeme, node.getLine(), node.getColumn(),
-                    "No se pueden comparar " + left.getDataType() + " con " + right.getDataType());
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "No se pueden comparar " +
+                            left.getDisplayString() + " y " + right.getDisplayString());
             return null;
         }
 
-        //Logical operation
+        // === CONDITIONAL OPERATORS ===
         if ("&&".equals(op) || "||".equals(op)) {
-            if (left.getDataType() == DataType.BOOLEAN && right.getDataType() == DataType.BOOLEAN) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null);
+            if (leftType.getDataType() == DataType.BOOLEAN && rightType.getDataType() == DataType.BOOLEAN) {
+                return new TypeWrapper(
+                        new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
+                        fullExpr
+                );
             }
-            addError(errorLexeme, node.getLine(), node.getColumn(),
-                    "Una operacion logica necesita valores booleanos.");
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "Operación lógica requiere booleanos, pero se encontró " +
+                            left.getDisplayString() + " y " + right.getDisplayString());
             return null;
         }
+
         return null;
     }
 
     @Override
-    public TypeNode visit(UnaryExpressionNode node) {
-        TypeNode operand = node.getExpressionNode().accept(this);
+    public TypeWrapper visit(UnaryExpressionNode node) {
+        TypeWrapper operand = node.getExpressionNode().accept(this);
         if (operand == null) return null;
 
-        String errorLexeme = node.getOperator().getValue() + " " + operand.getDataType().getValue();
+        String errorCase = operand.getTypeNode().getCustomTypeName();
+
+        String errorLexeme = node.getOperator().getValue() + " " + operand.getValue(errorCase);
 
         String op = node.getOperator().getValue();
         if ("-".equals(op)) {
-            if (operand.getDataType() == DataType.INT ||
-                    operand.getDataType() == DataType.DECIMAL) {
+            if (operand.getTypeNode().getDataType() == DataType.INT ||
+                    operand.getTypeNode().getDataType() == DataType.DECIMAL) {
                 return operand;
             }
             addError(errorLexeme, node.getLine(), node.getColumn(),
-                    "El operador unario '-' no es aplicable al tipo " + operand.getDataType());
+                    "El operador unario '-' no es aplicable al tipo " + operand.getTypeNode().getDataType().getValue());
             return null;
         }
         if ("non".equals(op)) {
-            if (operand.getDataType() == DataType.BOOLEAN) {
-                return new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null);
+            if (operand.getTypeNode().getDataType() == DataType.BOOLEAN) {
+                return new TypeWrapper(
+                        new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
+                        this.resolver.getValueFromNode(node.getExpressionNode()));
             }
             addError(errorLexeme, node.getLine(), node.getColumn(),
-                    "Operador 'non' solo se puede aplicar a tipos booleanos.");
+                    "El operador 'non' solo se puede aplicar a tipos booleanos.");
             return null;
         }
 
@@ -171,11 +231,11 @@ public class TypeResolverVisitor implements AstVisitor<TypeNode> {
 
     //This method validate the function call expression node
     @Override
-    public TypeNode visit(FunctionCallExpressionNode node) {
+    public TypeWrapper visit(FunctionCallExpressionNode node) {
         Symbol funcSymbol = currentScope.get(node.getFunctionName());
         if (funcSymbol == null) {
             addError(node.getFunctionName(), node.getLine(), node.getColumn(),
-                    "Función no definida: '" + node.getFunctionName() + "'");
+                    "Funcion no definida: '" + node.getFunctionName() + "'");
             return null;
         }
 
@@ -195,110 +255,155 @@ public class TypeResolverVisitor implements AstVisitor<TypeNode> {
         }
 
         for (int i = 0; i < expectedArgs; i++) {
-            TypeNode argType = node.getArguments().get(i).accept(this);
+            TypeWrapper argType = node.getArguments().get(i).accept(this);
             TypeNode paramType = funcSymbol.getParameters().get(i).getType();
             if (argType != null && paramType != null) {
-                if (!isAssignable(paramType, argType)) {
+                if (!this.resolver.isAssignable(paramType, argType.getTypeNode())) {
                     addError(node.getFunctionName(), node.getLine(), node.getColumn(),
                             "Argumento " + (i + 1) + " de '" + node.getFunctionName() +
                                     "' se espera " + paramType.getDataType() +
-                                    ", pero recibe " + argType.getDataType());
+                                    ", pero recibe " + argType.getTypeNode().getDataType());
                 }
             }
         }
 
-        return funcSymbol.getType();
+        return new TypeWrapper(funcSymbol.getType(), node.getFunctionName());
     }
 
     @Override
-    public TypeNode visit(ArrayCallExpressionNode node) {
+    public TypeWrapper visit(ArrayCallExpressionNode node) {
         if (node.isDeclaration()) {
             return null;
         }
+
+        String fullExpr = this.resolver.getValueFromNode(node);
 
         Symbol arraySymbol = currentScope.get(node.getArrayName());
         if (arraySymbol == null) {
             arraySymbol = globalScope.get(node.getArrayName());
             if (arraySymbol == null) {
-                addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                        "El arreglo: '" + node.getArrayName() + "' no está definido.");
+                addError(fullExpr, node.getLine(), node.getColumn(),
+                        "El arreglo '" + node.getArrayName() + "' no esta definido.");
                 return null;
             }
         }
 
         if (arraySymbol.getKind() != SymbolKind.ARRAY &&
                 arraySymbol.getKind() != SymbolKind.PARAMETER) {
-            addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                    "'" + node.getArrayName() + "' no es un arreglo.");
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "'" + node.getArrayName() + "' no es un arreglo, es " +
+                            arraySymbol.getKind());
             return null;
         }
 
-        return arraySymbol.getType();
+        if (node.getIndexExpression() != null) {
+            TypeWrapper indexType = node.getIndexExpression().accept(this);
+            if (indexType != null && indexType.getTypeNode() != null) {
+                if (indexType.getTypeNode().getDataType() != DataType.INT) {
+                    addError(fullExpr, node.getLine(), node.getColumn(),
+                            "El indice del arreglo debe ser entero, pero es " +
+                                    indexType.getDisplayString());
+                }
+            }
+        }
+
+        return new TypeWrapper(arraySymbol.getType(), node.getArrayName(), fullExpr);
     }
 
     //This is the property nested data s
     @Override
-    public TypeNode visit(PropertyAccessExpressionNode node) {
-        TypeNode targetType = node.getTarget().accept(this);
-        if (targetType == null) {
-            addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                    "No se puede acceder a una propiedad no asignada de un struct.");
+    public TypeWrapper visit(PropertyAccessExpressionNode node) {
+        TypeWrapper targetType = node.getTarget().accept(this);
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("propiedad", node.getLine(), node.getColumn(),
+                    "No se puede acceder a una propiedad de un valor nulo.");
             return null;
         }
 
-        if (targetType.getDataType() == DataType.CUSTOM) {
-            String structName = targetType.getCustomTypeName();
-            Symbol structSymbol = currentScope.get(structName);
-            if (structSymbol != null && structSymbol.getKind() == SymbolKind.STRUCT) {
-                for (Symbol field : structSymbol.getStructFields()) {
-                    if (field.getId().equals(node.getPropertyName())) {
-                        return field.getType();
+        String fullExpr = this.resolver.getValueFromNode(node);
+
+        if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
+            String structName = targetType.getTypeNode().getCustomTypeName();
+
+            TypeNode structType = globalScope.getStruct(structName);
+            if (structType == null) {
+                addError(fullExpr, node.getLine(), node.getColumn(),
+                        "El tipo '" + structName + "' no es un struct valido.");
+                return null;
+            }
+
+            for (StructAttributeNode field : structType.getFields()) {
+                if (field.getIdentifier().equals(node.getPropertyName())) {
+                    return new TypeWrapper(field.getType(), node.getPropertyName(), fullExpr);
+                }
+            }
+
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "La propiedad '" + node.getPropertyName() +
+                            "' no existe en el struct '" + structName + "'");
+        } else {
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "Solo se puede acceder a propiedades de structs, pero '" +
+                            targetType.getDisplayString() + "' no es un struct.");
+        }
+
+        return null;
+    }
+
+    @Override
+    public TypeWrapper visit(MemberArrayAccessExpressionNode node) {
+        TypeWrapper targetType = node.getTarget().accept(this);
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("array", node.getLine(), node.getColumn(),
+                    "No se puede acceder a un arreglo de un tipo nulo.");
+            return null;
+        }
+
+        String fullExpr = this.resolver.getValueFromNode(node);
+
+        if (node.getIndex() != null) {
+            TypeWrapper indexType = node.getIndex().accept(this);
+            if (indexType != null && indexType.getTypeNode() != null) {
+                if (indexType.getTypeNode().getDataType() != DataType.INT) {
+                    addError(fullExpr, node.getLine(), node.getColumn(),
+                            "El indice del arreglo debe ser entero, pero es " +
+                                    indexType.getDisplayString());
+                }
+            }
+        }
+
+        if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
+            String structName = targetType.getTypeNode().getCustomTypeName();
+            TypeNode structType = globalScope.getStruct(structName);
+            if (structType != null) {
+                for (StructAttributeNode field : structType.getFields()) {
+                    if (field.isArray()) {
+                        return new TypeWrapper(field.getType(), fullExpr);
                     }
                 }
-                addError(structName, node.getLine(), node.getColumn(),
-                        "La propiedad '" + node.getPropertyName() +
-                                "' no esta declarada en el struct '" + structName + "'");
-            } else {
-                addError(structName, node.getLine(), node.getColumn(),
-                        "El tipo '" + structName + "' no es un struct valido.");
             }
-        } else {
-            addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                    "Solo se puede acceder a propiedades de structs.");
-        }
-
-        return null;
-    }
-
-    @Override
-    public TypeNode visit(MemberArrayAccessExpressionNode node) {
-        TypeNode targetType = node.getTarget().accept(this);
-        if (targetType == null) {
-            addError("Sin valor", node.getLine(), node.getColumn(),
-                    "No se puede acceder a una propiedad de arreglo no definida.");
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "El struct '" + structName + "' no tiene un campo array accesible.");
             return null;
         }
 
-        if (targetType.getDataType() == DataType.CUSTOM) {
-            return targetType;
-        }
-
-        addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                "No se puede acceder a un arreglo de un tipo no struct.");
+        addError(fullExpr, node.getLine(), node.getColumn(),
+                "No se puede acceder a un arreglo de un tipo no struct: " +
+                        targetType.getDisplayString());
         return null;
     }
 
     @Override
-    public TypeNode visit(ArrayInitExpressionNode node) {
+    public TypeWrapper visit(ArrayInitExpressionNode node) {
         if (node.getElements().isEmpty()) {
             return null;
         }
-        TypeNode firstType = node.getElements().get(0).accept(this);
+        TypeWrapper firstType = node.getElements().get(0).accept(this);
         for (ExpressionNode elem : node.getElements()) {
-            TypeNode elemType = elem.accept(this);
+            TypeWrapper elemType = elem.accept(this);
             if (elemType != null && firstType != null) {
-                if (!isAssignable(firstType, elemType)) {
-                    addError(elemType.getDataType().getValue(), node.getLine(), node.getColumn(),
+                if (!this.resolver.isAssignable(firstType.getTypeNode(), elemType.getTypeNode())) {
+                    addError(elemType.getTypeNode().getDataType().getValue(), node.getLine(), node.getColumn(),
                             "Elementos del array de tipos inconsistentes.");
                 }
             }
@@ -308,170 +413,153 @@ public class TypeResolverVisitor implements AstVisitor<TypeNode> {
 
     //Struct literal declaration doesnt have any value
     @Override
-    public TypeNode visit(StructLiteralExpressionNode node) {
+    public TypeWrapper visit(StructLiteralExpressionNode node) {
         return null;
     }
 
     //========= NOT NEED TO USE THAT PRODUCTIONS =========
     @Override
-    public TypeNode visit(ProgramNode node) {
+    public TypeWrapper visit(ProgramNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(BodyNode node) {
+    public TypeWrapper visit(ArrayDeclarationNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(VariablesSectionNode node) {
+    public TypeWrapper visit(BodyNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(MuneraSectionNode node) {
+    public TypeWrapper visit(MuneraSectionNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(MaiorSectionNode node) {
+    public TypeWrapper visit(MaiorSectionNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(VariableDeclarationNode node) {
+    public TypeWrapper visit(VariableAssignmentNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ArrayDeclarationNode node) {
+    public TypeWrapper visit(VariableDeclarationNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(StructDeclarationNode node) {
+    public TypeWrapper visit(TypeNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(StructInstanceNode node) {
+    public TypeWrapper visit(StructDeclarationNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(StructAttributeNode node) {
+    public TypeWrapper visit(StructAttributeNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(VariableAssignmentNode node) {
+    public TypeWrapper visit(StructPropertyNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(IfStatementNode node) {
+    public TypeWrapper visit(StructInstanceNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ElseIfNode node) {
+    public TypeWrapper visit(VariablesSectionNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ElseBlockNode node) {
+    public TypeWrapper visit(IncrementStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(WhileStatementNode node) {
+    public TypeWrapper visit(DecrementStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(DoWhileStatementNode node) {
+    public TypeWrapper visit(IfStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ForStatementNode node) {
+    public TypeWrapper visit(ElseIfNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(PrintStatementNode node) {
+    public TypeWrapper visit(ElseBlockNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ReadStatementNode node) {
+    public TypeWrapper visit(WhileStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ReturnStatementNode node) {
+    public TypeWrapper visit(DoWhileStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(BreakStatementNode node) {
+    public TypeWrapper visit(ForStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ContinueStatementNode node) {
+    public TypeWrapper visit(PrintStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(FunctionDeclarationNode node) {
+    public TypeWrapper visit(ReadStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ProcedureDeclarationNode node) {
+    public TypeWrapper visit(ReturnStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(ParameterNode node) {
+    public TypeWrapper visit(BreakStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(IncrementStatementNode node) {
+    public TypeWrapper visit(ContinueStatementNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(DecrementStatementNode node) {
+    public TypeWrapper visit(FunctionDeclarationNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(StructPropertyNode node) {
+    public TypeWrapper visit(ProcedureDeclarationNode node) {
         return null;
     }
 
     @Override
-    public TypeNode visit(TypeNode node) {
+    public TypeWrapper visit(ParameterNode node) {
         return null;
-    }
-
-    // THis method is the helper to assing any value to a variable or a nested variable (setter)
-    private boolean isAssignable(TypeNode target, TypeNode source) {
-
-        if (target == null || source == null) return false;
-
-        if (target.getDataType() == source.getDataType()) {
-            if (target.getDataType() == DataType.CUSTOM) {
-                return target.getCustomTypeName().equals(source.getCustomTypeName());
-            }
-            return true;
-        }
-        if (target.getDataType() == DataType.DECIMAL && source.getDataType() == DataType.INT) {
-            return true;
-        }
-        return false;
     }
 }
