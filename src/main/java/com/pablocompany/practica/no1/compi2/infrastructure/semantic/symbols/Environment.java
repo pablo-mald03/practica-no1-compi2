@@ -20,6 +20,7 @@ public class Environment {
     private final List<Environment> children;
     private final String scopeName;
     private final int depth;
+    //This is the principal types table
     private final Map<String, TypeNode> structTypes;
 
     //Constructor for the principal enviroment table

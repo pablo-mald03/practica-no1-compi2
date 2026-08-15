@@ -99,14 +99,12 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(ProgramNode node) {
-
-
         for (BodyNode body : node.getBodies()) {
             if (body.getVariablesSection() != null) {
                 VariablesSectionNode varSection = (VariablesSectionNode) body.getVariablesSection();
                 for (AstNode decl : varSection.getDeclarations()) {
                     if (decl instanceof StructDeclarationNode) {
-                        decl.accept(this);
+                        registerStruct((StructDeclarationNode) decl);
                     }
                 }
             }
@@ -117,6 +115,42 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         }
         return null;
     }
+
+    /*
+     * This method register a struct at the types table
+     */
+    private void registerStruct(StructDeclarationNode node) {
+        String structName = node.getStructName();
+        int line = node.getLine();
+        int column = node.getColumn();
+
+        if (globalScope.getStruct(structName) != null) {
+            addError(structName, line, column, "El struct '" + structName + "' ya está declarado.");
+            return;
+        }
+
+        insideStructDeclaration = true;
+        currentStructName = structName;
+        for (StructAttributeNode attr : node.getAttributes()) {
+            attr.accept(this);
+        }
+        insideStructDeclaration = false;
+        currentStructName = null;
+
+        TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName);
+        globalScope.registerStruct(structName, structType);
+    }
+
+    @Override
+    public Void visit(StructDeclarationNode node) {
+        String structName = node.getStructName();
+
+        if (globalScope.getStruct(structName) == null) {
+            registerStruct(node);
+        }
+        return null;
+    }
+
 
     //Principal variables definition
     @Override
@@ -162,43 +196,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         if (node.getMaiorSection() != null) {
             node.getMaiorSection().accept(this);
         }
-        return null;
-    }
-
-    @Override
-    public Void visit(StructDeclarationNode node) {
-        String structName = node.getStructName();
-        int line = node.getLine();
-        int column = node.getColumn();
-
-        if (globalScope.getStruct(structName) != null) {
-            addError(structName, line, column, "El struct '" + structName + "' ya esta declarado.");
-            return null;
-        }
-
-        Symbol structSymbol = new Symbol(
-                structName,
-                SymbolKind.STRUCT,
-                null,
-                line,
-                column
-        );
-
-        insideStructDeclaration = true;
-        currentStructName = structName;
-
-        for (StructAttributeNode attr : node.getAttributes()) {
-            attr.accept(this);
-        }
-
-        insideStructDeclaration = false;
-        currentStructName = null;
-
-        TypeNode structType = new TypeNode(line, column, DataType.CUSTOM, structName);
-        globalScope.registerStruct(structName, structType);
-
-        globalScope.put(structName, structSymbol);
-
         return null;
     }
 
@@ -270,10 +267,9 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
             return null;
         }
 
-        // Verificar tipo
         if (node.getDataType().getDataType() == DataType.CUSTOM) {
             if (!isTypeDefined(node.getDataType().getCustomTypeName())) {
-                addError(varName, line, column, "Tipo desconocido: '" + node.getDataType().getCustomTypeName() + "'");
+                addError(varName, line, column, "Tipo de arreglo desconocido: '" + node.getDataType().getCustomTypeName() + "'");
                 return null;
             }
         }
@@ -285,7 +281,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
                 try {
                     arraySize = Integer.parseInt(lit.getValue());
                 } catch (NumberFormatException e) {
-                    //TODO:  No es un entero válido
+                   /*Do nothing*/
                 }
             }
         }
@@ -319,13 +315,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         if (!isTypeDefined(structType)) {
             addError(structType, node.getLine(), node.getColumn(),
                     "Tipo desconocido: '" + structType + "'");
-            return null;
-        }
-
-        Symbol structSymbol = globalScope.get(structType);
-        if (structSymbol == null) {
-            addError(structType, node.getLine(), node.getColumn(),
-                    "Struct no encontrado: '" + structType + "'");
             return null;
         }
 
