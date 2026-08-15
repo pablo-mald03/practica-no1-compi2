@@ -143,6 +143,7 @@ public class CodeEditorPanel extends JPanel {
             boolean isSemanticValid = semanticAnalyzer.executeSemanticPhase(this.editor.getEditorContext(), notifier);
 
             notifier.notifySymbolUpdated(this.editor.getEditorContext().getGlobalEnvironment().getAllSymbolsForUI());
+            notifier.notifyTypesUpdated(this.editor.getEditorContext().getGlobalEnvironment().getAllStructsForUI());
 
             if (!isSemanticValid) {
                 notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());

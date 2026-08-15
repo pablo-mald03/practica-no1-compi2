@@ -9,6 +9,7 @@ import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.controller.ProjectFileController;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
+import com.pablocompany.practica.no1.compi2.model.TypeInfo;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.BottomTabbedPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.CodeEditorPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.sideview.SidePanel;
@@ -134,6 +135,11 @@ public class MainFrame extends javax.swing.JFrame implements WorkspaceNotifier {
     @Override
     public void notifySymbolUpdated(List<Symbol> symbols) {
         bottom.setSymbols(symbols);
+    }
+
+    @Override
+    public void notifyTypesUpdated(List<TypeInfo> symbols) {
+        bottom.setTypes(symbols);
     }
 
     @Override

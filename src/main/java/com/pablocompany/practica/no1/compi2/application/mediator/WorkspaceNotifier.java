@@ -3,6 +3,8 @@ package com.pablocompany.practica.no1.compi2.application.mediator;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
+import com.pablocompany.practica.no1.compi2.model.TypeInfo;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,9 @@ public interface WorkspaceNotifier {
     
     //Signal to change the symbols table
     void notifySymbolUpdated(List<Symbol> symbols);
+
+    //Signal to change the Types table
+    void notifyTypesUpdated(List<TypeInfo> types);
     
     void notifyCompiledCode(String compiledCode);
     

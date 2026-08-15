@@ -1,12 +1,14 @@
 package com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols;
 
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types.TypeNode;
+import com.pablocompany.practica.no1.compi2.model.TypeInfo;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -120,6 +122,49 @@ public class Environment {
         }
         return allSymbols;
     }
+
+    public List<TypeInfo> getAllStructsForUI() {
+        List<TypeInfo> allStructs = new ArrayList<>();
+
+        for (Map.Entry<String, TypeNode> entry : structTypes.entrySet()) {
+            String structName = entry.getKey();
+
+            Symbol structSymbol = table.get(structName);
+            List<Symbol> fields = structSymbol != null ?
+                    structSymbol.getStructFields() : new ArrayList<>();
+
+            TypeInfo info = new TypeInfo(
+                    structName,
+                    "Structure",
+                    fields.size(),
+                    getFieldNames(fields),
+                    getFieldTypes(fields)
+            );
+            allStructs.add(info);
+        }
+
+        if (parent != null) {
+            allStructs.addAll(parent.getAllStructsForUI());
+        }
+
+        return allStructs;
+    }
+
+    private List<String> getFieldNames(List<Symbol> fields) {
+        return fields.stream()
+                .map(Symbol::getId)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Obtiene solo los tipos de los campos
+     */
+    private List<String> getFieldTypes(List<Symbol> fields) {
+        return fields.stream()
+                .map(f -> f.getType() != null ? f.getType().getDataType().toString() : "unknown")
+                .collect(Collectors.toList());
+    }
+
 
     // Graphical representation for the UI
     public List<Environment> getChildren() {
