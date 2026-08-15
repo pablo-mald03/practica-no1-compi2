@@ -51,11 +51,13 @@ import java.util.List;
 public class TypeResolverVisitor implements AstVisitor<TypeNode> {
 
     private final Environment currentScope;
+    private final Environment globalScope;
     private final List<CompilerError> errors;
 
-    public TypeResolverVisitor(Environment currentScope, List<CompilerError> errors) {
+    public TypeResolverVisitor(Environment currentScope, Environment globalScope, List<CompilerError> errors) {
         this.currentScope = currentScope;
         this.errors = errors;
+        this.globalScope = globalScope;
     }
 
     //This method add a new semantic error
@@ -210,10 +212,24 @@ public class TypeResolverVisitor implements AstVisitor<TypeNode> {
 
     @Override
     public TypeNode visit(ArrayCallExpressionNode node) {
+        if (node.isDeclaration()) {
+            return null;
+        }
+
         Symbol arraySymbol = currentScope.get(node.getArrayName());
         if (arraySymbol == null) {
+            arraySymbol = globalScope.get(node.getArrayName());
+            if (arraySymbol == null) {
+                addError(node.getArrayName(), node.getLine(), node.getColumn(),
+                        "El arreglo: '" + node.getArrayName() + "' no está definido.");
+                return null;
+            }
+        }
+
+        if (arraySymbol.getKind() != SymbolKind.ARRAY &&
+                arraySymbol.getKind() != SymbolKind.PARAMETER) {
             addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                    "El arreglo: '" + node.getArrayName() + "' no esta definido.");
+                    "'" + node.getArrayName() + "' no es un arreglo.");
             return null;
         }
 

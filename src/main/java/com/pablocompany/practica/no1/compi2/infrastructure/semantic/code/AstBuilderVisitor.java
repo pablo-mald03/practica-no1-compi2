@@ -687,6 +687,10 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         String propertyName = ctx.ID().getText();
         ExpressionNode value = (ExpressionNode) visit(ctx.expression());
 
+        if(value instanceof  ArrayCallExpressionNode){
+            ((ArrayCallExpressionNode) value).setDeclaration(true);
+        }
+
         return new StructPropertyNode(line, column, propertyName, value);
     }
 

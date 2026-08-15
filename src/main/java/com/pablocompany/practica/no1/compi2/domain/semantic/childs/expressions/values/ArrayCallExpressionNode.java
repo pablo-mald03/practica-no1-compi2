@@ -16,10 +16,14 @@ public class ArrayCallExpressionNode extends ExpressionNode {
 
     private TypeNode inferredType;
 
+    //This property is used to disctinct if the arrayCall is an struct instance value
+    private boolean isDeclaration;
+
     public ArrayCallExpressionNode(int line, int column, String arrayName, ExpressionNode indexExpression) {
         super(line, column);
         this.arrayName = arrayName;
         this.indexExpression = indexExpression;
+        this.isDeclaration = false;
     }
 
     @Override
