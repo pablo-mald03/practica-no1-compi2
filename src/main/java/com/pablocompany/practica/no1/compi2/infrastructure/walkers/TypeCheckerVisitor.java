@@ -100,9 +100,16 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     }
 
     private Symbol resolveSymbol(String id, int line, int column) {
-        Symbol symbol = currentScope.get(id);
+        for (int i = scopeStack.size() - 1; i >= 0; i--) {
+            Symbol symbol = scopeStack.get(i).get(id);
+            if (symbol != null) {
+                return symbol;
+            }
+        }
+
+        Symbol symbol = globalScope.get(id);
         if (symbol == null) {
-            addError(id, line, column, "variable: '" + id + "' no encontrada en el ambito actual.");
+            addError(id, line, column, "Variable: '" + id + "' no encontrada en el ambito actual.");
         }
         return symbol;
     }
@@ -187,14 +194,14 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         }
 
         if (node.getInitializer() != null) {
-            TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+            TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
             TypeWrapper initType = node.getInitializer().accept(resolver);
 
             if (initType != null && !isAssignable(node.getDataType(), initType.getTypeNode())) {
                 addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                        "Tipo incorrecto en inicializacion. Se esperaba: " +
-                                node.getDataType().getDataType() + ", se obtuvo: " +
-                                initType.getDataType());
+                        "Tipo incorrecto en inicializacion. Se esperaba: '" +
+                                node.getDataType().getDataType().getValue() + "', se obtuvo: '" +
+                                initType.getDataType().getValue()+ "'");
             }
         }
 
@@ -211,7 +218,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             }
         }
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper sizeType = node.getSize().accept(resolver);
         if (sizeType != null && sizeType.getDataType() != DataType.INT) {
             addError(node.getIdentifier(), node.getLine(), node.getColumn(),
@@ -282,7 +289,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(VariableAssignmentNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
 
         TypeWrapper targetType = node.getIdentifier().accept(resolver);
         if (targetType == null) {
@@ -313,6 +320,24 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         enterScope("function_" + node.getName());
 
 
+        for (ParameterNode param : node.getParameters()) {
+            Symbol paramSymbol = new Symbol(
+                    param.getName(),
+                    SymbolKind.PARAMETER,
+                    param.getType(),
+                    param.getLine(),
+                    param.getColumn(),
+                    param.isArray(),
+                    null
+            );
+            currentScope.put(param.getName(), paramSymbol);
+        }
+
+
+        for (AstNode localVar : node.getLocalVariables()) {
+            localVar.accept(this);
+        }
+
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
@@ -335,6 +360,19 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         expectedReturnType = null;
 
         enterScope("procedure_" + node.getName());
+
+        for (ParameterNode param : node.getParameters()) {
+            Symbol paramSymbol = new Symbol(
+                    param.getName(),
+                    SymbolKind.PARAMETER,
+                    param.getType(),
+                    param.getLine(),
+                    param.getColumn(),
+                    param.isArray(),
+                    null
+            );
+            currentScope.put(param.getName(), paramSymbol);
+        }
 
         for (AstNode localVar : node.getLocalVariables()) {
             localVar.accept(this);
@@ -370,7 +408,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             return null;
         }
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
 
         if (node.getValue() != null) {
             TypeWrapper returnType = node.getValue().accept(resolver);
@@ -408,12 +446,12 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(PropertyAccessExpressionNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper targetType = node.getTarget().accept(resolver);
 
         if (targetType == null) {
             addError("propiedad", node.getLine(), node.getColumn(),
-                    "No se puede acceder a la propiedad de un tipo nulo.");
+                    "No se puede acceder a la propiedad nula.");
             return null;
         }
 
@@ -423,7 +461,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             Symbol structType = globalScope.getStruct(structName);
             if (structType == null) {
                 addError(structName, node.getLine(), node.getColumn(),
-                        "El tipo '" + structName + "' no es un struct válido.");
+                        "El tipo '" + structName + "' no es un struct valido.");
                 return null;
             }
 
@@ -452,6 +490,12 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(ArrayCallExpressionNode node) {
+
+        if (node.isDeclaration()) {
+            return null;
+        }
+
+
         Symbol arraySymbol = currentScope.get(node.getArrayName());
         if (arraySymbol == null) {
             arraySymbol = globalScope.get(node.getArrayName());
@@ -469,7 +513,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             return null;
         }
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper indexType = node.getIndexExpression().accept(resolver);
         if (indexType != null && indexType.getDataType() != DataType.INT) {
             addError(node.getArrayName(), node.getLine(), node.getColumn(),
@@ -481,7 +525,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(MemberArrayAccessExpressionNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper targetType = node.getTarget().accept(resolver);
 
         if (targetType == null) {
@@ -529,7 +573,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             }
         }
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope,scopeRegistry, errors);
         value.accept(resolver);
 
         return null;
@@ -541,7 +585,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(WhileStatementNode node) {
         insideLoop = true;
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
             addError("dum", node.getLine(), node.getColumn(),
@@ -560,7 +604,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(DoWhileStatementNode node) {
         insideLoop = true;
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
         TypeWrapper conditionType = node.getCondion().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
             addError("facere-dum", node.getLine(), node.getColumn(),
@@ -579,7 +623,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ForStatementNode node) {
         insideLoop = true;
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
 
         if (node.getCondition() != null) {
             TypeWrapper conditionType = node.getCondition().accept(resolver);
@@ -628,7 +672,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(IfStatementNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
 
         TypeWrapper conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
@@ -650,7 +694,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(ElseIfNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
 
         TypeWrapper conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
@@ -700,7 +744,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             fieldMap.put(field.getId(), field);
         }
 
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope,scopeRegistry, errors);
 
         for (StructPropertyNode prop : literal.getProperties()) {
             String propName = prop.getPropertyName();
@@ -731,8 +775,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                 if (!isAssignable(fieldNode.getType(), valueType.getTypeNode())) {
                     addError(propName, prop.getLine(), prop.getColumn(),
                             "Tipo incorrecto para propiedad '" + propName +
-                                    "'. Se espera: " + fieldNode.getType().getDataType().getValue() +
-                                    ", pero se obtuvo: " + valueType.getDataType().getValue());
+                                    "'. Se espera: '" + fieldNode.getType().getDataType().getValue() +
+                                    "', pero se obtuvo: '" + valueType.getDataType().getValue() + "'");
                 }
             }
         }

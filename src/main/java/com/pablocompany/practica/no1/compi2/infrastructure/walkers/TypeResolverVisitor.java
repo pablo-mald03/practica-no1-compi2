@@ -47,6 +47,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enum
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.services.ResolverTypesService;
 
 import java.util.List;
+import java.util.Map;
 
 //THIS IS THE PRINCIPAL AND THE MOST IMPORTANT CLASS
 //FOLLOW THE INFERENCE RULES
@@ -58,11 +59,29 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
     private final ResolverTypesService resolver;
 
-    public TypeResolverVisitor(Environment currentScope, Environment globalScope, List<CompilerError> errors) {
+    private final Map<String, Environment> scopeRegistry;
+
+    public TypeResolverVisitor(Environment currentScope, Environment globalScope, Map<String, Environment> scopeRegistry, List<CompilerError> errors) {
         this.currentScope = currentScope;
-        this.errors = errors;
         this.globalScope = globalScope;
+        this.scopeRegistry = scopeRegistry;
+        this.errors = errors;
         this.resolver = new ResolverTypesService();
+    }
+
+    //Resolver of the symbols in scopes
+    private Symbol resolveSymbolInScopes(String id) {
+        Symbol symbol = currentScope.get(id);
+        if (symbol != null) return symbol;
+
+        for (Environment scope : scopeRegistry.values()) {
+            if (scope != currentScope) {
+                Symbol found = scope.get(id);
+                if (found != null) return found;
+            }
+        }
+
+        return globalScope.get(id);
     }
 
     //This method add a new semantic error
@@ -78,15 +97,12 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
     //Identifier value checking
     @Override
     public TypeWrapper visit(IdentifierExpressionNode node) {
-        Symbol symbol = currentScope.get(node.getIdentifier());
+        Symbol symbol = resolveSymbolInScopes(node.getIdentifier());
 
         if (symbol == null) {
-            symbol = globalScope.get(node.getIdentifier());
-            if (symbol == null) {
-                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                        "La variable: '" + node.getIdentifier() + "' no esta definida.");
-                return null;
-            }
+            addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                    "La variable: '" + node.getIdentifier() + "' no esta definida.");
+            return null;
         }
         return new TypeWrapper(symbol.getType(), node.getIdentifier());
     }
@@ -236,7 +252,9 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
     //This method validate the function call expression node
     @Override
     public TypeWrapper visit(FunctionCallExpressionNode node) {
-        Symbol funcSymbol = currentScope.get(node.getFunctionName());
+
+        Symbol funcSymbol = resolveSymbolInScopes(node.getFunctionName());
+
         if (funcSymbol == null) {
             addError(node.getFunctionName(), node.getLine(), node.getColumn(),
                     "Funcion no definida: '" + node.getFunctionName() + "'");
@@ -245,7 +263,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
         if (funcSymbol.getKind() != SymbolKind.FUNCTION) {
             addError(node.getFunctionName(), node.getLine(), node.getColumn(),
-                    "'" + node.getFunctionName() + "' no es una función.");
+                    "'" + node.getFunctionName() + "' no es una funcion.");
             return null;
         }
 
@@ -282,14 +300,12 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
         String fullExpr = this.resolver.getValueFromNode(node);
 
-        Symbol arraySymbol = currentScope.get(node.getArrayName());
+        Symbol arraySymbol = resolveSymbolInScopes(node.getArrayName());
+
         if (arraySymbol == null) {
-            arraySymbol = globalScope.get(node.getArrayName());
-            if (arraySymbol == null) {
-                addError(fullExpr, node.getLine(), node.getColumn(),
-                        "El arreglo '" + node.getArrayName() + "' no esta definido.");
-                return null;
-            }
+            addError(fullExpr, node.getLine(), node.getColumn(),
+                    "El arreglo '" + node.getArrayName() + "' no esta definido.");
+            return null;
         }
 
         if (arraySymbol.getKind() != SymbolKind.ARRAY &&
@@ -331,7 +347,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
             Symbol structType = globalScope.getStruct(structName);
             if (structType == null) {
-                addError(fullExpr, node.getLine(), node.getColumn(),
+                addError(fullExpr, node.getLine(), node.getColumn(), 
                         "El tipo '" + structName + "' no es un struct valido.");
                 return null;
             }
@@ -345,12 +361,12 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
             addError(fullExpr, node.getLine(), node.getColumn(),
                     "La propiedad '" + node.getPropertyName() +
                             "' no existe en el struct '" + structName + "'");
-        } else {
-            addError(fullExpr, node.getLine(), node.getColumn(),
-                    "Solo se puede acceder a propiedades de structs, pero '" +
-                            targetType.getDisplayString() + "' no es un struct.");
+            return null;
         }
 
+        addError(fullExpr, node.getLine(), node.getColumn(),
+                "Solo se puede acceder a propiedades de structs, pero '" +
+                        targetType.getDisplayString() + "' no es un struct.");
         return null;
     }
 
@@ -370,7 +386,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
             if (indexType != null && indexType.getTypeNode() != null) {
                 if (indexType.getTypeNode().getDataType() != DataType.INT) {
                     addError(fullExpr, node.getLine(), node.getColumn(),
-                            "El indice del arreglo debe ser entero, pero es " +
+                            "El índice del arreglo debe ser entero, pero es " +
                                     indexType.getDisplayString());
                 }
             }
@@ -378,17 +394,18 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
         if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
-            Symbol structType = globalScope.getStruct(structName);
-            if (structType != null) {
-                for (Symbol field : structType.getStructFields()) {
+            Symbol structSymbol = globalScope.getStruct(structName);
+
+            if (structSymbol != null) {
+                for (Symbol field : structSymbol.getStructFields()) {
                     if (field.isArray()) {
                         return new TypeWrapper(field.getType(), fullExpr);
                     }
                 }
+                addError(fullExpr, node.getLine(), node.getColumn(),
+                        "El struct '" + structName + "' no tiene un campo arreglo accesible.");
+                return null;
             }
-            addError(fullExpr, node.getLine(), node.getColumn(),
-                    "El struct '" + structName + "' no tiene un campo array accesible.");
-            return null;
         }
 
         addError(fullExpr, node.getLine(), node.getColumn(),
