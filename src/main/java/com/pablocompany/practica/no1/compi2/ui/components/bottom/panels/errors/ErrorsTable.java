@@ -133,7 +133,6 @@ public class ErrorsTable extends JTable {
     //Setup the columns width
     private void setupColumnWidths() {
         getColumnModel().getColumn(0).setPreferredWidth(200);
-        getColumnModel().getColumn(0).setMaxWidth(200);
 
         getColumnModel().getColumn(1).setPreferredWidth(90);
         getColumnModel().getColumn(1).setMaxWidth(120);

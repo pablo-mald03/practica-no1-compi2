@@ -300,10 +300,18 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         TypeWrapper valueType = node.getExpressionNode().accept(resolver);
         if (valueType != null && !isAssignable(targetType.getTypeNode(), valueType.getTypeNode())) {
+
+            String expectedTargetType = (targetType.getTypeNode().getCustomTypeName() != null) ?
+                    targetType.getTypeNode().getCustomTypeName() : targetType.getTypeNode().getDataType().getValue();
+
+            String expectedValueType = (valueType.getTypeNode().getCustomTypeName() != null) ?
+                    valueType.getTypeNode().getCustomTypeName() : valueType.getTypeNode().getDataType().getValue();
+
+
             addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                    "Tipo de asignacion incorrecto. Se esperaba: " +
-                            targetType.getDataType().getValue() + ", se obtuvo: " +
-                            valueType.getDataType().getValue());
+                    "Tipo de asignacion incorrecto. Se esperaba: '" +
+                            expectedTargetType + "', se obtuvo: '" +
+                            expectedValueType + "'");
         }
 
         return null;
@@ -446,39 +454,37 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(PropertyAccessExpressionNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
         TypeWrapper targetType = node.getTarget().accept(resolver);
 
         if (targetType == null) {
             addError("propiedad", node.getLine(), node.getColumn(),
-                    "No se puede acceder a la propiedad nula.");
+                    "No se puede acceder a la propiedad de un valor nulo.");
             return null;
         }
 
         if (targetType.getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
+            Symbol structSymbol = globalScope.getStruct(structName);
 
-            Symbol structType = globalScope.getStruct(structName);
-            if (structType == null) {
+            if (structSymbol == null) {
                 addError(structName, node.getLine(), node.getColumn(),
                         "El tipo '" + structName + "' no es un struct valido.");
                 return null;
             }
 
-            Symbol structSymbol = globalScope.get(structName);
-            if (structSymbol != null && structSymbol.getKind() == SymbolKind.STRUCT) {
-                boolean propertyExists = false;
-                for (Symbol field : structSymbol.getStructFields()) {
-                    if (field.getId().equals(node.getPropertyName())) {
-                        propertyExists = true;
-                        break;
-                    }
+            boolean propertyExists = false;
+            for (Symbol field : structSymbol.getStructFields()) {
+                if (field.getId().equals(node.getPropertyName())) {
+                    propertyExists = true;
+                    break;
                 }
-                if (!propertyExists) {
-                    addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                            "La propiedad '" + node.getPropertyName() +
-                                    "' no existe en el struct '" + structName + "'");
-                }
+            }
+
+            if (!propertyExists) {
+                addError(node.getPropertyName(), node.getLine(), node.getColumn(),
+                        "La propiedad '" + node.getPropertyName() +
+                                "' no existe en el struct '" + structName + "'");
             }
         } else {
             addError(node.getPropertyName(), node.getLine(), node.getColumn(),
@@ -487,6 +493,37 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         return null;
     }
+
+    @Override
+    public Void visit(MemberArrayAccessExpressionNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
+
+        TypeWrapper targetType = node.getTarget().accept(resolver);
+        if (targetType == null) {
+            addError("array", node.getLine(), node.getColumn(),
+                    "No se puede acceder a un arreglo de un tipo nulo.");
+            return null;
+        }
+
+        TypeWrapper indexType = node.getIndex().accept(resolver);
+        if (indexType != null && indexType.getDataType() != DataType.INT) {
+            addError("indice", node.getLine(), node.getColumn(),
+                    "El índice del arreglo debe ser un valor entero.");
+        }
+
+        if (node.getTarget() instanceof PropertyAccessExpressionNode) {
+            PropertyAccessExpressionNode propTarget = (PropertyAccessExpressionNode) node.getTarget();
+            TypeWrapper propType = propTarget.accept(resolver);
+
+            if (propType != null && propType.getTypeNode() != null) {
+                // Verificar que sea un array (debes tener una forma de saberlo)
+                // Si no es array, error
+            }
+        }
+
+        return null;
+    }
+
 
     @Override
     public Void visit(ArrayCallExpressionNode node) {
@@ -523,25 +560,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(MemberArrayAccessExpressionNode node) {
-        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope,globalScope,scopeRegistry, errors);
-        TypeWrapper targetType = node.getTarget().accept(resolver);
 
-        if (targetType == null) {
-            addError("array", node.getLine(), node.getColumn(),
-                    "No se puede acceder a un arreglo de un tipo nulo.");
-            return null;
-        }
-
-        TypeWrapper indexType = node.getIndex().accept(resolver);
-        if (indexType != null && indexType.getDataType() != DataType.INT) {
-            addError("indice", node.getLine(), node.getColumn(),
-                    "El índice del arreglo debe ser un valor entero.");
-        }
-
-        return null;
-    }
 
     // ========== STRUCT LITERALS =========
 
@@ -773,10 +792,17 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             TypeWrapper valueType = value.accept(resolver);
             if (valueType != null && fieldNode.getType() != null) {
                 if (!isAssignable(fieldNode.getType(), valueType.getTypeNode())) {
+
+                    String expectedPropType = (fieldNode.getType().getCustomTypeName() != null) ?
+                            fieldNode.getType().getCustomTypeName() : fieldNode.getType().getDataType().getValue();
+
+                    String expectedValueType = (valueType.getTypeNode().getCustomTypeName() != null) ?
+                            valueType.getTypeNode().getCustomTypeName() : valueType.getTypeNode().getDataType().getValue();
+
                     addError(propName, prop.getLine(), prop.getColumn(),
                             "Tipo incorrecto para propiedad '" + propName +
-                                    "'. Se espera: '" + fieldNode.getType().getDataType().getValue() +
-                                    "', pero se obtuvo: '" + valueType.getDataType().getValue() + "'");
+                                    "'. Se espera: '" + expectedPropType +
+                                    "', pero se obtuvo: '" + expectedValueType + "'");
                 }
             }
         }

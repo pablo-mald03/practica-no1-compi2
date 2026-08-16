@@ -17,6 +17,9 @@ import java.util.List;
 @Setter
 public class Symbol {
 
+    //This is the reference to follow up the jerarquic attributes
+    private Symbol target;
+
     //All needed propertys
     private final String id;
     private final SymbolKind kind;

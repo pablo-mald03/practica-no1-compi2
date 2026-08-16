@@ -155,7 +155,10 @@ public class Environment {
     * */
     private List<String> getFieldNames(List<Symbol> fields) {
         return fields.stream()
-                .map(Symbol::getId)
+                .map(f ->
+                        f.getId() != null ?
+                                ((f.isArray()) ? "series ": "esto ") + f.getId()
+                                : "indefinido" )
                 .collect(Collectors.toList());
     }
 

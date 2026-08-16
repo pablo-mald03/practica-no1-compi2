@@ -11,12 +11,23 @@ public class VariableAssignmentNode extends AstNode {
     private final ExpressionNode identifier;
     private final ExpressionNode expressionNode;
 
+    private final boolean isAccessProperty;
+
+    //Is a normal assignation
     public VariableAssignmentNode(int line, int column, ExpressionNode expressionNode, ExpressionNode identifier) {
         super(line, column);
         this.expressionNode = expressionNode;
         this.identifier = identifier;
+        this.isAccessProperty = false;
     }
 
+    //Is an Assignment with properties
+    public VariableAssignmentNode(int line, int column, ExpressionNode expressionNode, ExpressionNode identifier, boolean isAccessProperty) {
+        super(line, column);
+        this.expressionNode = expressionNode;
+        this.identifier = identifier;
+        this.isAccessProperty = isAccessProperty;
+    }
 
     @Override
     public <T> T accept(AstVisitor<T> visitor) {

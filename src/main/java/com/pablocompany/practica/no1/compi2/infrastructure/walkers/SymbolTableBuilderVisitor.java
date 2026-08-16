@@ -106,12 +106,11 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     }
 
     private boolean isTypeDefined(String typeName) {
-        try {
-            DataType.valueOf(typeName.toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return globalScope.getStruct(typeName) != null;
-        }
+        return globalScope.getStruct(typeName) != null;
+    }
+
+    private Symbol getTypeReference(String typeName) {
+        return globalScope.getStruct(typeName) ;
     }
 
     // ===== VISITORS =====
@@ -143,17 +142,29 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         int line = node.getLine();
         int column = node.getColumn();
 
-        if (globalScope.getStruct(structName) != null) {
+        Symbol structFindend = globalScope.getStruct(structName);
+
+        if (structFindend != null) {
             addError(structName, line, column, "El struct '" + structName + "' ya está declarado.");
             return;
         }
 
-        Symbol structSymbol = new Symbol(structName, new TypeNode(line, column,DataType.CUSTOM, structName), SymbolKind.STRUCT, line, column);
+        Symbol structSymbol = new Symbol(structName, new TypeNode(line, column, DataType.CUSTOM, structName), SymbolKind.STRUCT, line, column);
 
         insideStructDeclaration = true;
         currentStructName = structName;
 
         for (StructAttributeNode attr : node.getAttributes()) {
+            TypeNode attrType = attr.getType();
+            if (attrType.getDataType() == DataType.CUSTOM) {
+                String typeName = attrType.getCustomTypeName();
+                if (!isTypeDefined(typeName)) {
+                    addError(typeName, attr.getLine(), attr.getColumn(),
+                            "El tipo '" + typeName + "' no esta definido.");
+                    continue;
+                }
+            }
+
             Symbol fieldSymbol = new Symbol(
                     attr.getIdentifier(),
                     SymbolKind.STRUCT_FIELD,
@@ -163,6 +174,10 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
                     attr.isArray(),
                     null
             );
+
+            Symbol reference = this.getTypeReference(attrType.getCustomTypeName());
+            fieldSymbol.setTarget(reference);
+
             structSymbol.addStructField(fieldSymbol);
 
             attr.accept(this);
@@ -172,7 +187,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         currentStructName = null;
 
         globalScope.registerStruct(structName, structSymbol);
-
         globalScope.put(structName, structSymbol);
     }
 
@@ -526,36 +540,136 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return null;
     }
 
+
+    //========== Null return value (Not Needed) SECTION ==========
+
     @Override
     public Void visit(VariableAssignmentNode node) {
         return null;
     }
 
+    @Override
+    public Void visit(IfStatementNode node) {
+        return null;
+    }
 
-    //========== Null return value (Not Needed) SECTION ==========
-    @Override public Void visit(IfStatementNode node) { return null; }
-    @Override public Void visit(ElseIfNode node) { return null; }
-    @Override public Void visit(ElseBlockNode node) { return null; }
-    @Override public Void visit(WhileStatementNode node) { return null; }
-    @Override public Void visit(DoWhileStatementNode node) { return null; }
-    @Override public Void visit(ForStatementNode node) { return null; }
-    @Override public Void visit(PrintStatementNode node) { return null; }
-    @Override public Void visit(ReadStatementNode node) { return null; }
-    @Override public Void visit(ReturnStatementNode node) { return null; }
-    @Override public Void visit(BreakStatementNode node) { return null; }
-    @Override public Void visit(ContinueStatementNode node) { return null; }
-    @Override public Void visit(IncrementStatementNode node) { return null; }
-    @Override public Void visit(DecrementStatementNode node) { return null; }
-    @Override public Void visit(LiteralExpressionNode node) { return null; }
-    @Override public Void visit(IdentifierExpressionNode node) { return null; }
-    @Override public Void visit(BinaryExpressionNode node) { return null; }
-    @Override public Void visit(UnaryExpressionNode node) { return null; }
-    @Override public Void visit(FunctionCallExpressionNode node) { return null; }
-    @Override public Void visit(ArrayCallExpressionNode node) { return null; }
-    @Override public Void visit(PropertyAccessExpressionNode node) { return null; }
-    @Override public Void visit(MemberArrayAccessExpressionNode node) { return null; }
-    @Override public Void visit(ArrayInitExpressionNode node) { return null; }
-    @Override public Void visit(StructLiteralExpressionNode node) { return null; }
-    @Override public Void visit(StructPropertyNode node) { return null; }
-    @Override public Void visit(TypeNode node) { return null; }
+    @Override
+    public Void visit(ElseIfNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ElseBlockNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(WhileStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(DoWhileStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ForStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PrintStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ReadStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ReturnStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(BreakStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ContinueStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(IncrementStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(DecrementStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(LiteralExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(IdentifierExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(BinaryExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(UnaryExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(FunctionCallExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ArrayCallExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(PropertyAccessExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(MemberArrayAccessExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(ArrayInitExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(StructLiteralExpressionNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(StructPropertyNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(TypeNode node) {
+        return null;
+    }
 }

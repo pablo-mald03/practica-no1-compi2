@@ -131,16 +131,14 @@ public class SemanticTable extends JTable {
     }
 
     private void setupColumnWidths() {
-        getColumnModel().getColumn(0).setPreferredWidth(180);
+        getColumnModel().getColumn(0).setPreferredWidth(200);
         getColumnModel().getColumn(1).setPreferredWidth(140);
         getColumnModel().getColumn(2).setPreferredWidth(120);
         getColumnModel().getColumn(3).setPreferredWidth(150);
 
         getColumnModel().getColumn(4).setPreferredWidth(100);
-        getColumnModel().getColumn(4).setMaxWidth(130);
 
         getColumnModel().getColumn(5).setPreferredWidth(100);
-        getColumnModel().getColumn(5).setMaxWidth(130);
     }
 
     //Method to load the symbols to the table

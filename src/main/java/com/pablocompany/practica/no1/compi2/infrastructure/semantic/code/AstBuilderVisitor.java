@@ -546,7 +546,13 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
         ExpressionNode value = (ExpressionNode) visit(ctx.expression());
 
         IdentifierExpressionNode idNode = new IdentifierExpressionNode(ctx.ID().getSymbol().getLine(),ctx.ID().getSymbol().getCharPositionInLine(), id );
+
+        if(value instanceof  PropertyAccessExpressionNode || value instanceof MemberArrayAccessExpressionNode){
+            return new VariableAssignmentNode(line, column, value, idNode, true);
+        }
+
         return new VariableAssignmentNode(line, column, value, idNode);
+
     }
 
     //----******----- NESTED VALUES ----******-----
@@ -637,6 +643,10 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
 
         ExpressionNode target = (ExpressionNode) visit(ctx.struct_values());
         ExpressionNode value = (ExpressionNode) visit(ctx.expression());
+
+        if(value instanceof  PropertyAccessExpressionNode || value instanceof MemberArrayAccessExpressionNode){
+            return new VariableAssignmentNode(line, column, value, target, true);
+        }
 
         return new VariableAssignmentNode(line, column, value, target);
     }
