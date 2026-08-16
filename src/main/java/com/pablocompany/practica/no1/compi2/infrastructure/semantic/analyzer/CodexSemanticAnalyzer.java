@@ -6,9 +6,12 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.ProgramNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.generator.CodeGeneratorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.code.AstBuilderVisitor;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.SymbolTableBuilderVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.TypeCheckerVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.Map;
 
 //This is the principal semantic phase to excecute all semantic steps compiler
 public class CodexSemanticAnalyzer {
@@ -40,8 +43,12 @@ public class CodexSemanticAnalyzer {
         );
         symbolBuilder.visit((ProgramNode) astNode);
 
-        context.setGlobalEnvironment(symbolBuilder.getGlobalScope());
+        Environment globalScope = symbolBuilder.getGlobalScope();
+        Map<String, Environment> scopeRegistry = symbolBuilder.getAllScopes();
+
+        context.setGlobalEnvironment(globalScope);
         context.setCurrentEnvironment(symbolBuilder.getCurrentScope());
+        context.setScopeRegistry(scopeRegistry);
 
         notifier.logInfo("Tabla de simbolos construida.");
 
@@ -50,6 +57,7 @@ public class CodexSemanticAnalyzer {
         notifier.logInfo("[3/4] Realizando Chequeo de tipos...");
         TypeCheckerVisitor typeChecker = new TypeCheckerVisitor(
                 symbolBuilder.getGlobalScope(),
+                context.getScopeRegistry(),
                 context.getSemanticErrors()
         );
         typeChecker.visit((ProgramNode) astNode);

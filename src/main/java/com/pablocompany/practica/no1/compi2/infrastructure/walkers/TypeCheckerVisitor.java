@@ -58,13 +58,19 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     private Environment currentScope;
     private final List<Environment> scopeStack;
     private final List<CompilerError> errors;
+
+    //Flags
     private boolean insideFunction = false;
     private boolean insideLoop = false;
     private TypeNode expectedReturnType = null;
 
-    public TypeCheckerVisitor(Environment globalScope, List<CompilerError> errors) {
+    //Principal scope representation registry for the different scopes registered at the first phase
+    private final Map<String, Environment> scopeRegistry;
+
+    public TypeCheckerVisitor(Environment globalScope, Map<String, Environment> scopeRegistry,  List<CompilerError> errors) {
         this.errors = errors;
         this.globalScope = globalScope;
+        this.scopeRegistry = scopeRegistry;
         this.currentScope = globalScope;
         this.scopeStack = new ArrayList<>();
         this.scopeStack.add(globalScope);
@@ -72,9 +78,16 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     //======= SCOPE METHODS =======
     private void enterScope(String name) {
-        Environment newScope = new Environment(currentScope, name);
-        currentScope = newScope;
-        scopeStack.add(newScope);
+        Environment existingScope = scopeRegistry.get(name);
+
+        if (existingScope != null) {
+            currentScope = existingScope;
+            scopeStack.add(existingScope);
+        } else {
+            Environment newScope = new Environment(currentScope, name);
+            currentScope = newScope;
+            scopeStack.add(newScope);
+        }
     }
 
     private void exitScope() {
@@ -299,9 +312,6 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         enterScope("function_" + node.getName());
 
-        for (AstNode localVar : node.getLocalVariables()) {
-            localVar.accept(this);
-        }
 
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
@@ -367,9 +377,9 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             if (returnType != null && expectedReturnType != null) {
                 if (!isAssignable(expectedReturnType, returnType.getTypeNode())) {
                     addError("reddere", node.getLine(), node.getColumn(),
-                            "Tipo de retorno incorrecto. Esperado: " +
-                                    expectedReturnType.getDataType() + ", se obtuvo: " +
-                                    returnType.getDataType());
+                            "Tipo de retorno incorrecto. Se esperaba: " +
+                                    expectedReturnType.getDataType().getValue() + ", se obtuvo: " +
+                                    returnType.getDataType().getValue());
                 }
             }
         } else if (expectedReturnType != null) {

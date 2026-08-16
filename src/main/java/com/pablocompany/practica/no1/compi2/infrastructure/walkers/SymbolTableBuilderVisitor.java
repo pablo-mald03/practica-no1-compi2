@@ -46,7 +46,9 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enum
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //This is the principal visitor to build the symbols table
 @Getter
@@ -60,12 +62,17 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     private boolean insideStructDeclaration = false;
     private String currentStructName = null;
 
+    //THE PRINCIPAL REFERENCE TO THE SCOPES REPRESENTATION
+    private final Map<String, Environment> scopeRegistry;
+
     public SymbolTableBuilderVisitor(List<CompilerError> errors) {
         this.errors = errors;
         this.globalScope = new Environment("Global");
         this.currentScope = globalScope;
         this.scopeStack = new ArrayList<>();
         this.scopeStack.add(globalScope);
+        this.scopeRegistry = new HashMap<>();
+        this.scopeRegistry.put("Global", globalScope);
     }
 
     //===== SCOPE METHODS =====
@@ -74,11 +81,23 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         Environment newScope = new Environment(currentScope, name);
         currentScope = newScope;
         scopeStack.add(newScope);
+
+        scopeRegistry.put(name, newScope);
     }
 
     private void exitScope() {
         scopeStack.removeLast();
         currentScope = scopeStack.getLast();
+    }
+
+    //Principal method to request the scope saved
+    public Environment getScope(String name) {
+        return scopeRegistry.get(name);
+    }
+
+    //This is the principal getter to return the scopes history
+    public Map<String, Environment> getAllScopes() {
+        return new HashMap<>(scopeRegistry);
     }
 
     //Method to register a new error (if is needed)
@@ -297,7 +316,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
                 try {
                     arraySize = Integer.parseInt(lit.getValue());
                 } catch (NumberFormatException e) {
-                   /*Do nothing*/
+                    /* Do nothing*/
                 }
             }
         }
@@ -318,7 +337,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(StructInstanceNode node) {
-
         String varName = node.getIdentifier();
         String structType = node.getStructType();
 
@@ -386,30 +404,22 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         insideFunctionOrProcedure = true;
 
         for (ParameterNode param : node.getParameters()) {
-
-            Symbol fieldSymbol = new Symbol(
+            Symbol paramSymbol = new Symbol(
                     param.getName(),
-                    SymbolKind.STRUCT_FIELD,
+                    SymbolKind.PARAMETER,
                     param.getType(),
                     param.getLine(),
                     param.getColumn(),
                     param.isArray(),
                     null
             );
-
-            funcSymbol.addParameter(fieldSymbol);
+            funcSymbol.addParameter(paramSymbol);
 
             param.accept(this);
         }
 
         for (AstNode localVar : node.getLocalVariables()) {
-            if (localVar instanceof VariableDeclarationNode) {
-                localVar.accept(this);
-            } else if (localVar instanceof ArrayDeclarationNode) {
-                localVar.accept(this);
-            } else if (localVar instanceof StructInstanceNode) {
-                localVar.accept(this);
-            }
+            localVar.accept(this);
         }
 
         for (AstNode stmt : node.getBody()) {
@@ -491,7 +501,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         int column = node.getColumn();
 
         if (currentScope.containsLocal(paramName)) {
-            addError(paramName, line, column, "El parametro '" + paramName + "' ya está declarado.");
+            addError(paramName, line, column, "El parametro '" + paramName + "' ya esta declarado en este ambito.");
             return null;
         }
 

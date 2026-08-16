@@ -79,12 +79,16 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
     @Override
     public TypeWrapper visit(IdentifierExpressionNode node) {
         Symbol symbol = currentScope.get(node.getIdentifier());
+
         if (symbol == null) {
-            addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                    "La variable: '" + node.getIdentifier() + "' no esta definida.");
-            return null;
+            symbol = globalScope.get(node.getIdentifier());
+            if (symbol == null) {
+                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                        "La variable: '" + node.getIdentifier() + "' no esta definida.");
+                return null;
+            }
         }
-        return new TypeWrapper( symbol.getType(), node.getIdentifier());
+        return new TypeWrapper(symbol.getType(), node.getIdentifier());
     }
 
     //Type checking of a binary expression node (THE MOST IMPORTANT)

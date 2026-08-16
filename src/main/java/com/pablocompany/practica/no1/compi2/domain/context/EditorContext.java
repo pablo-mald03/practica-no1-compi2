@@ -12,6 +12,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Envi
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import org.antlr.v4.runtime.Token;
@@ -51,8 +52,10 @@ public class EditorContext {
 
     private List<ParseStep> stackSteps;
 
+    //This is the pointer to the scoped registry
+    private Map<String, Environment> scopeRegistry;
+
     public EditorContext() {
-        // Inicializamos el global
         this.tokens = new ArrayList<>();
 
         this.lexicalErrors = new ArrayList<>();
