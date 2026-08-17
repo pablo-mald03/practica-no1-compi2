@@ -45,10 +45,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symb
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //This is the principal visitor to build the symbols table
 @Getter
@@ -109,10 +106,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return globalScope.getStruct(typeName) != null;
     }
 
-    private Symbol getTypeReference(String typeName) {
-        return globalScope.getStruct(typeName) ;
-    }
-
     // ===== VISITORS =====
 
     @Override
@@ -143,13 +136,14 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         int column = node.getColumn();
 
         Symbol structFindend = globalScope.getStruct(structName);
-
         if (structFindend != null) {
             addError(structName, line, column, "El struct '" + structName + "' ya está declarado.");
             return;
         }
 
-        Symbol structSymbol = new Symbol(structName, new TypeNode(line, column, DataType.CUSTOM, structName), SymbolKind.STRUCT, line, column);
+        Symbol structSymbol = new Symbol(structName,
+                new TypeNode(line, column, DataType.CUSTOM, structName),
+                SymbolKind.STRUCT, line, column);
 
         insideStructDeclaration = true;
         currentStructName = structName;
@@ -175,11 +169,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
                     null
             );
 
-            Symbol reference = this.getTypeReference(attrType.getCustomTypeName());
-            fieldSymbol.setTarget(reference);
-
             structSymbol.addStructField(fieldSymbol);
-
             attr.accept(this);
         }
 

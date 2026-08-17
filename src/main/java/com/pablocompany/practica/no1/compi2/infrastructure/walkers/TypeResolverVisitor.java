@@ -336,51 +336,33 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         TypeWrapper targetType = node.getTarget().accept(this);
 
         if (targetType == null || targetType.getTypeNode() == null) {
-            addError("propiedad", node.getLine(), node.getColumn(),
-                    "No se puede acceder a una propiedad de un valor nulo.");
             return null;
         }
-
-        String fullExpr = this.resolver.getValueFromNode(node);
 
         if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
             String structName = targetType.getTypeNode().getCustomTypeName();
 
             Symbol structSymbol = globalScope.getStruct(structName);
+
             if (structSymbol == null) {
-                addError(fullExpr, node.getLine(), node.getColumn(),
+                addError(node.getPropertyName(), node.getLine(), node.getColumn(),
                         "El tipo '" + structName + "' no es un struct válido.");
                 return null;
             }
 
             for (Symbol field : structSymbol.getStructFields()) {
                 if (field.getId().equals(node.getPropertyName())) {
-                    TypeNode fieldType = field.getType();
-
-                    if (fieldType.getDataType() == DataType.CUSTOM) {
-                        String fieldStructName = fieldType.getCustomTypeName();
-                        Symbol fieldStruct = globalScope.getStruct(fieldStructName);
-                        if (fieldStruct == null) {
-                            addError(fullExpr, node.getLine(), node.getColumn(),
-                                    "El tipo '" + fieldStructName + "' referenciado en '" +
-                                            structName + "." + node.getPropertyName() + "' no existe.");
-                            return null;
-                        }
-                    }
-
-                    return new TypeWrapper(fieldType, node.getPropertyName(), fullExpr);
+                    return new TypeWrapper(field.getType(), node.getPropertyName());
                 }
             }
 
-            addError(fullExpr, node.getLine(), node.getColumn(),
-                    "La propiedad '" + node.getPropertyName() +
-                            "' no existe en el struct '" + structName + "'");
+            addError(node.getPropertyName(), node.getLine(), node.getColumn(),
+                    "La propiedad '" + node.getPropertyName() + "' no existe en el struct '" + structName + "'");
             return null;
         }
 
-        addError(fullExpr, node.getLine(), node.getColumn(),
-                "Solo se puede acceder a propiedades de structs, pero '" +
-                        targetType.getDisplayString() + "' no es un struct.");
+        addError(node.getPropertyName(), node.getLine(), node.getColumn(),
+                "Solo se puede acceder a propiedades de structs.");
         return null;
     }
 
@@ -389,60 +371,25 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         TypeWrapper targetType = node.getTarget().accept(this);
 
         if (targetType == null || targetType.getTypeNode() == null) {
-            addError("array", node.getLine(), node.getColumn(),
-                    "No se puede acceder a un arreglo de un tipo nulo.");
             return null;
         }
-
-        String fullExpr = this.resolver.getValueFromNode(node);
 
         if (node.getIndex() != null) {
             TypeWrapper indexType = node.getIndex().accept(this);
             if (indexType != null && indexType.getTypeNode() != null) {
                 if (indexType.getTypeNode().getDataType() != DataType.INT) {
-                    addError(fullExpr, node.getLine(), node.getColumn(),
-                            "El índice del arreglo debe ser entero, pero es " +
-                                    indexType.getDisplayString());
-                    return null;
+                    addError("indice", node.getLine(), node.getColumn(),
+                            "El índice del arreglo debe ser un valor entero.");
                 }
             }
         }
 
-        if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
-            String structName = targetType.getTypeNode().getCustomTypeName();
+        // 3. ¡AQUÍ ESTÁ LA CLAVE!
+        // Solo nos importa validar que targetType sea lógicamente un arreglo.
+        // (Nota: Asegúrate de que TypeWrapper o TypeNode sepa si es un arreglo,
+        // ya que en Symbol sí guardas 'isArray', pero al devolver TypeNode se puede perder esa info).
 
-            Symbol structSymbol = globalScope.getStruct(structName);
-            if (structSymbol == null) {
-                addError(fullExpr, node.getLine(), node.getColumn(),
-                        "El tipo '" + structName + "' no es un struct válido.");
-                return null;
-            }
-
-            if (node.getTarget() instanceof PropertyAccessExpressionNode propTarget) {
-                String fieldName = propTarget.getPropertyName();
-
-                for (Symbol field : structSymbol.getStructFields()) {
-                    if (field.getId().equals(fieldName)) {
-                        if (field.isArray()) {
-                            TypeNode fieldType = field.getType();
-                            if (fieldType.getDataType() == DataType.CUSTOM) {
-                                return new TypeWrapper(fieldType, fullExpr);
-                            }
-                            return new TypeWrapper(fieldType, fullExpr);
-                        }
-                    }
-                }
-            }
-
-            addError(fullExpr, node.getLine(), node.getColumn(),
-                    "El struct '" + structName + "' no tiene un campo array accesible.");
-            return null;
-        }
-
-        addError(fullExpr, node.getLine(), node.getColumn(),
-                "No se puede acceder a un arreglo de un tipo no struct: " +
-                        targetType.getDisplayString());
-        return null;
+        return new TypeWrapper(targetType.getTypeNode(), "array_access");
     }
 
     @Override
@@ -461,117 +408,6 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
             }
         }
         return firstType;
-    }
-
-    //==== SERVICE RESOLVER =====
-    private TypeWrapper navigatePropertyChain(ExpressionNode node, int line, int column) {
-        if (node instanceof IdentifierExpressionNode) {
-            IdentifierExpressionNode idNode = (IdentifierExpressionNode) node;
-            Symbol symbol = resolveSymbolInScopes(idNode.getIdentifier());
-
-            if (symbol == null) {
-                addError(idNode.getIdentifier(), line, column,
-                        "La variable '" + idNode.getIdentifier() + "' no está definida.");
-                return null;
-            }
-
-            if (symbol.getKind() == SymbolKind.STRUCT ||
-                    symbol.getKind() == SymbolKind.VARIABLE ||
-                    symbol.getKind() == SymbolKind.PARAMETER) {
-                return new TypeWrapper(symbol.getType(), idNode.getIdentifier());
-            }
-
-            return new TypeWrapper(symbol.getType(), idNode.getIdentifier());
-        }
-
-        if (node instanceof PropertyAccessExpressionNode) {
-            PropertyAccessExpressionNode propNode = (PropertyAccessExpressionNode) node;
-
-            TypeWrapper targetType = navigatePropertyChain(propNode.getTarget(), line, column);
-
-            if (targetType == null || targetType.getTypeNode() == null) {
-                return null;
-            }
-
-            if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
-                String structName = targetType.getTypeNode().getCustomTypeName();
-                Symbol structSymbol = globalScope.getStruct(structName);
-
-                if (structSymbol == null) {
-                    addError(propNode.getPropertyName(), line, column,
-                            "El tipo '" + structName + "' no es un struct válido.");
-                    return null;
-                }
-
-                for (Symbol field : structSymbol.getStructFields()) {
-                    if (field.getId().equals(propNode.getPropertyName())) {
-                        return new TypeWrapper(field.getType(), propNode.getPropertyName());
-                    }
-                }
-
-                addError(propNode.getPropertyName(), line, column,
-                        "La propiedad '" + propNode.getPropertyName() +
-                                "' no existe en el struct '" + structName + "'");
-                return null;
-            }
-
-            addError(propNode.getPropertyName(), line, column,
-                    "Solo se puede acceder a propiedades de structs.");
-            return null;
-        }
-
-        if (node instanceof MemberArrayAccessExpressionNode) {
-            MemberArrayAccessExpressionNode arrayNode = (MemberArrayAccessExpressionNode) node;
-
-            TypeWrapper targetType = navigatePropertyChain(arrayNode.getTarget(), line, column);
-
-            if (targetType == null || targetType.getTypeNode() == null) {
-                return null;
-            }
-
-            if (arrayNode.getIndex() != null) {
-                TypeWrapper indexType = arrayNode.getIndex().accept(this);
-                if (indexType != null && indexType.getTypeNode() != null) {
-                    if (indexType.getTypeNode().getDataType() != DataType.INT) {
-                        addError("indice", line, column,
-                                "El índice del arreglo debe ser un valor entero.");
-                    }
-                }
-            }
-
-            if (targetType.getTypeNode().getDataType() == DataType.CUSTOM) {
-                String structName = targetType.getTypeNode().getCustomTypeName();
-                Symbol structSymbol = globalScope.getStruct(structName);
-
-                if (structSymbol == null) {
-                    addError("array", line, column,
-                            "El tipo '" + structName + "' no es un struct válido.");
-                    return null;
-                }
-
-                if (arrayNode.getTarget() instanceof PropertyAccessExpressionNode) {
-                    PropertyAccessExpressionNode propTarget =
-                            (PropertyAccessExpressionNode) arrayNode.getTarget();
-                    String fieldName = propTarget.getPropertyName();
-
-                    for (Symbol field : structSymbol.getStructFields()) {
-                        if (field.getId().equals(fieldName) && field.isArray()) {
-                            TypeNode fieldType = field.getType();
-                            if (fieldType.getDataType() == DataType.CUSTOM) {
-                                return new TypeWrapper(fieldType, fieldName);
-                            }
-                            return new TypeWrapper(fieldType, fieldName);
-                        }
-                    }
-                }
-            }
-
-            addError("array", line, column,
-                    "No se puede acceder a un arreglo de un tipo no struct.");
-            return null;
-        }
-
-        return null;
     }
 
 
