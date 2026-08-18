@@ -1529,18 +1529,6 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValIdCall(CodexLatinusParser.ValIdCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitValIdCall(CodexLatinusParser.ValIdCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterValDecimal(CodexLatinusParser.ValDecimalContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1632,6 +1620,18 @@ public class CodexLatinusParserBaseListener implements CodexLatinusParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitValArrayLiteral(CodexLatinusParser.ValArrayLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValIdCall(CodexLatinusParser.ValIdCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValIdCall(CodexLatinusParser.ValIdCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

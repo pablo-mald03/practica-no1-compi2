@@ -892,13 +892,6 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitValChar(CodexLatinusParser.ValCharContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ValIdCall}
-	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitValIdCall(CodexLatinusParser.ValIdCallContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ValDecimal}
 	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
 	 * @param ctx the parse tree
@@ -954,6 +947,13 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitValArrayLiteral(CodexLatinusParser.ValArrayLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ValIdCall}
+	 * labeled alternative in {@link CodexLatinusParser#normal_values}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValIdCall(CodexLatinusParser.ValIdCallContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code BoolTrue}
 	 * labeled alternative in {@link CodexLatinusParser#boolean_values}.
