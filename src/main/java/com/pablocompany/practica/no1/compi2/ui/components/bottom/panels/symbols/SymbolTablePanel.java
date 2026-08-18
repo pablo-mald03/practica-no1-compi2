@@ -1,9 +1,8 @@
 package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols;
 
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import java.awt.BorderLayout;
-import java.util.Collection;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;

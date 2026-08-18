@@ -24,6 +24,8 @@ public class CodexSyntaxAnalizer {
 
         context.setTokens(tokens.getTokens());
 
+        context.clearParsingErrors();
+
         CodexLatinusParser parser = new CodexLatinusParser(tokens);
 
         parser.removeErrorListeners();
@@ -47,7 +49,7 @@ public class CodexSyntaxAnalizer {
             return false;
         }
 
-        notifier.logSuccess("ParseTree construido correctamente.");
+        notifier.logSuccess("AST construido correctamente.");
         return true;
     }
 }

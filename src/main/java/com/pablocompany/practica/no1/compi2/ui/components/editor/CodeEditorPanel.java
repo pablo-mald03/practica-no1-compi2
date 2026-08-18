@@ -3,7 +3,7 @@ package com.pablocompany.practica.no1.compi2.ui.components.editor;
 import com.pablocompany.practica.no1.compi2.application.mediator.WorkspaceNotifier;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
 import com.pablocompany.practica.no1.compi2.infrastructure.lexical.AntlrAnalyzer;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.analyzer.CodexSemanticAnalyzer;
 import com.pablocompany.practica.no1.compi2.infrastructure.syntax.CodexSyntaxAnalizer;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
 import com.pablocompany.practica.no1.compi2.ui.components.editor.codetext.CodeTextPane;
@@ -117,12 +117,12 @@ public class CodeEditorPanel extends JPanel {
 
         this.editor.clearCompiledCode();
         this.editor.clearStackView();
+        this.editor.clearAll();
 
         try {
 
             this.editor.getEditorContext().clearParsingErrors();
-            //TODO: REFRESH DATA
-            // this.context.setSourceCode(getCode());
+            this.editor.getEditorContext().setSourceCode(getCode());
 
             //Parsing delegated
             CodexSyntaxAnalizer analyzer = new CodexSyntaxAnalizer();
@@ -133,17 +133,25 @@ public class CodeEditorPanel extends JPanel {
 
             if (!isSyntaxValid) {
                 notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
+                notifier.logError("Se encontraron errores Sintacticos");
                 return false;
             }
 
             // --- SEMANTIC PART ---
-            notifier.logInfo("Iniciando análisis semantico (AST)...");
+            //Semantic delegated
+            CodexSemanticAnalyzer semanticAnalyzer = new CodexSemanticAnalyzer();
+            boolean isSemanticValid = semanticAnalyzer.executeSemanticPhase(this.editor.getEditorContext(), notifier);
 
-            //TODO: SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
-            // semanticAnalyzer.buildAST(this.context);
+            notifier.notifySymbolUpdated(this.editor.getEditorContext().getGlobalEnvironment().getAllSymbolsForUI());
+            notifier.notifyTypesUpdated(this.editor.getEditorContext().getGlobalEnvironment().getAllStructsForUI());
+
+            if (!isSemanticValid) {
+                notifier.notifyErrorsUpdated(this.editor.getEditorContext().getCompilerErrors());
+                notifier.logError("Se encontraron errores Semanticos");
+                return false;
+            }
 
             this.notifierReference.notifyCompiledCode(getCompiledCode());
-
 
             notifier.logSuccess("Compilación exitosa.");
             return true;

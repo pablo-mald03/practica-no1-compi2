@@ -21,7 +21,7 @@ public enum TokenStyle {
 
     private final Color style;
 
-    private TokenStyle(Color style) {
+    TokenStyle(Color style) {
         this.style = style;
     }
 

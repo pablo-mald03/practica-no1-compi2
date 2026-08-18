@@ -6,11 +6,13 @@ package com.pablocompany.practica.no1.compi2.domain.context;
 
 import com.pablocompany.practica.no1.compi2.domain.highlight.ErrorType;
 import com.pablocompany.practica.no1.compi2.domain.parsingstep.ParseStep;
+import com.pablocompany.practica.no1.compi2.domain.semantic.AstNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Environment;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import org.antlr.v4.runtime.Token;
@@ -39,7 +41,7 @@ public class EditorContext {
 
     private ParseTree parseTree;
 
-    private Object ast;
+    private AstNode ast;
 
     private String compiledCode = "";
 
@@ -50,8 +52,10 @@ public class EditorContext {
 
     private List<ParseStep> stackSteps;
 
+    //This is the pointer to the scoped registry
+    private Map<String, Environment> scopeRegistry;
+
     public EditorContext() {
-        // Inicializamos el global
         this.tokens = new ArrayList<>();
 
         this.lexicalErrors = new ArrayList<>();
@@ -119,10 +123,8 @@ public class EditorContext {
 
     //This method clear all the memory in the instances
     public void clearAll() {
-        clearCompilatedCode();
-        clearStacklists();
-        //this.tokens.clear();
-        //this.hiddenTokens.clear();
-
+        this.compiledCode = "";
+        this.ast = null;
     }
+
 }

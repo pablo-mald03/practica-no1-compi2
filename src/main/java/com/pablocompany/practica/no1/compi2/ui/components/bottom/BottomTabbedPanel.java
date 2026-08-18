@@ -1,11 +1,14 @@
 package com.pablocompany.practica.no1.compi2.ui.components.bottom;
 
 import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
-import com.pablocompany.practica.no1.compi2.infrastructure.semantic.Symbol;
+import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
+import com.pablocompany.practica.no1.compi2.model.TypeInfo;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.console.ConsolePanel;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.errors.ErrorsPanel;
 import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols.SymbolTablePanel;
+import com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.types.TypesTablePanel;
+
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JPanel;
@@ -22,6 +25,7 @@ public class BottomTabbedPanel extends JPanel {
     private final ConsolePanel console;
     private final ErrorsPanel errorsTable;
     private final SymbolTablePanel symbolTablePanel;
+    private final TypesTablePanel typesTablePanel;
 
     public BottomTabbedPanel() {
         setLayout(new BorderLayout());
@@ -36,6 +40,7 @@ public class BottomTabbedPanel extends JPanel {
         console = new ConsolePanel();
         errorsTable = new ErrorsPanel();
         symbolTablePanel = new SymbolTablePanel();
+        typesTablePanel = new TypesTablePanel();
 
         tabs.setForeground(Theme.FOREGROUND_DARK.getColorSet());
         tabs.setBackground(Theme.SIDEBAR_DARKT.getColorSet());
@@ -43,6 +48,7 @@ public class BottomTabbedPanel extends JPanel {
         tabs.addTab("Consola", console);
         tabs.addTab("Errores", errorsTable);
         tabs.addTab("Tabla de Simbolos", symbolTablePanel);
+        tabs.addTab("Tabla de Tipos", typesTablePanel);
 
         add(tabs, BorderLayout.CENTER);
     }
@@ -52,6 +58,13 @@ public class BottomTabbedPanel extends JPanel {
      */
     public void showSymbolsTable() {
         tabs.setSelectedComponent(symbolTablePanel);
+    }
+
+    /*
+     * Focus to the Types Table panel
+     */
+    public void showTypesTable() {
+        tabs.setSelectedComponent(typesTablePanel);
     }
 
     /*
@@ -93,5 +106,10 @@ public class BottomTabbedPanel extends JPanel {
     /*SECTION OF METHODS TO SET THE TABLE TO THE SYMBOL TABLE*/
     public void setSymbols(List<Symbol> symbols) {
         symbolTablePanel.loadSymbols(symbols);
+    }
+
+    /*SECTION OF METHODS TO SET THE TABLE TO THE TYPES TABLE*/
+    public void setTypes(List<TypeInfo> symbols) {
+        typesTablePanel.loadSymbols(symbols);
     }
 }
