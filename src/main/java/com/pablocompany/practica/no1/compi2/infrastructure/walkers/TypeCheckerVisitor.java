@@ -45,6 +45,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.errors.CompilerError;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
+import com.pablocompany.practica.no1.compi2.infrastructure.walkers.services.CheckerTypesService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,9 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     //Principal scope representation registry for the different scopes registered at the first phase
     private final Map<String, Environment> scopeRegistry;
 
+    //This is a service to the helper methods
+    private final CheckerTypesService checkerTypesService;
+
     public TypeCheckerVisitor(Environment globalScope, Map<String, Environment> scopeRegistry, List<CompilerError> errors) {
         this.errors = errors;
         this.globalScope = globalScope;
@@ -74,6 +78,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         this.currentScope = globalScope;
         this.scopeStack = new ArrayList<>();
         this.scopeStack.add(globalScope);
+        this.checkerTypesService = new CheckerTypesService();
     }
 
     //======= SCOPE METHODS =======
@@ -252,7 +257,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                     verifyStructLiteral((StructLiteralExpressionNode) elem, node.getDataType());
                 } else if (elemType != null && !isAssignable(node.getDataType(), elemType.getTypeNode())) {
                     addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                            "Tipo incorrecto en inicialización del arreglo. Espera: " +
+                            "Tipo incorrecto en inicializacion del arreglo. Espera: " +
                                     node.getDataType().getDataType() + ", se obtuvo: " +
                                     elemType.getDataType());
                 }
@@ -316,8 +321,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         }
 
         if (targetType == null || targetType.getTypeNode() == null) {
-            addError("asignación", node.getLine(), node.getColumn(),
-                    "El target de la asignación no es válido. No se pudo resolver la referencia.");
+            addError("asignacion", node.getLine(), node.getColumn(),
+                    "El target de la asignacion no es valido. No se pudo resolver la referencia.");
             return null;
         }
 
@@ -326,9 +331,9 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         if (valueType != null) {
             if (!isAssignable(targetType.getTypeNode(), valueType.getTypeNode())) {
                 addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
-                        "Tipo de asignación incorrecto. Se esperaba: " +
-                                targetType.getDataType().getValue() + ", pero se obtuvo: " +
-                                valueType.getDataType().getValue());
+                        "Tipo de asignacion incorrecto. Tipo esperado: '" +
+                                targetType.getDataType().getValue() + "', pero se obtuvo: '" +
+                                valueType.getDataType().getValue() + "'");
             }
         }
 
@@ -368,7 +373,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             stmt.accept(this);
         }
 
-        boolean hasReturn = checkAllPathsHaveReturn(node.getBody());
+        boolean hasReturn = checkerTypesService.checkAllPathsHaveReturn(node.getBody());
         if (!hasReturn) {
             addError(node.getName(), node.getLine(), node.getColumn(),
                     "La funcion '" + node.getName() + "' no tiene un valor de retorno definido.");
@@ -430,7 +435,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ReturnStatementNode node) {
         if (!insideFunction) {
             addError("reddere", node.getLine(), node.getColumn(),
-                    "'reddere' solo puede usarse dentro de una función.");
+                    "'reddere' solo puede usarse dentro de una funcion.");
             return null;
         }
 
@@ -448,8 +453,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             }
         } else if (expectedReturnType != null) {
             addError("reddere", node.getLine(), node.getColumn(),
-                    "La funcion debe retornar un valor de tipo: " +
-                            expectedReturnType.getDataType());
+                    "La funcion debe retornar un valor de tipo: '" +
+                            expectedReturnType.getDataType().getValue() + "'");
         }
 
         return null;
@@ -528,7 +533,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         TypeWrapper indexType = node.getIndexExpression().accept(resolver);
         if (indexType != null && indexType.getDataType() != DataType.INT) {
             addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                    "El índice del arreglo debe ser un valor entero.");
+                    "El indice del arreglo debe ser un valor entero.");
         }
 
         return null;
@@ -600,7 +605,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         TypeWrapper conditionType = node.getCondion().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
             addError("facere-dum", node.getLine(), node.getColumn(),
-                    "La condición del 'facere-dum' debe ser de tipo bool.");
+                    "La condicion del 'facere-dum' debe ser de tipo bool.");
         }
 
         for (AstNode stmt : node.getBody()) {
@@ -627,7 +632,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             TypeWrapper conditionType = node.getCondition().accept(resolver);
             if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
                 addError("per", node.getLine(), node.getColumn(),
-                        "La condición del ciclo 'per' debe ser booleana.");
+                        "La condicion del ciclo 'per' debe ser booleana.");
             }
         }
 
@@ -650,7 +655,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(BreakStatementNode node) {
         if (!insideLoop) {
             addError("interrumpe", node.getLine(), node.getColumn(),
-                    "La instrucción 'interrumpe' solo puede usarse dentro de un ciclo.");
+                    "La instruccion 'interrumpe' solo puede usarse dentro de un ciclo.");
         }
         return null;
     }
@@ -659,7 +664,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ContinueStatementNode node) {
         if (!insideLoop) {
             addError("perge", node.getLine(), node.getColumn(),
-                    "La instrucción 'perge' solo puede usarse dentro de un ciclo.");
+                    "La instruccion 'perge' solo puede usarse dentro de un ciclo.");
         }
         return null;
     }
@@ -672,8 +677,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         TypeWrapper conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError("condición", node.getLine(), node.getColumn(),
-                    "La condición del 'si' debe ser booleana.");
+            addError("condicion", node.getLine(), node.getColumn(),
+                    "La condicion del 'si' debe ser booleana.");
         }
 
         for (AstNode stmt : node.getThenBody()) {
@@ -694,8 +699,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         TypeWrapper conditionType = node.getCondition().accept(resolver);
         if (conditionType != null && conditionType.getDataType() != DataType.BOOLEAN) {
-            addError("condición", node.getLine(), node.getColumn(),
-                    "La condición de 'aliter' debe ser booleana.");
+            addError("condicion", node.getLine(), node.getColumn(),
+                    "La condicion de 'aliter' debe ser booleana.");
         }
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
@@ -760,7 +765,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                 if (arrayCall.isDeclaration()) {
                     if (!fieldNode.isArray()) {
                         addError(propName, prop.getLine(), prop.getColumn(),
-                                "La propiedad '" + propName + "' no es un arreglo, pero se está inicializando como tal.");
+                                "La propiedad '" + propName + "' no es un arreglo, pero se esta inicializando como tal.");
                     }
                     continue;
                 }
@@ -785,11 +790,6 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         }
     }
 
-    private boolean checkAllPathsHaveReturn(List<AstNode> body) {
-        if (body.isEmpty()) return false;
-        AstNode last = body.get(body.size() - 1);
-        return last instanceof ReturnStatementNode;
-    }
 
     // ========== STUBS =========
 

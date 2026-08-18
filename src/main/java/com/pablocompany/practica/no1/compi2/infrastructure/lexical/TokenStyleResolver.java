@@ -35,7 +35,8 @@ public class TokenStyleResolver implements TokenStyleProvider {
                  CodexLatinusLexer.SERIES, CodexLatinusLexer.STRUCTURE, CodexLatinusLexer.FINIS,
                  CodexLatinusLexer.DUM, CodexLatinusLexer.PER, CodexLatinusLexer.FACERE, CodexLatinusLexer.SI,
                  CodexLatinusLexer.ALITER, CodexLatinusLexer.ACTIO,
-                 CodexLatinusLexer.REDDERE, CodexLatinusLexer.RATIO, CodexLatinusLexer.READ, CodexLatinusLexer.PRINT ->
+                 CodexLatinusLexer.REDDERE, CodexLatinusLexer.RATIO, CodexLatinusLexer.READ, CodexLatinusLexer.PRINT,
+                 CodexLatinusLexer.INTERRUMPE, CodexLatinusLexer.PERGE->
                     TokenStyle.KEYWORD;
 
             case CodexLatinusLexer.STRING, CodexLatinusLexer.CHAR -> TokenStyle.STRING;

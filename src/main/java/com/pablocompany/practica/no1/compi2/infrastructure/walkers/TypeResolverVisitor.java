@@ -136,10 +136,10 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         if (left == null || right == null) {
             if (left == null && right != null) {
                 addError("operacion", node.getLine(), node.getColumn(),
-                        "Operando izquierdo invalido en: " + this.resolver.getValueOperationString(node));
+                        "Operando izquierdo invalido: " + this.resolver.getValueOperationString(node));
             } else if (left != null && right == null) {
                 addError("operacion", node.getLine(), node.getColumn(),
-                        "Operando derecho invalido en: " + this.resolver.getValueOperationString(node));
+                        "Operando derecho invalido: " + this.resolver.getValueOperationString(node));
             }
             return null;
         }
@@ -172,23 +172,19 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                 }
             }
 
-            if (this.resolver.isNumeric(leftType) && this.resolver.isNumeric(rightType)) {
-                if (leftType.getDataType() == DataType.DECIMAL || rightType.getDataType() == DataType.DECIMAL) {
+            if (this.resolver.isImplicitlyNumeric(leftType) && this.resolver.isImplicitlyNumeric(rightType)) {
+                DataType resultingType = this.resolver.getPromotedArithmeticType(leftType, rightType);
+
+                if (resultingType != null) {
                     return new TypeWrapper(
-                            new TypeNode(node.getLine(), node.getColumn(), DataType.DECIMAL, null),
-                            fullExpr
-                    );
-                }
-                if (leftType.getDataType() == DataType.INT && rightType.getDataType() == DataType.INT) {
-                    return new TypeWrapper(
-                            new TypeNode(node.getLine(), node.getColumn(), DataType.INT, null),
+                            new TypeNode(node.getLine(), node.getColumn(), resultingType, null),
                             fullExpr
                     );
                 }
             }
 
             addError(fullExpr, node.getLine(), node.getColumn(),
-                    "Operación aritmética inválida entre " +
+                    "Operacion aritmetica invalida entre " +
                             left.getDisplayString() + " y " + right.getDisplayString());
             return null;
         }
@@ -228,8 +224,8 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                 );
             }
             addError(fullExpr, node.getLine(), node.getColumn(),
-                    "Operación lógica requiere booleanos, pero se encontró " +
-                            left.getDisplayString() + " y " + right.getDisplayString());
+                    "Operacion logica requiere booleanos, pero se encontro '" +
+                            left.getDisplayString() + "' y '" + right.getDisplayString() + "'");
             return null;
         }
 
@@ -291,8 +287,8 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         int actualArgs = node.getArguments().size();
         if (expectedArgs != actualArgs) {
             addError(node.getFunctionName(), node.getLine(), node.getColumn(),
-                    "La funcion '" + node.getFunctionName() + "' espera " +
-                            expectedArgs + " argumentos, pero recibe " + actualArgs);
+                    "La funcion '" + node.getFunctionName() + "' esperaba " +
+                            expectedArgs + " argumentos, pero recibio " + actualArgs);
             return null;
         }
 
@@ -366,7 +362,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
             if (structSymbol == null) {
                 addError(node.getPropertyName(), node.getLine(), node.getColumn(),
-                        "El tipo '" + structName + "' no es un struct válido.");
+                        "El tipo '" + structName + "' no es un struct valido.");
                 return null;
             }
 
@@ -399,7 +395,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
             if (indexType != null && indexType.getTypeNode() != null) {
                 if (indexType.getTypeNode().getDataType() != DataType.INT) {
                     addError("indice", node.getLine(), node.getColumn(),
-                            "El índice del arreglo debe ser un valor entero.");
+                            "El indice del arreglo debe ser un valor entero.");
                 }
             }
         }

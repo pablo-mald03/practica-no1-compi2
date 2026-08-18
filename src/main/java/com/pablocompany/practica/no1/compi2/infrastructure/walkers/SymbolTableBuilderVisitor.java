@@ -137,7 +137,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
         Symbol structFindend = globalScope.getStruct(structName);
         if (structFindend != null) {
-            addError(structName, line, column, "El struct '" + structName + "' ya está declarado.");
+            addError(structName, line, column, "El struct '" + structName + "' ya esta declarado.");
             return;
         }
 
@@ -274,7 +274,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         int column = node.getColumn();
 
         if (currentScope.containsLocal(varName)) {
-            addError(varName, line, column, "La variable '" + varName + "' ya está declarada en este ámbito.");
+            addError(varName, line, column, "La variable '" + varName + "' ya esta declarada en el ambito.");
             return null;
         }
 
@@ -451,7 +451,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         int column = node.getColumn();
 
         if (currentScope.containsLocal(procedureName)) {
-            addError(procedureName, line, column, "El procedimiento '" + procedureName + "' ya está declarado.");
+            addError(procedureName, line, column, "El procedimiento '" + procedureName + "' ya esta declarado.");
             return null;
         }
 

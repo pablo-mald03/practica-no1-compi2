@@ -19,20 +19,71 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResolverTypesService {
 
+    //This is a helper method to get the inferred types
+    //Describe the precedence
+    private int getTypeWeight(DataType type) {
+        switch (type) {
+            case STRING:   return 5;
+            case DECIMAL:  return 4;
+            case INT:      return 3;
+            case CHAR:     return 2;
+            case BOOLEAN:  return 1;
+            default:       return 0;
+        }
+    }
+
+    //Verify the type if it can be promoted to numeric case
+    public boolean isImplicitlyNumeric(TypeNode type) {
+        if (type == null) return false;
+        DataType dt = type.getDataType();
+        return dt == DataType.INT || dt == DataType.DECIMAL || dt == DataType.CHAR || dt == DataType.BOOLEAN;
+    }
+
+    //This method determinates the result of two types in arithmetic operations
+    public DataType getPromotedArithmeticType(TypeNode left, TypeNode right) {
+        if (left == null || right == null) return null;
+
+        DataType lDt = left.getDataType();
+        DataType rDt = right.getDataType();
+
+        if (lDt == DataType.STRING || rDt == DataType.STRING) {
+            return DataType.STRING;
+        }
+
+        if (isImplicitlyNumeric(left) && isImplicitlyNumeric(right)) {
+            if (lDt == DataType.DECIMAL || rDt == DataType.DECIMAL) {
+                return DataType.DECIMAL;
+            }
+            return DataType.INT;
+        }
+
+        return null;
+    }
+
     // This method is the helper to assing any value to a variable or a nested variable (setter)
     public boolean isAssignable(TypeNode target, TypeNode source) {
 
         if (target == null || source == null) return false;
 
-        if (target.getDataType() == source.getDataType()) {
-            if (target.getDataType() == DataType.CUSTOM) {
+        DataType targetDt = target.getDataType();
+        DataType sourceDt = source.getDataType();
+
+        if (targetDt == sourceDt) {
+            if (targetDt == DataType.CUSTOM) {
                 return target.getCustomTypeName().equals(source.getCustomTypeName());
             }
             return true;
         }
-        if (target.getDataType() == DataType.DECIMAL && source.getDataType() == DataType.INT) {
+
+        // Decimal can accept a boolan of integer inferred type
+        if (targetDt == DataType.DECIMAL && (sourceDt == DataType.INT || sourceDt == DataType.CHAR || sourceDt == DataType.BOOLEAN)) {
             return true;
         }
+        // Un int accept Char and Boolean inferred types
+        if (targetDt == DataType.INT && (sourceDt == DataType.CHAR || sourceDt == DataType.BOOLEAN)) {
+            return true;
+        }
+
         return false;
     }
 
