@@ -215,7 +215,9 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         for (AstNode stmt : node.getStatements()) {
             if (stmt instanceof VariableDeclarationNode ||
                     stmt instanceof ArrayDeclarationNode ||
-                    stmt instanceof StructInstanceNode) {
+                    stmt instanceof StructInstanceNode ||
+                    stmt instanceof ForStatementNode) {
+
                 stmt.accept(this);
             }
         }
@@ -429,7 +431,8 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         for (AstNode stmt : node.getBody()) {
             if (stmt instanceof VariableDeclarationNode ||
                     stmt instanceof ArrayDeclarationNode ||
-                    stmt instanceof StructInstanceNode) {
+                    stmt instanceof StructInstanceNode  ||
+                    stmt instanceof ForStatementNode) {
                 stmt.accept(this);
             }
         }
@@ -464,10 +467,9 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         insideFunctionOrProcedure = true;
 
         for (ParameterNode param : node.getParameters()) {
-
-            Symbol fieldSymbol = new Symbol(
+            Symbol paramSymbol = new Symbol(
                     param.getName(),
-                    SymbolKind.STRUCT_FIELD,
+                    SymbolKind.PARAMETER,
                     param.getType(),
                     param.getLine(),
                     param.getColumn(),
@@ -475,24 +477,26 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
                     null
             );
 
-            procSymbol.addParameter(fieldSymbol);
-
+            procSymbol.addParameter(paramSymbol);
             param.accept(this);
         }
 
         for (AstNode localVar : node.getLocalVariables()) {
-            if (localVar instanceof VariableDeclarationNode ||
-                    localVar instanceof ArrayDeclarationNode ||
-                    localVar instanceof StructInstanceNode) {
-                localVar.accept(this);
+            localVar.accept(this);
+        }
+
+        for (AstNode stmt : node.getBody()) {
+            if (stmt instanceof VariableDeclarationNode ||
+                    stmt instanceof ArrayDeclarationNode ||
+                    stmt instanceof StructInstanceNode  ||
+                    stmt instanceof ForStatementNode) {
+                stmt.accept(this);
             }
         }
 
-        //Exit the scope
         insideFunctionOrProcedure = false;
         exitScope();
 
-        //Register the procedure (for the UI)
         currentScope.put(procedureName, procSymbol);
         return null;
     }
@@ -530,6 +534,20 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return null;
     }
 
+    //Register the for scope
+    @Override
+    public Void visit(ForStatementNode node) {
+
+        enterScope("for_" + node.getLine() + node.getColumn());
+
+        if (node.getInit() != null) {
+            node.getInit().accept(this);
+        }
+
+        exitScope();
+        return null;
+    }
+
 
     //========== Null return value (Not Needed) SECTION ==========
 
@@ -563,10 +581,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(ForStatementNode node) {
-        return null;
-    }
 
     @Override
     public Void visit(PrintStatementNode node) {

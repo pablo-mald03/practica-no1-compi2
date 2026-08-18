@@ -203,6 +203,11 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                                 node.getDataType().getDataType().getValue() + "', se obtuvo: '" +
                                 initType.getDataType().getValue() + "'");
             }
+
+            Symbol symbol = resolveSymbol(node.getIdentifier(), node.getLine(), node.getColumn());
+            if (symbol != null) {
+                symbol.setInitialized(true);
+            }
         }
 
         return null;
@@ -266,9 +271,15 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             return null;
         }
 
+        Symbol varSymbol = resolveSymbol(node.getIdentifier(), node.getLine(), node.getColumn());
 
         if (node.getLiteral() != null) {
+
             verifyStructLiteral(node.getLiteral(), structType.getType());
+
+            if (varSymbol != null) {
+                varSymbol.setInitialized(true);
+            }
         }
 
         return null;
@@ -291,7 +302,18 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(VariableAssignmentNode node) {
         TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
 
-        TypeWrapper targetType = node.getIdentifier().accept(resolver);
+        TypeWrapper targetType = null;
+
+        if (node.getIdentifier() instanceof IdentifierExpressionNode idNode) {
+            Symbol symbol = resolveSymbol(idNode.getIdentifier(), idNode.getLine(), idNode.getColumn());
+
+            if (symbol != null) {
+                targetType = new TypeWrapper(symbol.getType(), idNode.getIdentifier());
+                symbol.setInitialized(true);
+            }
+        } else {
+            targetType = node.getIdentifier().accept(resolver);
+        }
 
         if (targetType == null || targetType.getTypeNode() == null) {
             addError("asignación", node.getLine(), node.getColumn(),
@@ -305,7 +327,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             if (!isAssignable(targetType.getTypeNode(), valueType.getTypeNode())) {
                 addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
                         "Tipo de asignación incorrecto. Se esperaba: " +
-                                targetType.getDataType().getValue() + ", se obtuvo: " +
+                                targetType.getDataType().getValue() + ", pero se obtuvo: " +
                                 valueType.getDataType().getValue());
             }
         }
@@ -593,7 +615,13 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(ForStatementNode node) {
         insideLoop = true;
 
+        enterScope("for_" + node.getLine() + node.getColumn());
+
         TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
+
+        if (node.getInit() != null) {
+            node.getInit().accept(this);
+        }
 
         if (node.getCondition() != null) {
             TypeWrapper conditionType = node.getCondition().accept(resolver);
@@ -603,17 +631,15 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             }
         }
 
-        if (node.getInit() != null) {
-            node.getInit().accept(this);
-        }
-        if (node.getUpdate() != null) {
-            node.getUpdate().accept(this);
-        }
-
         for (AstNode stmt : node.getBody()) {
             stmt.accept(this);
         }
 
+        if (node.getUpdate() != null) {
+            node.getUpdate().accept(this);
+        }
+
+        exitScope();
         insideLoop = false;
         return null;
     }

@@ -7,6 +7,8 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.*;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.BinaryOperator;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.UnaryOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructAttributeNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.declaration.StructDeclarationNode;
@@ -104,6 +106,24 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                     "La variable: '" + node.getIdentifier() + "' no esta definida.");
             return null;
         }
+
+        if (symbol.getKind() == SymbolKind.VARIABLE || symbol.getKind() == SymbolKind.ARRAY) {
+
+            if (node.getLine() < symbol.getLine() ||
+                    (node.getLine() == symbol.getLine() && node.getColumn() <= symbol.getColumn())) {
+
+                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                        "La variable'" + node.getIdentifier() + "'. No puede ser usada antes de su declaracion.");
+                return null;
+            }
+
+            if (!symbol.isInitialized()) {
+                addError(node.getIdentifier(), node.getLine(), node.getColumn(),
+                        "La variable '" + node.getIdentifier() + "' no ha sido inicializada con un valor.");
+                return null;
+            }
+
+        }
         return new TypeWrapper(symbol.getType(), node.getIdentifier());
     }
 
@@ -124,14 +144,14 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
             return null;
         }
 
-        String op = node.getOperator().getValue();
+        BinaryOperator op = node.getOperator();
         String fullExpr = this.resolver.getValueOperationString(node);
         TypeNode leftType = left.getTypeNode();
         TypeNode rightType = right.getTypeNode();
 
         // === ARITHMETIC OPERATIONS ===
-        if ("+".equals(op) || "-".equals(op) || "*".equals(op) || "/".equals(op)) {
-            if ("+".equals(op)) {
+        if ( op == BinaryOperator.PLUS || op == BinaryOperator.MINUS || op == BinaryOperator.MULTIPLICATION || op == BinaryOperator.DIVIDE) {
+            if (op == BinaryOperator.PLUS) {
                 if (leftType.getDataType() == DataType.STRING && rightType.getDataType() == DataType.STRING) {
                     return new TypeWrapper(
                             new TypeNode(node.getLine(), node.getColumn(), DataType.STRING, null),
@@ -174,10 +194,10 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         }
 
         // === RELATIONAL OPERATORS ===
-        if ("==".equals(op) || "!=".equals(op) || "<".equals(op) ||
-                ">".equals(op) || "<=".equals(op) || ">=".equals(op)) {
+        if (op == BinaryOperator.EQUALS || op == BinaryOperator.DIFFERENT || op == BinaryOperator.GREATER ||
+                op == BinaryOperator.LESS || op == BinaryOperator.LESS_EQUALS || op == BinaryOperator.GREATER_EQUALS) {
 
-            if ("==".equals(op) || "!=".equals(op)) {
+            if (op == BinaryOperator.EQUALS || op == BinaryOperator.DIFFERENT) {
                 if (this.resolver.areComparable(leftType, rightType)) {
                     return new TypeWrapper(
                             new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
@@ -200,7 +220,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         }
 
         // === CONDITIONAL OPERATORS ===
-        if ("&&".equals(op) || "||".equals(op)) {
+        if (op == BinaryOperator.AND || op == BinaryOperator.OR) {
             if (leftType.getDataType() == DataType.BOOLEAN && rightType.getDataType() == DataType.BOOLEAN) {
                 return new TypeWrapper(
                         new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
@@ -225,8 +245,8 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
         String errorLexeme = node.getOperator().getValue() + " " + operand.getValue(errorCase);
 
-        String op = node.getOperator().getValue();
-        if ("-".equals(op)) {
+        UnaryOperator op = node.getOperator();
+        if (op == UnaryOperator.NEGATE) {
             if (operand.getTypeNode().getDataType() == DataType.INT ||
                     operand.getTypeNode().getDataType() == DataType.DECIMAL) {
                 return operand;
@@ -235,7 +255,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                     "El operador unario '-' no es aplicable al tipo " + operand.getTypeNode().getDataType().getValue());
             return null;
         }
-        if ("non".equals(op)) {
+        if (op == UnaryOperator.NOT) {
             if (operand.getTypeNode().getDataType() == DataType.BOOLEAN) {
                 return new TypeWrapper(
                         new TypeNode(node.getLine(), node.getColumn(), DataType.BOOLEAN, null),
@@ -283,8 +303,8 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                 if (!this.resolver.isAssignable(paramType, argType.getTypeNode())) {
                     addError(node.getFunctionName(), node.getLine(), node.getColumn(),
                             "Argumento " + (i + 1) + " de '" + node.getFunctionName() +
-                                    "' se espera " + paramType.getDataType() +
-                                    ", pero recibe " + argType.getTypeNode().getDataType());
+                                    "' tipo esperado: '" + paramType.getDataType().getValue() +
+                                    "', tipo enviado: '" + argType.getTypeNode().getDataType().getValue()+ "'") ;
                 }
             }
         }
@@ -330,7 +350,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         return new TypeWrapper(arraySymbol.getType(), node.getArrayName(), fullExpr);
     }
 
-    //This is the property nested data s
+    //This is the property nested data
     @Override
     public TypeWrapper visit(PropertyAccessExpressionNode node) {
         TypeWrapper targetType = node.getTarget().accept(this);
@@ -383,11 +403,6 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
                 }
             }
         }
-
-        // 3. ¡AQUÍ ESTÁ LA CLAVE!
-        // Solo nos importa validar que targetType sea lógicamente un arreglo.
-        // (Nota: Asegúrate de que TypeWrapper o TypeNode sepa si es un arreglo,
-        // ya que en Symbol sí guardas 'isArray', pero al devolver TypeNode se puede perder esa info).
 
         return new TypeWrapper(targetType.getTypeNode(), "array_access");
     }
