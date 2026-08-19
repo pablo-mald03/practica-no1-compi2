@@ -257,7 +257,7 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                     verifyStructLiteral((StructLiteralExpressionNode) elem, node.getDataType());
                 } else if (elemType != null && !isAssignable(node.getDataType(), elemType.getTypeNode())) {
                     addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                            "Tipo incorrecto en inicializacion del arreglo. Espera: " +
+                            "Tipo incorrecto en inicializacion del arreglo. Se esperaba: " +
                                     node.getDataType().getDataType() + ", se obtuvo: " +
                                     elemType.getDataType());
                 }
@@ -332,8 +332,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             if (!isAssignable(targetType.getTypeNode(), valueType.getTypeNode())) {
                 addError(targetType.getDataType().getValue(), node.getLine(), node.getColumn(),
                         "Tipo de asignacion incorrecto. Tipo esperado: '" +
-                                targetType.getDataType().getValue() + "', pero se obtuvo: '" +
-                                valueType.getDataType().getValue() + "'");
+                                checkerTypesService.resolveTypeName(targetType) + "', pero se obtuvo: '" +
+                                checkerTypesService.resolveTypeName(valueType) + "'");
             }
         }
 
