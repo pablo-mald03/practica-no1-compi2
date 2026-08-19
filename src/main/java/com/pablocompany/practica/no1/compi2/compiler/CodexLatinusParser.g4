@@ -35,7 +35,7 @@ functions_block
 /*------ FUNCTION & PROCEDURE DECLARATIONS ------*/
 
 function_declaration
-    : RATIO variable_function_type ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE function_body FINAL_BRACE FINIS DOT_COMMA # FunctionDeclaration
+    : RATIO variable_function_type ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE function_body? code_body? FINAL_BRACE FINIS DOT_COMMA # FunctionDeclaration
     ;
 
 /*------Return values------*/
@@ -45,15 +45,15 @@ variable_function_type
 
 
 procedure_declaration
-    : ACTIO ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE procedure_body FINAL_BRACE FINIS DOT_COMMA    # ProcedureDeclaration
+    : ACTIO ID INIT_PARENT function_arguments? FINAL_PARENT INIT_BRACE procedure_body? code_body? FINAL_BRACE FINIS DOT_COMMA    # ProcedureDeclaration
     ;
 
 function_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body?         # FunctionBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET          # FunctionBody
     ;
 
 procedure_body
-    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET code_body?          # ProcedureBody
+    : VARIABILES INIT_BRACKET local_variable_list? FINAL_BRACKET           # ProcedureBody
     ;
 
 /*------ ARGUMENTS & LOCAL VARIABLES ------*/
@@ -389,7 +389,6 @@ nest_variable
 normal_values
     : STRING                    # ValString
     | CHAR                      # ValChar
-    | ID                        # ValIdCall
     | DECIMAL                   # ValDecimal
     | INT                       # ValInt
     | boolean_values            # ValBool
@@ -398,6 +397,7 @@ normal_values
     | struct_values             # ValStructNestValue
     | struct_literal            # ValStructPropertyLiteral
     | array_initialization      # ValArrayLiteral
+    | ID                        # ValIdCall
     ;
 
 boolean_values

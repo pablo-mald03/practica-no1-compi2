@@ -246,13 +246,13 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
                 (CodexLatinusParser.FunctionBodyContext) ctx.function_body();
 
         List<AstNode> localVars = new ArrayList<>();
-        if (bodyCtx.local_variable_list() != null) {
+        if (bodyCtx != null && bodyCtx.local_variable_list() != null) {
             localVars = parseLocalVariableList(bodyCtx.local_variable_list());
         }
 
         List<AstNode> body = new ArrayList<>();
-        if (bodyCtx.code_body() != null) {
-            body = parseCodeBody(bodyCtx.code_body());
+        if (ctx.code_body() != null) {
+            body = parseCodeBody(ctx.code_body());
         }
 
         return new FunctionDeclarationNode(line, column,body, name, returnType, parameters, localVars);
@@ -274,13 +274,13 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
                 (CodexLatinusParser.ProcedureBodyContext) ctx.procedure_body();
 
         List<AstNode> localVars = new ArrayList<>();
-        if (bodyCtx.local_variable_list() != null) {
+        if (bodyCtx != null && bodyCtx.local_variable_list() != null) {
             localVars = parseLocalVariableList(bodyCtx.local_variable_list());
         }
 
         List<AstNode> body = new ArrayList<>();
-        if (bodyCtx.code_body() != null) {
-            body = parseCodeBody(bodyCtx.code_body());
+        if (ctx.code_body() != null) {
+            body = parseCodeBody(ctx.code_body());
         }
 
         return new ProcedureDeclarationNode(line, column,body, name, parameters, localVars);

@@ -133,7 +133,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(VariableDeclarationNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("esto"))
+        sb.append("\n").append(translateService.translatePreserveCase("esto"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getIdentifier()))
                 .append(" ")
@@ -152,7 +152,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(ArrayDeclarationNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("series"))
+        sb.append("\n").append(translateService.translatePreserveCase("series"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getIdentifier()))
                 .append("[")
@@ -180,7 +180,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(StructDeclarationNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n").append(translateService.translatePreserveCase("structura"))
+        sb.append("\n").append("\n").append(translateService.translatePreserveCase("structura"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getStructName()))
                 .append(" ")
@@ -209,7 +209,7 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
     public String visit(StructInstanceNode node) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(translateService.translatePreserveCase("esto"))
+        sb.append("\n").append(translateService.translatePreserveCase("esto"))
                 .append(" ")
                 .append(translateService.translatePreserveCase(node.getIdentifier()))
                 .append(" ")
