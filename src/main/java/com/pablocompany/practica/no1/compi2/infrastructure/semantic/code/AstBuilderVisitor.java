@@ -865,14 +865,14 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
     public AstNode visitValChar(CodexLatinusParser.ValCharContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, ctx.CHAR().getText(), DataType.CHAR);
+        return new LiteralExpressionNode(line, column, ctx.CHAR().getText(), DataType.CHAR, Character.valueOf(ctx.CHAR().getText().charAt(0)));
     }
 
     @Override
     public AstNode visitValDecimal(CodexLatinusParser.ValDecimalContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, ctx.DECIMAL().getText(), DataType.DECIMAL);
+        return new LiteralExpressionNode(line, column, ctx.DECIMAL().getText(), DataType.DECIMAL, Double.parseDouble(ctx.DECIMAL().getText()));
     }
 
     //----******----- PRINCIPAL EXPRESSION THAT RETURNS AN ARRAY CALL ----******-----
@@ -947,14 +947,14 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
     public AstNode visitValInt(CodexLatinusParser.ValIntContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, ctx.INT().getText(), DataType.INT);
+        return new LiteralExpressionNode(line, column, ctx.INT().getText(), DataType.INT, Integer.parseInt(ctx.INT().getText()));
     }
 
     @Override
     public AstNode visitValString(CodexLatinusParser.ValStringContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, ctx.STRING().getText(), DataType.STRING);
+        return new LiteralExpressionNode(line, column, ctx.STRING().getText(), DataType.STRING, ctx.STRING().getText());
     }
 
 
@@ -1075,14 +1075,14 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
     public AstNode visitBoolFalse(CodexLatinusParser.BoolFalseContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, "falsus", DataType.BOOLEAN);
+        return new LiteralExpressionNode(line, column, "falsus", DataType.BOOLEAN, false);
     }
 
     @Override
     public AstNode visitBoolTrue(CodexLatinusParser.BoolTrueContext ctx) {
         int line = ctx.getStart().getLine();
         int column = ctx.getStart().getCharPositionInLine();
-        return new LiteralExpressionNode(line, column, "verum", DataType.BOOLEAN);
+        return new LiteralExpressionNode(line, column, "verum", DataType.BOOLEAN,true);
     }
 
 

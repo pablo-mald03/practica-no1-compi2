@@ -35,6 +35,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.lo
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.ForStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.statements.loops.WhileStatementNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.parents.BodyNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.parents.ExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MaiorSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.MuneraSectionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.principals.VariablesSectionNode;
@@ -58,6 +59,8 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     private boolean insideFunctionOrProcedure = false;
     private boolean insideStructDeclaration = false;
     private String currentStructName = null;
+
+    private boolean insideLoop = false;
 
     //THE PRINCIPAL REFERENCE TO THE SCOPES REPRESENTATION
     private final Map<String, Environment> scopeRegistry;
@@ -287,7 +290,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
         Symbol varSymbol = new Symbol(
                 varName,
-                SymbolKind.VARIABLE,
+                this.resolveKindVariable(),
                 node.getDataType(),
                 line,
                 column
@@ -295,6 +298,20 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
 
         currentScope.put(varName, varSymbol);
         return null;
+    }
+
+    //Helper method to resolve kind variable type
+    private SymbolKind resolveKindVariable(){
+
+        if(insideLoop){
+            return SymbolKind.FOR_VARIABLE;
+        }
+
+        if(insideFunctionOrProcedure){
+            return SymbolKind.LOCAL_VARIABLE;
+        }
+
+        return  SymbolKind.VARIABLE;
     }
 
     @Override
@@ -539,12 +556,35 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     public Void visit(ForStatementNode node) {
 
         enterScope("for_" + node.getLine() + node.getColumn());
+        this.insideLoop = true;
 
         if (node.getInit() != null) {
             node.getInit().accept(this);
         }
 
+        this.insideLoop = false;
         exitScope();
+        return null;
+    }
+
+
+    //===Verify I/O validation expressions
+    @Override
+    public Void visit(PrintStatementNode node) {
+        if (node.getExpressionList() != null) {
+            for (ExpressionNode expr : node.getExpressionList()) {
+                expr.accept(this);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(ReadStatementNode node) {
+
+        if (node.getTarget() != null) {
+            node.getTarget().accept(this);
+        }
         return null;
     }
 
@@ -580,18 +620,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     public Void visit(DoWhileStatementNode node) {
         return null;
     }
-
-
-    @Override
-    public Void visit(PrintStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ReadStatementNode node) {
-        return null;
-    }
-
     @Override
     public Void visit(ReturnStatementNode node) {
         return null;

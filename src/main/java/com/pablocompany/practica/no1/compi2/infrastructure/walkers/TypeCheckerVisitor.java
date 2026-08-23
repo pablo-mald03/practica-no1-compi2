@@ -443,7 +443,10 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
         if (node.getValue() != null) {
             TypeWrapper returnType = node.getValue().accept(resolver);
-            if (returnType != null && expectedReturnType != null) {
+            if (expectedReturnType == null) {
+                addError("reddere", node.getLine(), node.getColumn(),
+                        "Los procedimientos no deben retornar valores.");
+            } else if (returnType != null) {
                 if (!isAssignable(expectedReturnType, returnType.getTypeNode())) {
                     addError("reddere", node.getLine(), node.getColumn(),
                             "Tipo de retorno incorrecto. Se esperaba: " +
@@ -790,6 +793,29 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         }
     }
 
+    //===Verify I/O validation expressions
+    @Override
+    public Void visit(PrintStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
+
+        if (node.getExpressionList() != null) {
+            for (ExpressionNode expr : node.getExpressionList()) {
+                expr.accept(resolver);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(ReadStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(currentScope, globalScope, scopeRegistry, errors);
+
+        if (node.getTarget() != null) {
+            node.getTarget().accept(resolver);
+        }
+        return null;
+    }
+
 
     // ========== STUBS =========
 
@@ -820,16 +846,6 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(TypeNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(PrintStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ReadStatementNode node) {
         return null;
     }
 

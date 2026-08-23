@@ -7,6 +7,7 @@ package com.pablocompany.practica.no1.compi2.ui.components.bottom.panels.symbols
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.types.TypeNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.themes.Theme;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -29,7 +30,7 @@ public class SemanticTable extends JTable {
     private final DefaultTableModel tableModel;
 
     public SemanticTable() {
-        String[] columnNames = {"ID", "Tipo de Símbolo", "Tipo de Dato", "Ámbito", "Línea", "Columna"};
+        String[] columnNames = {"Nombre", "Tipo de Símbolo", "Tipo de Dato", "Numero de parametros", "Ámbito", "Línea", "Columna"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -131,14 +132,15 @@ public class SemanticTable extends JTable {
     }
 
     private void setupColumnWidths() {
-        getColumnModel().getColumn(0).setPreferredWidth(200);
-        getColumnModel().getColumn(1).setPreferredWidth(140);
+        getColumnModel().getColumn(0).setPreferredWidth(180);
+        getColumnModel().getColumn(1).setPreferredWidth(120);
         getColumnModel().getColumn(2).setPreferredWidth(120);
-        getColumnModel().getColumn(3).setPreferredWidth(150);
+        getColumnModel().getColumn(3).setPreferredWidth(100);
+        getColumnModel().getColumn(4).setPreferredWidth(150);
 
-        getColumnModel().getColumn(4).setPreferredWidth(100);
+        getColumnModel().getColumn(5).setPreferredWidth(80);
 
-        getColumnModel().getColumn(5).setPreferredWidth(100);
+        getColumnModel().getColumn(6).setPreferredWidth(80);
     }
 
     //Method to load the symbols to the table
@@ -154,12 +156,13 @@ public class SemanticTable extends JTable {
 
             TypeNode customType = symbol.getType();
             tableModel.addRow(new Object[]{
-                symbol.getId(),
-                symbol.getKind(),
-                (customType == null)? "structura": customType.getCustomTypeName(),
-                symbol.getScope(),
-                symbol.getLine(),
-                symbol.getColumn()
+                    symbol.getId(),
+                    symbol.getKind().getValue(),
+                    (customType == null) ? "structura" : customType.getCustomTypeName(),
+                    symbol.getParameters().size(),
+                    symbol.getScope(),
+                    symbol.getLine(),
+                    symbol.getColumn()
             });
         }
     }
