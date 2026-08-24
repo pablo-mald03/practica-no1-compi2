@@ -241,27 +241,36 @@ public class CompileTimeValidatorVisitor implements AstVisitor<Void> {
             node.getExpressionNode().accept(this);
         }
 
-        if (node.getExpressionNode() instanceof MemberArrayAccessExpressionNode arrayAccess) {
-            if (arrayAccess.getIndex() != null) {
-                Double indexVal = evaluateConstantExpression(arrayAccess.getIndex());
-                if (indexVal != null) {
-                    int index = indexVal.intValue();
-                    if (index < 0) {
-                        addError("Acceso a arreglo", arrayAccess.getLine(), arrayAccess.getColumn(),
-                                "Indice negativo no permitido en asignación: " + index);
-                    } else {
-                        Integer arraySize = getArraySizeFromTarget(arrayAccess.getTarget());
-                        if (arraySize != null && index >= arraySize) {
-                            addError("Acceso a arreglo", arrayAccess.getLine(), arrayAccess.getColumn(),
-                                    "Indice fuera de limites en asignacion. Capacidad " +
-                                            arraySize + ", pero se intenta acceder al indice " + index);
+        if (node.getIdentifier() instanceof ArrayCallExpressionNode arrayCall) {
+            validateArrayAccess(arrayCall.getArrayName(), arrayCall.getIndexExpression(),
+                    arrayCall.getLine(), arrayCall.getColumn(), "asignacion");
+        }
+
+        if (node.getIdentifier() instanceof MemberArrayAccessExpressionNode memberAccess) {
+
+            if (memberAccess.getTarget() instanceof IdentifierExpressionNode idNode) {
+                validateArrayAccess(idNode.getIdentifier(), memberAccess.getIndex(),
+                        memberAccess.getLine(), memberAccess.getColumn(), "asignacion");
+            } else {
+                Integer arraySize = getArraySizeFromTarget(memberAccess.getTarget());
+                if (arraySize != null) {
+                    Double indexVal = evaluateConstantExpression(memberAccess.getIndex());
+                    if (indexVal != null) {
+                        int index = indexVal.intValue();
+                        if (index < 0) {
+                            addError("Acceso a arreglo", memberAccess.getLine(), memberAccess.getColumn(),
+                                    "Indice negativo no permitido en asignacion: " + index);
+                        } else if (index >= arraySize) {
+                            addError("Acceso a arreglo", memberAccess.getLine(), memberAccess.getColumn(),
+                                    "Fuera de limites del arreglo. Capacidad " +
+                                            arraySize + ", indice accedido: " + index);
                         }
                     }
                 }
             }
         }
 
-        if (node.getExpressionNode() instanceof IdentifierExpressionNode idNode) {
+        if (node.getIdentifier() instanceof IdentifierExpressionNode idNode) {
             Symbol symbol = resolveSymbol(idNode.getIdentifier());
             if (symbol != null && constantValues.containsKey(symbol)) {
                 Double newValue = evaluateConstantExpression(node.getExpressionNode());
@@ -275,6 +284,52 @@ public class CompileTimeValidatorVisitor implements AstVisitor<Void> {
 
         return null;
     }
+
+    //Auxiliary method unified
+    private void validateArrayAccess(String arrayName, ExpressionNode indexExpr,
+                                     int line, int column, String context) {
+        if (indexExpr == null) return;
+
+        Double indexVal = evaluateConstantExpression(indexExpr);
+        if (indexVal == null) return;
+
+        int index = indexVal.intValue();
+
+        if (index < 0) {
+            addError(arrayName, line, column,
+                    "Indice negativo no permitido en " + context + ": " + index);
+            return;
+        }
+
+        Symbol arraySymbol = resolveSymbol(arrayName);
+        if (arraySymbol != null && arraySymbol.isArray()) {
+            Integer arraySize = arraySymbol.getArraySize();
+            if (arraySize != null && index >= arraySize) {
+                addError(arrayName, line, column,
+                        "Fuera de limites del arreglo '" +
+                                arrayName + "'. Capacidad " + arraySize +
+                                ". Indice accedido: '" + index + "'");
+            }
+        }
+    }
+
+    //Simple identifier resolver target method
+    private Integer getArraySizeFromTarget(ExpressionNode target) {
+        if (target instanceof IdentifierExpressionNode idNode) {
+            Symbol symbol = resolveSymbol(idNode.getIdentifier());
+            if (symbol != null && symbol.isArray()) {
+                return symbol.getArraySize();
+            }
+        } else if (target instanceof PropertyAccessExpressionNode propNode) {
+
+            return null;
+        } else if (target instanceof MemberArrayAccessExpressionNode nestedArray) {
+            return getArraySizeFromTarget(nestedArray.getTarget());
+        }
+        return null;
+    }
+
+
 
     //Principal array declaration resolver validation
     @Override
@@ -355,8 +410,8 @@ public class CompileTimeValidatorVisitor implements AstVisitor<Void> {
                         int size = arraySizesRegistry.get(arraySymbol);
                         if (index >= size) {
                             addError(node.getArrayName(), node.getLine(), node.getColumn(),
-                                    "Indice fuera de limites del arreglo '" + node.getArrayName() +
-                                            "' capacidad " + size + ", se intento acceder a " + index);
+                                    "Fuera de limites del arreglo '" + node.getArrayName() +
+                                            "'. Capacidad " + size + ". Indice accedido " + index);
                         }
                     }
                 }
@@ -545,8 +600,8 @@ public class CompileTimeValidatorVisitor implements AstVisitor<Void> {
 
                 if (arraySize != null && index >= arraySize) {
                     addError("Acceso a arreglo", node.getLine(), node.getColumn(),
-                            "Índice fuera de límites. El arreglo tiene capacidad " +
-                                    arraySize + ", pero se intenta acceder al índice " + index);
+                            "Indice fuera de limites. El arreglo tiene capacidad " +
+                                    arraySize + ", pero se intenta acceder al indice " + index);
                 }
             }
         }
@@ -554,17 +609,6 @@ public class CompileTimeValidatorVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    //Simple identifier resolver target method
-    private Integer getArraySizeFromTarget(ExpressionNode target) {
-        if (target instanceof IdentifierExpressionNode idNode) {
-            Symbol symbol = resolveSymbol(idNode.getIdentifier());
-            if (symbol != null && arraySizesRegistry.containsKey(symbol)) {
-                return arraySizesRegistry.get(symbol);
-            }
-        }
-
-        return null;
-    }
 
     @Override
     public Void visit(StructInstanceNode node) {
