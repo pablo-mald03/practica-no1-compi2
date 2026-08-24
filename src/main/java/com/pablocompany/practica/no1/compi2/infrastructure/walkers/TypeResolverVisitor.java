@@ -502,6 +502,16 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
     }
 
     @Override
+    public TypeWrapper visit(IncrementPrevStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public TypeWrapper visit(DecrementPrevStatementNode node) {
+        return null;
+    }
+
+    @Override
     public TypeWrapper visit(IfStatementNode node) {
         return null;
     }

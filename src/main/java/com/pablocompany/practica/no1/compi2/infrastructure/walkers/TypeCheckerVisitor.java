@@ -864,4 +864,14 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
     public Void visit(DecrementStatementNode node) {
         return null;
     }
+
+    @Override
+    public Void visit(IncrementPrevStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(DecrementPrevStatementNode node) {
+        return null;
+    }
 }

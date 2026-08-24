@@ -531,7 +531,6 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(node.getTargetVariable().accept(this))
-                .append(" ")
                 .append(node.getAbreviationOperator().getValue())
                 .append(";")
                 .append("\n");
@@ -544,8 +543,31 @@ public class CodeGeneratorVisitor implements AstVisitor<String> {
         StringBuilder sb = new StringBuilder();
 
         sb.append(node.getTargetVariable().accept(this))
-                .append(" ")
                 .append(node.getAbreviationOperator().getValue())
+                .append(";")
+                .append("\n");
+
+        return sb.toString();
+    }
+
+    @Override
+    public String visit(IncrementPrevStatementNode node) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(node.getAbreviationOperator().getValue())
+                .append(node.getTargetVariable().accept(this))
+                .append(";")
+                .append("\n");
+
+        return sb.toString();
+    }
+
+    @Override
+    public String visit(DecrementPrevStatementNode node) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(node.getAbreviationOperator().getValue())
+                .append(node.getTargetVariable().accept(this))
                 .append(";")
                 .append("\n");
 
