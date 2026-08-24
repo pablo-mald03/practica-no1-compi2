@@ -8,10 +8,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.a
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.access.PropertyAccessExpressionNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayDeclarationNode;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.arrays.ArrayInitExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.DecrementStatementNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.IncrementStatementNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.UnaryExpressionNode;
-import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.VariableAssignmentNode;
+import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.*;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.assignation.enums.AbreviationOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.operators.enums.UnaryOperator;
 import com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.structs.StructInstanceNode;
@@ -333,6 +330,26 @@ public class AstBuilderVisitor extends CodexLatinusParserBaseVisitor<AstNode> {
 
     //----******----- LOOPS SECTION  ----******-----
 
+
+    @Override
+    public AstNode visitIncPrevOperation(CodexLatinusParser.IncPrevOperationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.nest_variable());
+
+        return new IncrementPrevStatementNode(line, column,AbreviationOperator.ABREV_PREV_PLUS, target);
+    }
+
+    @Override
+    public AstNode visitDecPrevOperation(CodexLatinusParser.DecPrevOperationContext ctx) {
+        int line = ctx.getStart().getLine();
+        int column = ctx.getStart().getCharPositionInLine();
+
+        ExpressionNode target = (ExpressionNode) visit(ctx.nest_variable());
+
+        return new DecrementPrevStatementNode(line, column,AbreviationOperator.ABREV_PREV_MINUS, target);
+    }
 
     @Override
     public AstNode visitIncOperation(CodexLatinusParser.IncOperationContext ctx) {

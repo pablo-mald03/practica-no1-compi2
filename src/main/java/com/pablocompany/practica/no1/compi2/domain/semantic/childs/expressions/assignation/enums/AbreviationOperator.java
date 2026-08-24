@@ -4,7 +4,10 @@ package com.pablocompany.practica.no1.compi2.domain.semantic.childs.expressions.
 public enum AbreviationOperator {
 
     ABREV_PLUS("++"),
-    ABREV_MINUS("--");
+    ABREV_MINUS("--"),
+
+    ABREV_PREV_PLUS("++"),
+    ABREV_PREV_MINUS("--");
 
 
     private final String operation;

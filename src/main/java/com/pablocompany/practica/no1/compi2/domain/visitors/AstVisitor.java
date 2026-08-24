@@ -104,6 +104,11 @@ public interface AstVisitor<T> {
 
     T visit(DecrementStatementNode node);
 
+    //Abbreviation value variables
+    T visit(IncrementPrevStatementNode node);
+
+    T visit(DecrementPrevStatementNode node);
+
     //Conditionals
     T visit(IfStatementNode node);
 

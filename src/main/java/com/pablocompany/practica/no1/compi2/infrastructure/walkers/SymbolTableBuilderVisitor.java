@@ -673,6 +673,16 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     }
 
     @Override
+    public Void visit(IncrementPrevStatementNode node) {
+        return null;
+    }
+
+    @Override
+    public Void visit(DecrementPrevStatementNode node) {
+        return null;
+    }
+
+    @Override
     public Void visit(LiteralExpressionNode node) {
         return null;
     }

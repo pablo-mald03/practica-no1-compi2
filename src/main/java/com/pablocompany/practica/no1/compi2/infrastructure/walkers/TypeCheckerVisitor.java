@@ -46,6 +46,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Envi
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.services.CheckerTypesService;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 //This is the second phase of the compilator (the type checker)
+@Getter
 public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     private final Environment globalScope;
@@ -259,9 +261,9 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                     verifyStructLiteral((StructLiteralExpressionNode) elem, node.getDataType());
                 } else if (elemType != null && !isAssignable(node.getDataType(), elemType.getTypeNode())) {
                     addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                            "Tipo incorrecto en inicializacion del arreglo. Se esperaba: " +
-                                    node.getDataType().getDataType() + ", se obtuvo: " +
-                                    elemType.getDataType());
+                            "Tipo incorrecto en inicializacion de arreglo. Se esperaba: " +
+                                    node.getDataType().getDataType().getValue() + ", se obtuvo: " +
+                                    elemType.getDataType().getValue());
                 }
             }
         }
@@ -855,11 +857,126 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(IncrementStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
+        TypeWrapper targetType = node.getTargetVariable().accept(resolver);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Sufijo ++", node.getLine(), node.getColumn(),
+                    "No se puede incrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Sufijo " + node.getAbreviationOperator().getValue(), node.getLine(), node.getColumn(),
+                    "El operador sufijo '++' solo es aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        boolean verify = this.checkIncrementDeclaration(node.getTargetVariable());
+
+        if(!verify){
+            return null;
+        }
+
         return null;
     }
 
     @Override
     public Void visit(DecrementStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
+        TypeWrapper targetType = node.getTargetVariable().accept(resolver);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Sufijo --", node.getLine(), node.getColumn(),
+                    "No se puede decrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Sufijo " + node.getAbreviationOperator().getValue(), node.getLine(), node.getColumn(),
+                    "El operador sufijo '--' solo es aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        boolean verify = this.checkIncrementDeclaration(node.getTargetVariable());
+
+        if(!verify){
+            return null;
+        }
+
         return null;
+    }
+
+    @Override
+    public Void visit(IncrementPrevStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
+        TypeWrapper targetType = node.getTargetVariable().accept(resolver);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Prefijo ++", node.getLine(), node.getColumn(),
+                    "No se puede incrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Prefijo " + node.getAbreviationOperator().getValue(), node.getLine(), node.getColumn(),
+                    "El operador prefijo '++'  solo es aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        boolean verify = this.checkIncrementDeclaration(node.getTargetVariable());
+
+        if(!verify){
+            return null;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void visit(DecrementPrevStatementNode node) {
+        TypeResolverVisitor resolver = new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
+        TypeWrapper targetType = node.getTargetVariable().accept(resolver);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Prefijo --", node.getLine(), node.getColumn(),
+                    "No se puede decrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Prefijo " + node.getAbreviationOperator().getValue(), node.getLine(), node.getColumn(),
+                    "El operador prefijo '--' solo es aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        boolean verify = this.checkIncrementDeclaration(node.getTargetVariable());
+
+        if(!verify){
+            return null;
+        }
+
+        return null;
+    }
+
+    //helper validator
+    private boolean checkIncrementDeclaration(ExpressionNode node){
+        if (node instanceof IdentifierExpressionNode idNode) {
+            Symbol symbol = resolveSymbol(idNode.getIdentifier(), idNode.getLine(), idNode.getColumn());
+            if (symbol != null && !symbol.isInitialized()) {
+                addError(idNode.getIdentifier(), node.getLine(), node.getColumn(),
+                        "La variable '" + idNode.getIdentifier() + "' no ha sido inicializada.");
+                return false;
+            }
+        }
+        return true;
     }
 }

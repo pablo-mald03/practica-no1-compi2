@@ -408,6 +408,8 @@ boolean_values
 abbreviated_operation
     : nest_variable ABREV_PLUS DOT_COMMA  # IncOperation
     | nest_variable ABREV_MINUS DOT_COMMA # DecOperation
+    | ABREV_PLUS nest_variable  DOT_COMMA  # IncPrevOperation
+    | ABREV_MINUS nest_variable  DOT_COMMA # DecPrevOperation
     ;
 
 

@@ -1673,4 +1673,28 @@ public interface CodexLatinusParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDecOperation(CodexLatinusParser.DecOperationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IncPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 */
+	void enterIncPrevOperation(CodexLatinusParser.IncPrevOperationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IncPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 */
+	void exitIncPrevOperation(CodexLatinusParser.IncPrevOperationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DecPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecPrevOperation(CodexLatinusParser.DecPrevOperationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DecPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecPrevOperation(CodexLatinusParser.DecPrevOperationContext ctx);
 }

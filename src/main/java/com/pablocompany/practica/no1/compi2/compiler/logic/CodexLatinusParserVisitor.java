@@ -982,4 +982,18 @@ public interface CodexLatinusParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDecOperation(CodexLatinusParser.DecOperationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IncPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncPrevOperation(CodexLatinusParser.IncPrevOperationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DecPrevOperation}
+	 * labeled alternative in {@link CodexLatinusParser#abbreviated_operation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecPrevOperation(CodexLatinusParser.DecPrevOperationContext ctx);
 }
