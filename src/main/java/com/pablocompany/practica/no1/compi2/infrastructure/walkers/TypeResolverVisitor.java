@@ -418,6 +418,91 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         return firstType;
     }
 
+    @Override
+    public TypeWrapper visit(IncrementStatementNode node) {
+        TypeWrapper targetType = node.getTargetVariable().accept(this);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Incremento Sufijo", node.getLine(), node.getColumn(),
+                    "No se puede incrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Sufijo " + node.getTargetVariable().toString(), node.getLine(), node.getColumn(),
+                    "El operador '++' solo aplicable a tipos numericos. " +
+                            "Tipo recibido: " + dataType.getValue());
+            return null;
+        }
+
+        return targetType;
+    }
+
+    @Override
+    public TypeWrapper visit(DecrementStatementNode node) {
+        TypeWrapper targetType = node.getTargetVariable().accept(this);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Decremento Sufijo", node.getLine(), node.getColumn(),
+                    "No se puede decrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Sufijo " + node.getTargetVariable().toString(), node.getLine(), node.getColumn(),
+                    "El operador sufijo '--' solo aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        return targetType;
+    }
+
+    @Override
+    public TypeWrapper visit(IncrementPrevStatementNode node) {
+        TypeWrapper targetType = node.getTargetVariable().accept(this);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Incremento Prefijo", node.getLine(), node.getColumn(),
+                    "No se puede incrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Prefijo " + node.getTargetVariable().toString(), node.getLine(), node.getColumn(),
+                    "El operador prefijo '++' solo aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        return targetType;
+    }
+
+    @Override
+    public TypeWrapper visit(DecrementPrevStatementNode node) {
+
+        TypeWrapper targetType = node.getTargetVariable().accept(this);
+
+        if (targetType == null || targetType.getTypeNode() == null) {
+            addError("Decremento Prefijo", node.getLine(), node.getColumn(),
+                    "No se puede decrementar una expresion invalida.");
+            return null;
+        }
+
+        DataType dataType = targetType.getTypeNode().getDataType();
+        if (dataType != DataType.INT && dataType != DataType.DECIMAL) {
+            addError("Prefijo " + node.getTargetVariable().toString(), node.getLine(), node.getColumn(),
+                    "El operador prefijo '--' solo aplicable a tipos numericos. " +
+                            "Tipo: " + dataType.getValue());
+            return null;
+        }
+
+        return targetType;
+    }
+
 
     //Struct literal declaration doesnt have any value
     @Override
@@ -491,25 +576,7 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
         return null;
     }
 
-    @Override
-    public TypeWrapper visit(IncrementStatementNode node) {
-        return null;
-    }
 
-    @Override
-    public TypeWrapper visit(DecrementStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public TypeWrapper visit(IncrementPrevStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public TypeWrapper visit(DecrementPrevStatementNode node) {
-        return null;
-    }
 
     @Override
     public TypeWrapper visit(IfStatementNode node) {
