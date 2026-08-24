@@ -583,7 +583,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     @Override
     public Void visit(WhileStatementNode node) {
-        insideLoop = true;
+        boolean previousInsideLoop = this.insideLoop;
+        this.insideLoop = true;
 
         TypeResolverVisitor resolver = new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
         TypeWrapper conditionType = node.getCondition().accept(resolver);
@@ -596,13 +597,14 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             stmt.accept(this);
         }
 
-        insideLoop = false;
+        this.insideLoop = previousInsideLoop;
         return null;
     }
 
     @Override
     public Void visit(DoWhileStatementNode node) {
-        insideLoop = true;
+        boolean previousInsideLoop = this.insideLoop;
+        this.insideLoop = true;
 
         TypeResolverVisitor resolver =new TypeResolverVisitor(scopeStack, globalScope, scopeRegistry, errors);
         TypeWrapper conditionType = node.getCondion().accept(resolver);
@@ -615,13 +617,14 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
             stmt.accept(this);
         }
 
-        insideLoop = false;
+        this.insideLoop = previousInsideLoop;
         return null;
     }
 
     @Override
     public Void visit(ForStatementNode node) {
-        insideLoop = true;
+        boolean previousInsideLoop = this.insideLoop;
+        this.insideLoop = true;
 
         enterScope("for_" + node.getLine() + node.getColumn());
 
@@ -648,7 +651,8 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
         }
 
         exitScope();
-        insideLoop = false;
+
+        this.insideLoop = previousInsideLoop;
         return null;
     }
 
