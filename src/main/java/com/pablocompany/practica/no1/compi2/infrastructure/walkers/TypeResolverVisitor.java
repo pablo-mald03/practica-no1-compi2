@@ -55,7 +55,7 @@ import java.util.Map;
 //FOLLOW THE INFERENCE RULES
 public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
-    private final Environment currentScope;
+    private final List<Environment> scopeStack;
     private final Environment globalScope;
     private final List<CompilerError> errors;
 
@@ -63,23 +63,20 @@ public class TypeResolverVisitor implements AstVisitor<TypeWrapper> {
 
     private final Map<String, Environment> scopeRegistry;
 
-    public TypeResolverVisitor(Environment currentScope, Environment globalScope, Map<String, Environment> scopeRegistry, List<CompilerError> errors) {
-        this.currentScope = currentScope;
+    public TypeResolverVisitor(List<Environment> scopeStack, Environment globalScope, Map<String, Environment> scopeRegistry, List<CompilerError> errors) {
+        this.scopeStack = scopeStack;
         this.globalScope = globalScope;
         this.scopeRegistry = scopeRegistry;
         this.errors = errors;
         this.resolver = new ResolverTypesService();
     }
 
-    //Resolver of the symbols in scopes
+    //Resolver of the symbols in scopes stack
     private Symbol resolveSymbolInScopes(String id) {
-        Symbol symbol = currentScope.get(id);
-        if (symbol != null) return symbol;
-
-        for (Environment scope : scopeRegistry.values()) {
-            if (scope != currentScope) {
-                Symbol found = scope.get(id);
-                if (found != null) return found;
+        for (int i = scopeStack.size() - 1; i >= 0; i--) {
+            Symbol symbol = scopeStack.get(i).get(id);
+            if (symbol != null) {
+                return symbol;
             }
         }
 

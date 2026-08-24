@@ -12,12 +12,16 @@ public class LiteralExpressionNode extends ExpressionNode {
     private final String value;
     private final DataType valueType;
 
-    public LiteralExpressionNode(int line, int column, String value, DataType valueType) {
+    //This is the original value of the literal
+    private final Object dataValue;
+
+
+    public LiteralExpressionNode(int line, int column, String value, DataType valueType,Object dataValue) {
         super(line, column);
+        this.dataValue = dataValue;
         this.value = value;
         this.valueType = valueType;
     }
-
 
     @Override
     public <T> T accept(AstVisitor<T> visitor) {
