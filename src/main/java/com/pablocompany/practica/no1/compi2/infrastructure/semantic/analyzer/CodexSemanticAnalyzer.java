@@ -7,6 +7,7 @@ import com.pablocompany.practica.no1.compi2.domain.semantic.ProgramNode;
 import com.pablocompany.practica.no1.compi2.infrastructure.generator.CodeGeneratorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.code.AstBuilderVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Environment;
+import com.pablocompany.practica.no1.compi2.infrastructure.walkers.CompileTimeValidatorVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.SymbolTableBuilderVisitor;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.TypeCheckerVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -61,6 +62,16 @@ public class CodexSemanticAnalyzer {
                 context.getSemanticErrors()
         );
         typeChecker.visit((ProgramNode) astNode);
+
+        if (context.getSemanticErrors().isEmpty()) {
+
+            CompileTimeValidatorVisitor ctValidator = new CompileTimeValidatorVisitor(
+                    context.getGlobalEnvironment(),
+                    typeChecker.getScopeRegistry(),
+                    context.getSemanticErrors()
+            );
+            ctValidator.visit((ProgramNode) astNode);
+        }
 
         if (!context.getSemanticErrors().isEmpty()) {
             context.setSemanticErrors(symbolBuilder.getErrors());

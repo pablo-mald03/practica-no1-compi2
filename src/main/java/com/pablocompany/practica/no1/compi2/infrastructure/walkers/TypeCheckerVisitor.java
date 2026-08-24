@@ -46,6 +46,7 @@ import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Envi
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.Symbol;
 import com.pablocompany.practica.no1.compi2.infrastructure.semantic.symbols.enums.SymbolKind;
 import com.pablocompany.practica.no1.compi2.infrastructure.walkers.services.CheckerTypesService;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 //This is the second phase of the compilator (the type checker)
+@Getter
 public class TypeCheckerVisitor implements AstVisitor<Void> {
 
     private final Environment globalScope;
@@ -259,9 +261,9 @@ public class TypeCheckerVisitor implements AstVisitor<Void> {
                     verifyStructLiteral((StructLiteralExpressionNode) elem, node.getDataType());
                 } else if (elemType != null && !isAssignable(node.getDataType(), elemType.getTypeNode())) {
                     addError(node.getIdentifier(), node.getLine(), node.getColumn(),
-                            "Tipo incorrecto en inicializacion del arreglo. Se esperaba: " +
-                                    node.getDataType().getDataType() + ", se obtuvo: " +
-                                    elemType.getDataType());
+                            "Tipo incorrecto en inicializacion de arreglo. Se esperaba: " +
+                                    node.getDataType().getDataType().getValue() + ", se obtuvo: " +
+                                    elemType.getDataType().getValue());
                 }
             }
         }
