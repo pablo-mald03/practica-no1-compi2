@@ -215,14 +215,9 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     //Principal Scope
     @Override
     public Void visit(MaiorSectionNode node) {
-        for (AstNode stmt : node.getStatements()) {
-            if (stmt instanceof VariableDeclarationNode ||
-                    stmt instanceof ArrayDeclarationNode ||
-                    stmt instanceof StructInstanceNode ||
-                    stmt instanceof ForStatementNode) {
 
-                stmt.accept(this);
-            }
+        for (AstNode stmt : node.getStatements()) {
+            stmt.accept(this);
         }
         return null;
     }
@@ -446,12 +441,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         }
 
         for (AstNode stmt : node.getBody()) {
-            if (stmt instanceof VariableDeclarationNode ||
-                    stmt instanceof ArrayDeclarationNode ||
-                    stmt instanceof StructInstanceNode  ||
-                    stmt instanceof ForStatementNode) {
-                stmt.accept(this);
-            }
+            stmt.accept(this);
         }
 
         insideFunctionOrProcedure = false;
@@ -503,12 +493,7 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         }
 
         for (AstNode stmt : node.getBody()) {
-            if (stmt instanceof VariableDeclarationNode ||
-                    stmt instanceof ArrayDeclarationNode ||
-                    stmt instanceof StructInstanceNode  ||
-                    stmt instanceof ForStatementNode) {
-                stmt.accept(this);
-            }
+            stmt.accept(this);
         }
 
         insideFunctionOrProcedure = false;
@@ -554,15 +539,23 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
     //Register the for scope
     @Override
     public Void visit(ForStatementNode node) {
-
         enterScope("for_" + node.getLine() + node.getColumn());
+
+        boolean previousInsideLoop = this.insideLoop;
+
         this.insideLoop = true;
 
         if (node.getInit() != null) {
             node.getInit().accept(this);
         }
 
-        this.insideLoop = false;
+        if (node.getBody() != null) {
+            for (AstNode stmt : node.getBody()) {
+                stmt.accept(this);
+            }
+        }
+
+        this.insideLoop = previousInsideLoop;
         exitScope();
         return null;
     }
@@ -588,6 +581,64 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visit(IfStatementNode node) {
+        if (node.getThenBody() != null) {
+            for (AstNode stmt : node.getThenBody()) {
+                stmt.accept(this);
+            }
+        }
+        if (node.getElseIfs() != null) {
+            for (ElseIfNode elseIf : node.getElseIfs()) {
+                elseIf.accept(this);
+            }
+        }
+        if (node.getElseBlockNode() != null) {
+            node.getElseBlockNode().accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(ElseIfNode node) {
+        if (node.getBody() != null) {
+            for (AstNode stmt : node.getBody()) {
+                stmt.accept(this);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(ElseBlockNode node) {
+        if (node.getBody() != null) {
+            for (AstNode stmt : node.getBody()) {
+                stmt.accept(this);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(WhileStatementNode node) {
+        if (node.getBody() != null) {
+            for (AstNode stmt : node.getBody()) {
+                stmt.accept(this);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visit(DoWhileStatementNode node) {
+        if (node.getBody() != null) {
+            for (AstNode stmt : node.getBody()) {
+                stmt.accept(this);
+            }
+        }
+        return null;
+    }
+
 
     //========== Null return value (Not Needed) SECTION ==========
 
@@ -596,30 +647,6 @@ public class SymbolTableBuilderVisitor implements AstVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(IfStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ElseIfNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(ElseBlockNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(WhileStatementNode node) {
-        return null;
-    }
-
-    @Override
-    public Void visit(DoWhileStatementNode node) {
-        return null;
-    }
     @Override
     public Void visit(ReturnStatementNode node) {
         return null;
